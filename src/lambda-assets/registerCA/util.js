@@ -60,23 +60,4 @@ exports.KeyGenerator = class KeyGenerator {
             value: props.organizationUnitName || ""
         }];
     }
-    static getCaRegistrationCertificates(caCertSubjects) {
-        const caKeys = this.generateKeys();
-        const caCertificate = this.generateCACertificate(
-            caKeys.publicKey, caKeys.privateKey, caCertSubjects);
-        const verificationKeys = this.generateKeys();
-        const verificationCertificate = this.generateVerificationCertificate(
-            caKeys.privateKey, caCertificate, verificationKeys);
-        const certificates = {
-            ca: {
-                keys: caKeys,
-                certificate: caCertificate
-            },
-            verification: {
-                keys: verificationKeys,
-                certificate: verificationCertificate
-            }
-        };
-        return certificates;
-    }
 }
