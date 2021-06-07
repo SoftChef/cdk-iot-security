@@ -4,17 +4,17 @@ import { RestApi } from '@aws-cdk/aws-apigateway';
 import { ClientActivator } from './client-activator';
 import { CaRegistrator, VerifierProps } from './ca-registrator';
 
-export interface JitrCoreProps {
+export interface CaRegisterApiProps {
     verifiers?: [VerifierProps];
     api?: RestApi;
 }
 
-export class JitrCore extends Construct {
+export class CaRegisterApi extends Construct {
     public api: RestApi;
     public activator: ClientActivator;
     public registrator: CaRegistrator;
-    constructor(scope: Construct, id: string, props: JitrCoreProps) {
-        super(scope, `JitrCore-${id}`);
+    constructor(scope: Construct, id: string, props: CaRegisterApiProps) {
+        super(scope, `CaRegisterApi-${id}`);
         this.activator = new ClientActivator(this, id);
 
         this.api = props.api || new RestApi(this, id);

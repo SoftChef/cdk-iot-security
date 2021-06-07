@@ -1,1 +1,1 @@
-export * from "./jitr-core"
+export * from "./register-api"
