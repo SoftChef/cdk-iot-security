@@ -2,22 +2,17 @@
 const forge = require('node-forge');
 
 exports.KeyGenerator = class KeyGenerator {
-    static generateKeys() {
-        return forge.pki.rsa.generateKeyPair(2048);
-    }
-    static generateCertificateTemplate(attr, years) {
+    static generateCertificateTemplate(attr, years=1) {
         let certificate = forge.pki.createCertificate();
         certificate.setSubject(attr);
         certificate.setIssuer(attr);
-        certificate.validity.notBefore = new Date();
-        certificate.validity.notAfter = new Date();
-        certificate.validity.notAfter.setFullYear(
+        certificate.validity.notBefore = new Date();certificate.validity.notAfter.setFullYear(
             certificate.validity.notBefore.getFullYear() + years);
         return certificate;
     }
-    static generateCACertificate(publicKey, privateKey, certificateSubjects) {
+    static generateCACertificate(publicKey, privateKey, certificateSubjects, years=1) {
         let attrs = this.formattedSubjects(certificateSubjects);
-        let caCertificate = this.generateCertificateTemplate(attrs, 1);
+        let caCertificate = this.generateCertificateTemplate(attrs, years);
         caCertificate.publicKey = publicKey;
         caCertificate.serialNumber = '01';
         caCertificate.setExtensions([{

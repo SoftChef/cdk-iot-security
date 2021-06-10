@@ -21,12 +21,13 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2018"
+    "target": "ES2018",
+    "allowJs": true
   },
   "include": [
     ".projenrc.js",
     "src/**/*.ts",
-    "./src/__test__/**/*.ts"
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules"

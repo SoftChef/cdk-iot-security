@@ -9,22 +9,30 @@ const project = new AwsCdkConstructLibrary({
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-lambda-nodejs',
+    '@aws-cdk/aws-lambda',
     '@aws-cdk/aws-iam',
     '@aws-cdk/aws-apigateway',
     '@aws-cdk/aws-iot',
     '@aws-cdk/aws-dynamodb',
     '@aws-cdk/aws-sqs',
     '@aws-cdk/aws-lambda-event-sources',
-    'aws-cdk'
+    'aws-cdk',
   ],
   deps: [
     '@aws-cdk/assert',
+    'aws-sdk',
     'path',
-    'node-forge'
+    'node-forge',
+    'aws-sdk-mock',
   ],
   devDeps: [
     'esbuild',
+    '@types/node-forge',
   ],
-  testdir: 'src/__test__'
+  tsconfig: {
+    compilerOptions: {
+      allowJs: true,
+    },
+  },
 });
 project.synth();

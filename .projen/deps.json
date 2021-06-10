@@ -10,6 +10,10 @@
       "type": "build"
     },
     {
+      "name": "@types/node-forge",
+      "type": "build"
+    },
+    {
       "name": "@types/node",
       "version": "^10.17.0",
       "type": "build"
@@ -130,6 +134,11 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-lambda",
+      "version": "^1.107.0",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-sqs",
       "version": "^1.107.0",
       "type": "peer"
@@ -184,6 +193,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-lambda",
+      "version": "^1.107.0",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-sqs",
       "version": "^1.107.0",
       "type": "runtime"
@@ -196,6 +210,14 @@
     {
       "name": "aws-cdk",
       "version": "^1.107.0",
+      "type": "runtime"
+    },
+    {
+      "name": "aws-sdk",
+      "type": "runtime"
+    },
+    {
+      "name": "aws-sdk-mock",
       "type": "runtime"
     },
     {

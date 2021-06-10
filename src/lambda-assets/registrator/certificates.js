@@ -1,12 +1,14 @@
+"use strict";
+const forge = require('node-forge');
 const { KeyGenerator } = require('./util');
 const { publicKeyToPem, privateKeyToPem, certificateToPem } = require('node-forge').pki;
 
 exports.Certificates = class Certificates {
     static getCaRegistrationCertificates(caCertSubjects) {
-        const caKeys = KeyGenerator.generateKeys();
+        const caKeys = forge.pki.rsa.generateKeyPair(2048);
         const caCertificate = KeyGenerator.generateCACertificate(
             caKeys.publicKey, caKeys.privateKey, caCertSubjects);
-        const verificationKeys = KeyGenerator.generateKeys();
+        const verificationKeys = forge.pki.rsa.generateKeyPair(2048);
         const verificationCertificate = KeyGenerator.generateVerificationCertificate(
             caKeys.privateKey, caCertificate, verificationKeys);
         const certificates = {

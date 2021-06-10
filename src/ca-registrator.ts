@@ -1,3 +1,4 @@
+import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
 import {
   Role, PolicyStatement, Effect,
   ServicePrincipal, PolicyDocument, ManagedPolicy,
@@ -5,7 +6,6 @@ import {
 import { Function } from '@aws-cdk/aws-lambda';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Construct, Duration } from '@aws-cdk/core';
-import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
 
 export interface CaRegistratorProps {
   activatorFunction: Function;
@@ -23,9 +23,9 @@ export interface VerifierProps {
 export class CaRegistrator extends NodejsFunction {
   constructor(scope: Construct, id: string, props: CaRegistratorProps) {
     let environment: {[key: string]: string} = {
-      "ACTIVATOR_ARN": props.activatorFunction.functionArn,
-      "ACTIVATOR_ROLE_ARN": props.activatorRole.roleArn,
-      "ACTIVATOR_QUEUE_URL": props.activatorQueueUrl,
+      ACTIVATOR_ARN: props.activatorFunction.functionArn,
+      ACTIVATOR_ROLE_ARN: props.activatorRole.roleArn,
+      ACTIVATOR_QUEUE_URL: props.activatorQueueUrl,
     };
     props.verifiers?.forEach(verifier=> environment[verifier.name] = verifier.arn);
 
@@ -34,7 +34,7 @@ export class CaRegistrator extends NodejsFunction {
       role: new CaRegistationRole(scope, id),
       timeout: Duration.seconds(10),
       memorySize: 256,
-      environment: environment
+      environment: environment,
     });
     props.apiResource.addMethod('POST', new LambdaIntegration(this));
   }
@@ -54,14 +54,14 @@ class CaRegistationRole extends Role {
           statements: [new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
-              "lambda:CreateFunction",
-              "iam:PassRole",
-              "iot:RegisterCACertificate",
-              "iot:TagResource",
-              "iot:GetRegistrationCode",
-              "iam:CreateRole",
-              "iam:AttachRolePolicy",
-              "iot:CreateTopicRule"
+              'lambda:CreateFunction',
+              'iam:PassRole',
+              'iot:RegisterCACertificate',
+              'iot:TagResource',
+              'iot:GetRegistrationCode',
+              'iam:CreateRole',
+              'iam:AttachRolePolicy',
+              'iot:CreateTopicRule',
             ],
             resources: ['*'],
           })],

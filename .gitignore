@@ -31,7 +31,6 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 tsconfig.json
 yarn-debug.log*
 yarn-error.log*
-!/./src/__test__
 !/.eslintrc.json
 !/.gitattributes
 !/.github/pull_request_template.md
@@ -48,5 +47,6 @@ yarn-error.log*
 !/LICENSE
 !/package.json
 !/src
+!/test
 !/tsconfig.eslint.json
 !/tsconfig.jest.json
