@@ -10,8 +10,23 @@ import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistra
 
 AWS.config.region = 'local';
 AWSMock.setSDKInstance(AWS);
-
-process.env.AWS_REGION = 'us-east-1';
+AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+  const response: GetRegistrationCodeResponse = {
+    registrationCode: 'registration_code',
+  };
+  callback(null, response);
+});
+AWSMock.mock('Iot', 'registerCACertificate', (param: RegisterCACertificateRequest, callback: Function)=>{
+  const response: RegisterCACertificateResponse = {
+    certificateId: 'ca_certificate_id',
+    certificateArn: 'ca_certificate_arn',
+  };
+  if (param.caCertificate && param.verificationCertificate) {
+    callback(null, response);
+  } else {
+    callback(new Error(), null);
+  }
+});
 
 var event = {
   body: {
@@ -38,27 +53,13 @@ var event = {
   },
 };
 
+process.env.AWS_REGION = 'us-east-1';
+
 test('registerCa', async ()=>{
-  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-    const response: GetRegistrationCodeResponse = {
-      registrationCode: 'registration_code',
-    };
-    callback(null, response);
-  });
-  AWSMock.mock('Iot', 'registerCACertificate', (param: RegisterCACertificateRequest, callback: Function)=>{
-    const response: RegisterCACertificateResponse = {
-      certificateId: 'ca_certificate_id',
-      certificateArn: 'ca_certificate_arn',
-    };
-    if (param.caCertificate && param.verificationCertificate) {
-      callback(null, response);
-    } else {
-      callback(new Error(), null);
-    }
-  });
 
   // Omit if already have response
   var registrator = new CaRegistrator(event);
+  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
   registrator.response = true;
   var result = await registrator.registerCa();
   expect(result).toBeUndefined();
@@ -67,7 +68,8 @@ test('registerCa', async ()=>{
   // Omit if have not created certificates
   var registrator = new CaRegistrator(event);
   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  await registrator.getRegistrationCode();
+  registrator.results = Object.assign(
+    registrator.results, { registrationCode: 'registration_code' });
   var result = await registrator.registerCa();
   expect(result).toBeUndefined();
   expect(registrator.results.caRegistration).toBeNull();
@@ -76,19 +78,22 @@ test('registerCa', async ()=>{
   // Success
   var registrator = new CaRegistrator(event);
   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  await registrator.getRegistrationCode();
+  registrator.results = Object.assign(
+    registrator.results, { registrationCode: 'registration_code' });
   registrator.createCertificates();
   var result = await registrator.registerCa();
   expect(result).toBeDefined();
   expect(registrator.results.caRegistration).not.toBeNull();
 
   // Simulate IoT SDK Error
-  AWSMock.remock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
+  AWSMock.remock('Iot', 'registerCACertificate', (
+    _param: RegisterCACertificateRequest, callback: Function)=>{
     callback(new Error(), null);
   });
   var registrator = new CaRegistrator(event);
   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  await registrator.getRegistrationCode();
+  registrator.results = Object.assign(
+    registrator.results, { registrationCode: 'registration_code' });
   registrator.createCertificates();
   var result = await registrator.registerCa();
   expect(result).toBeUndefined();

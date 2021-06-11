@@ -108,7 +108,8 @@ test('getRegistrationCode', async ()=>{
   expect(registrator.results.registrationCode).toBeNull();
 
   // Success
-  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+  AWSMock.mock('Iot', 'getRegistrationCode', (
+    _param: GetRegistrationCodeRequest, callback: Function)=>{
     const response: GetRegistrationCodeResponse = {
       registrationCode: 'registration_code',
     };
@@ -119,10 +120,10 @@ test('getRegistrationCode', async ()=>{
   var registrationCode = await registrator.getRegistrationCode();
   expect(registrationCode).toBe('registration_code');
   expect(registrator.results.registrationCode).toBe('registration_code');
-  AWSMock.restore('Iot', 'getRegistrationCode');
 
   // Simulate IoT SDK Error
-  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+  AWSMock.remock('Iot', 'getRegistrationCode', (
+    _param: GetRegistrationCodeRequest, callback: Function)=>{
     callback(new Error(), null);
   });
   var registrator = new CaRegistrator(event);
@@ -132,7 +133,8 @@ test('getRegistrationCode', async ()=>{
   expect(registrator.results.registrationCode).toBeNull();
   expect(registrator.response.statusCode)
     .toBe(registrator.errorCodes.errorOfGetRegistrationCode);
-  AWSMock.restore('Iot', 'getRegistrationCode');
+
+  AWSMock.restore('Iot');
 });
 
 test('createCertificates', async ()=>{
@@ -143,27 +145,28 @@ test('createCertificates', async ()=>{
   expect(cert).toBeUndefined();
   expect(registrator.certificates).toMatchObject(nullCertificates);
 
-  // Success
-  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-    callback(null, { registrationCode: 'registration_code' });
-  });
+  // Omit if having no registration code
   var registrator = new CaRegistrator(event);
-  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  await registrator.getRegistrationCode();
+  var cert = registrator.createCertificates();
+  expect(cert).toBeUndefined();
+  expect(registrator.certificates).toMatchObject(nullCertificates);
+
+  // Success
+  var registrator = new CaRegistrator(event);
+  registrator.results = Object.assign(
+    registrator.results, { registrationCode: 'registration_code' });
   var cert = registrator.createCertificates();
   expect(cert).toBeDefined();
+  expect(registrator.certificates.ca.keys.privateKey).not.toBeNull();
+  expect(registrator.certificates.ca.keys.publicKey).not.toBeNull();
+  expect(registrator.certificates.ca.certificate).not.toBeNull();
+  expect(registrator.certificates.verification.keys.privateKey).not.toBeNull();
+  expect(registrator.certificates.verification.keys.publicKey).not.toBeNull();
+  expect(registrator.certificates.verification.certificate).not.toBeNull();
   expect(typeof registrator.certificates.ca.certificate).toBe(typeof '');
   expect(typeof registrator.certificates.ca.keys.privateKey).toBe(typeof '');
   expect(typeof registrator.certificates.ca.keys.publicKey).toBe(typeof '');
   expect(typeof registrator.certificates.verification.certificate).toBe(typeof '');
   expect(typeof registrator.certificates.verification.keys.privateKey).toBe(typeof '');
   expect(typeof registrator.certificates.verification.keys.publicKey).toBe(typeof '');
-
-  // Failed if having no registration code
-  var registrator = new CaRegistrator(event);
-  var cert = registrator.createCertificates();
-  expect(cert).toBeUndefined();
-  expect(registrator.certificates).toMatchObject(nullCertificates);
-
-  AWSMock.restore('Iot', 'getRegistrationCode');
 });

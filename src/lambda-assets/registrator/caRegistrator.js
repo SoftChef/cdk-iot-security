@@ -222,12 +222,28 @@ exports.CaRegistrator = class CaRegistrator {
     async register() {
         this.checkVerifier();
         this.checkBucket();
-        this.results.registrationCode = await this.getRegistrationCode();
-        this.certificates = this.createCertificates();        
-        this.results.caRegistration = await this.registerCa();
-        this.results.rule = await this.createRule();
-        this.results.upload = await this.upload();
+        await this.getRegistrationCode();
+        this.createCertificates();        
+        await this.registerCa();
+        await this.createRule();
+        await this.upload();
         this.response = this.response || this.responseBuilder.json(this.results);
         return this.response;
     }
+
+    /*get response() {
+        if (
+            this.results.registrationCode !== null &&
+            this.results.caRegistration !== null &&
+            this.results.rule !== null &&
+            this.results.upload !== null
+        ) {
+            this.response = this.responseBuilder.json(this.results);
+        }
+        return this.response;
+    }
+
+    set response(value) {
+        this.response = value;        
+    }*/
 }
