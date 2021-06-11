@@ -158,11 +158,12 @@ test('createCertificates', async ()=>{
   expect(typeof registrator.certificates.verification.certificate).toBe(typeof '');
   expect(typeof registrator.certificates.verification.keys.privateKey).toBe(typeof '');
   expect(typeof registrator.certificates.verification.keys.publicKey).toBe(typeof '');
-  AWSMock.restore('Iot', 'getRegistrationCode');
 
   // Failed if having no registration code
   var registrator = new CaRegistrator(event);
   var cert = registrator.createCertificates();
   expect(cert).toBeUndefined();
   expect(registrator.certificates).toMatchObject(nullCertificates);
+
+  AWSMock.restore('Iot', 'getRegistrationCode');
 });
