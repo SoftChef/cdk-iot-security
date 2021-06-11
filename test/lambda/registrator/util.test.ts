@@ -57,14 +57,27 @@ test('test generateCertificateTemplate', ()=>{
     organizationName: 'Soft Chef',
     organizationUnitName: 'web',
   };
+  const attr = kg.formattedSubjects(csrSubjects);
 
   // Match the subjects
-  var cert = kg.generateCertificateTemplate(csrSubjects);
-  expect(cert.subject.attributes).toBe(csrSubjects);
+  var cert = kg.generateCertificateTemplate(attr, 1);
+  var expectedElements = [
+    { name: 'commonName', value: 'SoftChef' },
+    { name: 'countryName', value: 'TW' },
+    { shortName: 'ST', value: 'TP' },
+    { name: 'localityName', value: 'TW' },
+    { name: 'organizationName', value: 'Soft Chef' },
+    { shortName: 'OU', value: 'web' },
+  ];
+  for (const subject of cert.subject.attributes) {
+    expectedElements = expectedElements.filter((element) =>
+      Object.assign(subject, element) != subject);
+  }
+  expect(expectedElements.length).toBe(0);
 
   // Match the time interval
   expect(cert.validity.notAfter.getFullYear() - cert.validity.notBefore.getFullYear()).toBe(1);
-  var cert = kg.generateCertificateTemplate(csrSubjects, 10);
+  var cert = kg.generateCertificateTemplate(attr, 10);
   expect(cert.validity.notAfter.getFullYear() - cert.validity.notBefore.getFullYear()).toBe(10);
 });
 

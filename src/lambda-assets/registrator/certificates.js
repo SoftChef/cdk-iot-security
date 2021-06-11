@@ -4,6 +4,17 @@ const { KeyGenerator } = require('./util');
 const { publicKeyToPem, privateKeyToPem, certificateToPem } = require('node-forge').pki;
 
 exports.Certificates = class Certificates {
+    /**
+     * Get the cetificates for registering a CA.
+     * The returned object contains the public key of the CA,
+     * the private key of the CA,
+     * the certificate of the CA,
+     * the public key of the verification,
+     * the private key of the verification,
+     * and the certificate of the verification.
+     * @param {Object} caCertSubjects The object defining the content of CSR subjects.
+     * @returns 
+     */
     static getCaRegistrationCertificates(caCertSubjects) {
         const caKeys = forge.pki.rsa.generateKeyPair(2048);
         const caCertificate = KeyGenerator.generateCACertificate(

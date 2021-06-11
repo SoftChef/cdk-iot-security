@@ -66,6 +66,10 @@ exports.CaRegistrator = class CaRegistrator {
 
     checkBucket() {}
 
+    /**
+     * Get the registration code through AWS SDK
+     * @returns If successfully, return the response from the AWS SDK. Otherwise, undefined.
+     */
     async getRegistrationCode() {
         if (this.response) return;
         const registrationCode = await this.iot.getRegistrationCode({}).promise()
@@ -79,6 +83,11 @@ exports.CaRegistrator = class CaRegistrator {
         return registrationCode;
     }
 
+    /**
+     * Create certificates of CA and verification.
+     * This function must run after running function "getRegistrationCode".
+     * @returns The created cretificates in PEM form, and the key pairs in PEM form.
+     */
     createCertificates() {
         if (this.response) return;
         if (!this.results.registrationCode) return;
@@ -89,6 +98,11 @@ exports.CaRegistrator = class CaRegistrator {
         return certificates;
     }
 
+    /**
+     * Register a CA through AWS SDK. 
+     * This function must run after running function "createCertificates".
+     * @returns If successfully, return the response from the AWS SDK. Otherwise, undefined.
+     */
     async registerCa() {
         if (this.response) return;
         if (!(
@@ -120,6 +134,11 @@ exports.CaRegistrator = class CaRegistrator {
         return result;
     }
 
+    /**
+     * Create a AWS IoT Topic Rule for the previously registered CA through AWS SDK. 
+     * This function must run after running function "registerCa".
+     * @returns If successfully, return the response from the AWS SDK. Otherwise, undefined.
+     */
     async createRule() {
         if (this.response) return;
         if (!this.results.caRegistration) {
@@ -165,6 +184,11 @@ exports.CaRegistrator = class CaRegistrator {
         return result;
     }
 
+    /**
+     * Upload the created certificates and the executing results to the specified S3 Bucket through AWS SDK. 
+     * This function must run after running function "createRule".
+     * @returns If successfully, return the response from the AWS SDK. Otherwise, undefined.
+     */
     async upload() {
         if (this.response) return;
         if (this.results.rule === null || !this.results.caRegistration) {
@@ -191,6 +215,10 @@ exports.CaRegistrator = class CaRegistrator {
         return result;
     }
 
+    /**
+     * Run the whole work flow of registering a CA.
+     * @returns The Http response as the function returning for the lambda function.
+     */
     async register() {
         this.checkVerifier();
         this.checkBucket();
