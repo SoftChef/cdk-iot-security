@@ -23,6 +23,7 @@ const project = new AwsCdkConstructLibrary({
     'aws-sdk',
     'path',
     'node-forge',
+    'softchef-utility',
     'aws-sdk-mock',
   ],
   devDeps: [

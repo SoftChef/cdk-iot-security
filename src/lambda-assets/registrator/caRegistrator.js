@@ -31,14 +31,14 @@ exports.CaRegistrator = class CaRegistrator {
                     publicKey: null,
                     privateKey: null,
                 },
-                certificates: null,
+                certificate: null,
             },
             verification: {
                 keys: {
                     publicKey: null,
                     privateKey: null,
                 },
-                certificates: null,
+                certificate: null,
             }
         };
 
@@ -68,7 +68,6 @@ exports.CaRegistrator = class CaRegistrator {
 
     async getRegistrationCode() {
         if (this.response) return;
-
         const registrationCode = await this.iot.getRegistrationCode({}).promise()
         .then(result => this.results.registrationCode = result.registrationCode)
         .catch(err => {
@@ -82,14 +81,27 @@ exports.CaRegistrator = class CaRegistrator {
 
     createCertificates() {
         if (this.response) return;
+        if (!this.results.registrationCode) return;
         this.csrSubjects = Object.assign(this.csrSubjects || {},
             {commonName: this.results.registrationCode});
-        this.certificates = Certificates.getCaRegistrationCertificates(this.csrSubjects);
-        return this.certificates;
+        const certificates = Certificates.getCaRegistrationCertificates(this.csrSubjects);
+        this.certificates = certificates;
+        return certificates;
     }
 
     async registerCa() {
         if (this.response) return;
+        if (!(
+            this.certificates.ca.keys.publicKey &&
+            this.certificates.ca.keys.privateKey &&
+            this.certificates.ca.certificate &&
+            this.certificates.verification.keys.publicKey &&
+            this.certificates.verification.keys.privateKey &&
+            this.certificates.verification.certificate
+            )) {
+                console.log("Please run \"createCertificates\" first");
+                return;
+            };
         var params = Object.assign({
             caCertificate: this.certificates.ca.certificate,
             verificationCertificate: this.certificates.verification.certificate,
@@ -98,16 +110,22 @@ exports.CaRegistrator = class CaRegistrator {
             setAsActive: true,
             tags: [{ Key: 'ca', Value: '01' }]
         }, this.caConfig || {});
-        return await this.iot.registerCACertificate(params).promise()
+        const result = await this.iot.registerCACertificate(params).promise()
         .catch(err => {
             this.response = this.responseBuilder.error(
                 err, this.errorCodes.errorOfCaRegistration);
             console.log(err, err.stack);
-        })
+        });
+        this.results.caRegistration = result || null;
+        return result;
     }
 
     async createRule() {
         if (this.response) return;
+        if (!this.results.caRegistration) {
+            console.log("Please run \"registerCa\" first");
+            return;
+        }
         const caCertificateId = this.results.caRegistration.certificateId;
         
         const logGroupName = `/jitr/clientRegister/${caCertificateId}`;
@@ -137,16 +155,22 @@ exports.CaRegistrator = class CaRegistrator {
                 sql: `SELECT *, "${this.verifier.arn}" as verifierArn FROM '$aws/events/certificates/registered/${caCertificateId}'`,
             },
         };
-        return await this.iot.createTopicRule(params).promise()
+        const result = await this.iot.createTopicRule(params).promise()
         .catch(err => {
             this.response = this.responseBuilder.error(
                 err, this.errorCodes.errorOfCreateIotRule);
             console.log(err, err.stack);
-        })
+        });
+        this.results.rule = result || null;
+        return result;
     }
 
     async upload() {
         if (this.response) return;
+        if (this.results.rule === null || !this.results.caRegistration) {
+            console.log("Please run \"registerCa\" and \"createRule\" first");
+            return;
+        }
         const table = {
             certificates: this.certificates,
             results: this.results,
@@ -157,12 +181,14 @@ exports.CaRegistrator = class CaRegistrator {
             Key: `${caCertificateId}/${this.key}`,
             Body: Buffer.from(JSON.stringify(table))
         };
-        return await this.s3.upload(params).promise()
+        const result = await this.s3.upload(params).promise()
         .catch(err => {
             this.response = this.responseBuilder.error(
                 err, this.errorCodes.errorOfUploadingResult);
             console.log(err, err.stack);
         });
+        this.results.upload = result || null;
+        return result;
     }
 
     async register() {

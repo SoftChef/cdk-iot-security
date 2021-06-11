@@ -1,6 +1,5 @@
-//const { KeyGenerator: kg } = require('../util');
 import * as forge from 'node-forge';
-import { KeyGenerator as kg } from '../util';
+import { KeyGenerator as kg } from '../../../src/lambda-assets/registrator/util';
 
 test('test formattedSubjects', ()=>{
   const csrSubjects = {
@@ -11,10 +10,13 @@ test('test formattedSubjects', ()=>{
     organizationName: 'Soft Chef',
     organizationUnitName: 'web',
   };
+
+  // Expected type and element amount
   var subjects = kg.formattedSubjects(csrSubjects);
   expect(typeof subjects).toBe(typeof []);
   expect(subjects.length).toBe(Object.keys(subjects).length);
 
+  // Match the inputs
   var expectedElements = [
     { name: 'commonName', value: 'SoftChef' },
     { name: 'countryName', value: 'TW' },
@@ -29,6 +31,7 @@ test('test formattedSubjects', ()=>{
   }
   expect(expectedElements.length).toBe(0);
 
+  // Match the default value
   var subjects = kg.formattedSubjects({});
   var expectedElements = [
     { name: 'commonName', value: '' },
@@ -54,8 +57,12 @@ test('test generateCertificateTemplate', ()=>{
     organizationName: 'Soft Chef',
     organizationUnitName: 'web',
   };
+
+  // Match the subjects
   var cert = kg.generateCertificateTemplate(csrSubjects);
   expect(cert.subject.attributes).toBe(csrSubjects);
+
+  // Match the time interval
   expect(cert.validity.notAfter.getFullYear() - cert.validity.notBefore.getFullYear()).toBe(1);
   var cert = kg.generateCertificateTemplate(csrSubjects, 10);
   expect(cert.validity.notAfter.getFullYear() - cert.validity.notBefore.getFullYear()).toBe(10);
@@ -70,6 +77,8 @@ test('test generateCACertificate', ()=>{
     organizationName: 'Soft Chef',
     organizationUnitName: 'web',
   };
+
+  // Match the certificate contents
   var keys = forge.pki.rsa.generateKeyPair(2048);
   var caCertificate = kg.generateCACertificate(keys.publicKey, keys.privateKey, csrSubjects);
   expect(caCertificate.publicKey).toBe(keys.publicKey);
@@ -100,6 +109,8 @@ test('test generateVerificationCertificate', ()=>{
   var veriKeys = forge.pki.rsa.generateKeyPair(2048);
   var caCertificate = kg.generateCACertificate(caKeys.publicKey, caKeys.privateKey, csrSubjects);
   var vefiCert = kg.generateVerificationCertificate(caKeys.privateKey, caCertificate, veriKeys);
+  // Match the public key
   expect(vefiCert.publicKey).toBe(veriKeys.publicKey);
+  // Expect the verification certificate is signed by the CA certificate
   expect(caCertificate.verify(vefiCert)).toBe(true);
 });
