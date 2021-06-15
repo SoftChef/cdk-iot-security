@@ -29,7 +29,6 @@ exports.ClientActivator = class ClientActivator {
     }
 
     checkCertificateId() {
-        console.log('check cert: ' + this.certificateId);
         if (!this.certificateId) {
             this.response = this.responseBuilder.error(
                 'Missing the client certificate ID',
@@ -49,7 +48,7 @@ exports.ClientActivator = class ClientActivator {
                 err, this.errorCodes.errorOfCheckingClientCertificate);
             console.log(err, err.stack);
         });
-        this.results.clientCertificateInfo = result;
+        this.results.clientCertificateInfo = result || null;
         return result;
     }
 
@@ -65,6 +64,7 @@ exports.ClientActivator = class ClientActivator {
                 const payload = JSON.parse(result.Payload);
                 const body = JSON.parse(payload.body);
                 this.verified = body.verified;
+                this.results.verification = body;
             } catch(err) {
                 this.response = this.responseBuilder.error(
                     err, this.errorCodes.errorOfParsingVerifyingResult);
@@ -79,7 +79,7 @@ exports.ClientActivator = class ClientActivator {
         return this.verified;
     }
 
-    async updateCertificate() {
+    async setActive() {
         if (this.response !== null) return;
         if (!this.verified) return;
         const result = await this.iot.updateCertificate({
@@ -88,23 +88,26 @@ exports.ClientActivator = class ClientActivator {
         }).promise()
         .catch(err => {
             this.response = this.responseBuilder.error(
-                err, this.errorCodes.errorOfInvokingVerifier);
+                err, this.errorCodes.failedToActivate);
             console.log(err, err.stack);
         });
-        this.results.activation = result;
+        this.results.activation = result || null;
+        return result;
     }
 
     async activate() {
         this.checkCertificateId();
         await this.getClientCertificateInfo();
         await this.verify();
-        await this.updateCertificate();
-        this.response = this.responseBuilder.json(Object.assign({
-            certificateId: this.certificateId,
-            verifierArn: this.verifierArn,
-            verified: this.verified,
-        }, this.results));
-        console.log(this.response);
+        await this.setActive();
+        if (!this.response) {
+            this.response = this.responseBuilder.json(Object.assign({
+                certificateId: this.certificateId,
+                verifierArn: this.verifierArn,
+                verified: this.verified,
+            }, this.results));
+            console.log(this.response);
+        }
         return this.response;
     }
 }
