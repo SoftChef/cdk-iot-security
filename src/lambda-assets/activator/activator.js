@@ -38,76 +38,23 @@ exports.ClientActivator = class ClientActivator {
         }
     }
 
-    async getClientCertificateInfo() {
-        if (this.response !== null) return;
-        const result = await this.iot.describeCertificate({
+    getClientCertificateInfo() {
+        return this.iot.describeCertificate({
             certificateId: this.certificateId,
-        }).promise()
-        .catch(err => {
-            this.response = this.responseBuilder.error(
-                err, this.errorCodes.errorOfCheckingClientCertificate);
-            console.log(err, err.stack);
-        });
-        this.results.clientCertificateInfo = result || null;
-        return result;
+        }).promise();
     }
 
-    async verify() {
-        if (this.response !== null) return;
-        if (!this.verifierArn) return;
-        await this.lambda.invoke({
+    verify() {
+        return this.lambda.invoke({
             FunctionName: decodeURIComponent(this.verifierArn), 
             Payload: Buffer.from(JSON.stringify(this.results.clientCertificateInfo)),
-        }).promise()
-        .then(result => {
-            try {
-                const payload = JSON.parse(result.Payload);
-                const body = JSON.parse(payload.body);
-                this.verified = body.verified;
-                this.results.verification = body;
-            } catch(err) {
-                this.response = this.responseBuilder.error(
-                    err, this.errorCodes.errorOfParsingVerifyingResult);
-                console.log(err, err.stack);
-            }
-        })
-        .catch(err => {
-            this.response = this.responseBuilder.error(
-                err, this.errorCodes.errorOfInvokingVerifier);
-            console.log(err, err.stack);
-        });
-        return this.verified;
+        }).promise();
     }
 
     async setActive() {
-        if (this.response !== null) return;
-        if (!this.verified) return;
-        const result = await this.iot.updateCertificate({
+        return this.iot.updateCertificate({
             certificateId: this.certificateId,
             newStatus: "ACTIVE"
-        }).promise()
-        .catch(err => {
-            this.response = this.responseBuilder.error(
-                err, this.errorCodes.failedToActivate);
-            console.log(err, err.stack);
-        });
-        this.results.activation = result || null;
-        return result;
-    }
-
-    async activate() {
-        this.checkCertificateId();
-        await this.getClientCertificateInfo();
-        await this.verify();
-        await this.setActive();
-        if (!this.response) {
-            this.response = this.responseBuilder.json(Object.assign({
-                certificateId: this.certificateId,
-                verifierArn: this.verifierArn,
-                verified: this.verified,
-            }, this.results));
-            console.log(this.response);
-        }
-        return this.response;
+        }).promise();
     }
 }
