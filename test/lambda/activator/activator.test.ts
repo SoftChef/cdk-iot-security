@@ -38,7 +38,7 @@ AWSMock.mock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)
 const record = {
   messageId: '203de074-ecd4-4cec-b4d8-6e0c6e7d2661',
   receiptHandle: 'AQEBjGJIDKPxXMaxb+dcCkvjJU67GUa/ouPuQJmdQA9HiHQPpYNXa00flxf1w0RuvUGCx+b2pWR9tjvEK6ZBGtBi/lQ9iX4FhQi3LoWZSzv9ZRMHAIFcp7edFASqaMx8hYB+RXYBY5KChiHjVRzgVVS6N+EB/jSrKzp+ORw+9mrtaqqBgY6sVSiWK5yXjMXDsfuOIFnOxzX9+++X8lbz8xrOXiRJyPpibsyYnJx8PH/5ziEMvSaLCkD+A9VATFihE7B7CCi3whiLJBwCTV7+vDg55UGZQWWS3XtKTJ8HBmIu9tdhgAQREg/QQHyJ+htb005SOxAhirT/Qo0Sw20/hIME8h4Vmzpf5Mnb9LII9v4WVW3kKPy1KC9rtMu6NOjbcG1d3Sb7j4zNpej0VlIajaqhW1JPZIWUYftvh8IMEBA66cbdHJYHUS0wvrMHIRQMrTEj5KqBK8jCV9W9Rx5v2NXmSVOjflHfbxucAfDpDYs1U94=',
-  body: '{"certificateRegistrationTimestamp":"1623723165331","awsAccountId":"079794712254","certificateStatus":"PENDING_ACTIVATION","timestamp":1623724243659,"caCertificateId":"134e3e1d7ebb9014841b725a1dfa4453bda8022306bb0869bd8a14f1e5083dd9","certificateId":"a1e1553b74e99905f3e44dadf5f46941db36f4ab1cf7c2c5680c0911654cccb6","verifierArn":"arn:aws:lambda:us-east-1:079794712254:function:test_verifier"}',
+  body: '{"certificateRegistrationTimestamp":"1623723165331","awsAccountId":"123456789012","certificateStatus":"PENDING_ACTIVATION","timestamp":1623724243659,"caCertificateId":"WFI7fa9lstp3pWz0PjIMcmEJIvXi06PRSkb0gj4yiNGaa4Givn74ug1tUTH6ci1n","certificateId":"WFI7fa9lstp3pWz0PjIMcmEJIvXi06PRSkb0gj4yiNGaa4Givn74ug1tUTH6ci1n","verifierArn":"arn:aws:lambda:us-east-1:123456789012:function:test_verifier"}',
   attributes: {
     ApproximateReceiveCount: '1',
     SentTimestamp: '1623724243785',
@@ -48,7 +48,7 @@ const record = {
   messageAttributes: {},
   md5OfBody: '3b04a1bc817ccda45598608b86ea1b19',
   eventSource: 'aws:sqs',
-  eventSourceARN: 'arn:aws:sqs:us-east-1:079794712254:my-stack-dev-CaRegisterApitestClientActivatortestActivatorQueuetes-S2H6D9K5SVK9',
+  eventSourceARN: 'arn:aws:sqs:us-east-1:123456789012:my-stack-dev-CaRegisterApitestClientActivatortestActivatorQueuetes-S2H6D9K5SVK9',
   awsRegion: 'us-east-1',
 };
 
