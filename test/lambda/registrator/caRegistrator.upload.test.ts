@@ -17,7 +17,40 @@ import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistra
 
 AWS.config.region = 'local';
 AWSMock.setSDKInstance(AWS);
+AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+  const response: GetRegistrationCodeResponse = {
+    registrationCode: 'registration_code',
+  };
+  callback(null, response);
+});
+AWSMock.mock('Iot', 'registerCACertificate', (param: RegisterCACertificateRequest, callback: Function)=>{
+  const response: RegisterCACertificateResponse = {
+    certificateId: 'ca_certificate_id',
+    certificateArn: 'ca_certificate_arn',
+  };
+  if (param.caCertificate && param.verificationCertificate) {
+    callback(null, response);
+  } else {
+    callback(new Error(), null);
+  }
+});
+AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
+  callback(null, {});
+});
+AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
+  callback(null, {});
+});
+AWSMock.mock('S3', 'upload', (param: PutObjectRequest, callback: Function)=>{
+  if (param.Bucket && param.Key && param.Body) {
+    callback(null, {});
+  } else {
+    console.log(param);
+    callback(new Error(), null);
+  }
+});
 
+process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
+process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
 process.env.AWS_REGION = 'us-east-1';
 
 var event = {
@@ -46,92 +79,23 @@ var event = {
 };
 
 test('upload', async ()=>{
-  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-    const response: GetRegistrationCodeResponse = {
-      registrationCode: 'registration_code',
-    };
-    callback(null, response);
-  });
-  AWSMock.mock('Iot', 'registerCACertificate', (param: RegisterCACertificateRequest, callback: Function)=>{
-    const response: RegisterCACertificateResponse = {
-      certificateId: 'ca_certificate_id',
-      certificateArn: 'ca_certificate_arn',
-    };
-    if (param.caCertificate && param.verificationCertificate) {
-      callback(null, response);
-    } else {
-      callback(new Error(), null);
-    }
-  });
-  AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
-    callback(null, {});
-  });
-  AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
-    callback(null, {});
-  });
-  AWSMock.mock('S3', 'upload', (param: PutObjectRequest, callback: Function)=>{
-    if (param.Bucket && param.Key && param.Body) {
-      callback(null, {});
-    } else {
-      console.log(param);
-      callback(new Error(), null);
-    }
-  });
-  process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
-  process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
-
-  // Omit if already have response
-  var registrator = new CaRegistrator(event);
-  registrator.response = true;
-  var result = await registrator.upload();
-  expect(result).toBeUndefined();
-  expect(registrator.results.upload).toBeNull();
-
-  // Omit if have not register CA or create rule
-  var registrator = new CaRegistrator(event);
-  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
-  await registrator.getRegistrationCode();
-  registrator.createCertificates();
-  var result = await registrator.upload();
-  expect(result).toBeUndefined();
-  expect(registrator.results.upload).toBeNull();
-  expect(registrator.response).toBeNull();
-  await registrator.registerCa();
-  var result = await registrator.upload();
-  expect(result).toBeUndefined();
-  expect(registrator.results.upload).toBeNull();
-  expect(registrator.response).toBeNull();
-
   // Success
   var registrator = new CaRegistrator(event);
   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
   registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
   registrator.s3 = new AWS.S3();
-  await registrator.getRegistrationCode();
+  Object.assign(registrator.results, {
+    registrationCode: await registrator.getRegistrationCode(),
+  });
   registrator.createCertificates();
-  await registrator.registerCa();
-  await registrator.createRule();
+  Object.assign(registrator.results, {
+    caRegistration: await registrator.registerCa(),
+  });
+  Object.assign(registrator.results, {
+    rule: await registrator.createRule(),
+  });
   var result = await registrator.upload();
   expect(result).toBeDefined();
-  expect(registrator.results.upload).not.toBeNull();
-
-  // Simulate IoT SDK Error
-  var registrator = new CaRegistrator(
-    Object.assign(event, { body: { bucket: null, key: null } }));
-  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
-  registrator.s3 = new AWS.S3();
-  await registrator.getRegistrationCode();
-  registrator.createCertificates();
-  await registrator.registerCa();
-  await registrator.createRule();
-  var result = await registrator.upload();
-  expect(result).toBeUndefined();
-  expect(registrator.results.upload).toBeNull();
-  expect(registrator.response.statusCode)
-    .toBe(registrator.errorCodes.errorOfUploadingResult);
-
   delete process.env.ACTIVATOR_QUEUE_URL;
   delete process.env.ACTIVATOR_ROLE_ARN;
   AWSMock.restore('Iot');

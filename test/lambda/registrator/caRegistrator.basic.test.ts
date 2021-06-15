@@ -61,7 +61,7 @@ const nullResults = {
 };
 
 test('initialize CaRegistrator', ()=>{
-  const registrator = new CaRegistrator(event);
+  var registrator = new CaRegistrator(event);
   expect(registrator.region).toBe(process.env.AWS_REGION);
   expect(registrator.verifier).toMatchObject({
     name: 'test_verifier',
@@ -72,9 +72,27 @@ test('initialize CaRegistrator', ()=>{
   expect(registrator.csrSubjects).toBe(event.body.csrSubjects);
   expect(registrator.caConfig).toBe(event.body.caConfig);
   expect(registrator.certificates.ca.keys.privateKey).toBeNull();
-
   expect(registrator.certificates).toMatchObject(nullCertificates);
+  expect(registrator.results).toMatchObject(nullResults);
 
+  var registrator = new CaRegistrator({});
+  expect(registrator.verifier).toMatchObject({});
+});
+
+test('initialize CaRegistrator', ()=>{
+  var registrator = new CaRegistrator(event);
+  registrator.reset(event);
+  expect(registrator.region).toBe(process.env.AWS_REGION);
+  expect(registrator.verifier).toMatchObject({
+    name: 'test_verifier',
+    arn: 'arn_of_test_verifier',
+  });
+  expect(registrator.bucket).toBe(event.body.bucket);
+  expect(registrator.key).toBe(event.body.key);
+  expect(registrator.csrSubjects).toBe(event.body.csrSubjects);
+  expect(registrator.caConfig).toBe(event.body.caConfig);
+  expect(registrator.certificates.ca.keys.privateKey).toBeNull();
+  expect(registrator.certificates).toMatchObject(nullCertificates);
   expect(registrator.results).toMatchObject(nullResults);
 });
 
@@ -99,14 +117,13 @@ test('checkVerifier', ()=>{
   expect(registrator.response).toBeNull();
 });
 
-test('getRegistrationCode', async ()=>{
-  // Omit if already have response
+test('checkBucket', () => {
   var registrator = new CaRegistrator(event);
-  registrator.response = true;
-  var result = await registrator.getRegistrationCode();
-  expect(result).toBeUndefined();
-  expect(registrator.results.registrationCode).toBeNull();
+  registrator.checkBucket();
+  expect(registrator.response).toBeNull();
+});
 
+test('getRegistrationCode', async ()=>{
   // Success
   AWSMock.mock('Iot', 'getRegistrationCode', (
     _param: GetRegistrationCodeRequest, callback: Function)=>{
@@ -117,40 +134,13 @@ test('getRegistrationCode', async ()=>{
   });
   var registrator = new CaRegistrator(event);
   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  var registrationCode = await registrator.getRegistrationCode();
+  var { registrationCode } = await registrator.getRegistrationCode();
   expect(registrationCode).toBe('registration_code');
-  expect(registrator.results.registrationCode).toBe('registration_code');
-
-  // Simulate IoT SDK Error
-  AWSMock.remock('Iot', 'getRegistrationCode', (
-    _param: GetRegistrationCodeRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
-  var registrator = new CaRegistrator(event);
-  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  var registrationCode = await registrator.getRegistrationCode();
-  expect(registrationCode).toBeUndefined();
-  expect(registrator.results.registrationCode).toBeNull();
-  expect(registrator.response.statusCode)
-    .toBe(registrator.errorCodes.errorOfGetRegistrationCode);
 
   AWSMock.restore('Iot');
 });
 
 test('createCertificates', async ()=>{
-  // Omit if already have response
-  var registrator = new CaRegistrator(event);
-  registrator.response = true;
-  var cert = registrator.createCertificates();
-  expect(cert).toBeUndefined();
-  expect(registrator.certificates).toMatchObject(nullCertificates);
-
-  // Omit if having no registration code
-  var registrator = new CaRegistrator(event);
-  var cert = registrator.createCertificates();
-  expect(cert).toBeUndefined();
-  expect(registrator.certificates).toMatchObject(nullCertificates);
-
   // Success
   var registrator = new CaRegistrator(event);
   registrator.results = Object.assign(

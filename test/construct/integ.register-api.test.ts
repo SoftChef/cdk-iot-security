@@ -2,7 +2,7 @@ import * as path from 'path';
 import '@aws-cdk/assert/jest';
 import { SynthUtils } from '@aws-cdk/assert';
 import { App, Stack } from '@aws-cdk/core';
-import { CaRegisterApi } from '../../src/register-api';
+import { JustInTimeRegistration } from '../../src/register-api';
 
 test('CaRegisterApi integration test', ()=>{
   process.env.BASE_PATH = __dirname;
@@ -11,7 +11,7 @@ test('CaRegisterApi integration test', ()=>{
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
-  new CaRegisterApi(stack, name, {
+  new JustInTimeRegistration(stack, name, {
     verifiers: [{
       name: 'test_verifier',
       arn: 'test_verifier_arn',
@@ -58,6 +58,6 @@ test('CaRegisterApi integration test without specifying a verifier', ()=>{
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
-  new CaRegisterApi(stack, name, {});
+  new JustInTimeRegistration(stack, name, {});
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
 });

@@ -4,13 +4,13 @@ import { Construct } from '@aws-cdk/core';
 import { CaRegistrator, VerifierProps } from './ca-registrator';
 import { ClientActivator } from './client-activator';
 
-export interface CaRegisterApiProps {
+export interface JustInTimeRegistrationProps {
   verifiers?: [VerifierProps];
-  api?: RestApi;
+  restApi?: RestApi;
 }
 
-export class CaRegisterApi extends Construct {
-  public api: RestApi;
+export class JustInTimeRegistration extends Construct {
+  public restApi: RestApi;
   public activator: ClientActivator;
   public registrator: CaRegistrator;
 
@@ -31,12 +31,12 @@ export class CaRegisterApi extends Construct {
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: CaRegisterApiProps) {
+  constructor(scope: Construct, id: string, props: JustInTimeRegistrationProps) {
     super(scope, `CaRegisterApi-${id}`);
     this.activator = new ClientActivator(this, id);
 
-    this.api = props.api || new RestApi(this, id);
-    const resource = this.api.root.addResource('register');
+    this.restApi = props.restApi || new RestApi(this, id);
+    const resource = this.restApi.root.addResource('register');
 
     this.registrator = new CaRegistrator(this, id, {
       activatorFunction: this.activator.function,

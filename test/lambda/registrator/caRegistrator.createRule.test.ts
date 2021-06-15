@@ -68,51 +68,20 @@ var event = {
 };
 
 test('createRule', async ()=>{
-
-  // Omit if already have response
-  var registrator = new CaRegistrator(event);
-  registrator.response = true;
-  var result = await registrator.createRule();
-  expect(result).toBeUndefined();
-  expect(registrator.results.rule).toBeNull();
-
-  // Omit if have not register CA
-  var registrator = new CaRegistrator(event);
-  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  await registrator.getRegistrationCode();
-  registrator.createCertificates();
-  var result = await registrator.createRule();
-  expect(result).toBeUndefined();
-  expect(registrator.results.rule).toBeNull();
-  expect(registrator.response).toBeNull();
-
   // Success
   var registrator = new CaRegistrator(event);
   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
   registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
-  await registrator.getRegistrationCode();
+  //await registrator.getRegistrationCode();
+  Object.assign(registrator.results, {
+    registrationCode: await registrator.getRegistrationCode(),
+  });
   registrator.createCertificates();
-  await registrator.registerCa();
+  Object.assign(registrator.results, {
+    caRegistration: await registrator.registerCa(),
+  });
   var result = await registrator.createRule();
   expect(result).toBeDefined();
-  expect(registrator.results.rule).not.toBeNull();
-
-  // Simulate IoT SDK Error
-  AWSMock.remock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
-  var registrator = new CaRegistrator(event);
-  registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
-  await registrator.getRegistrationCode();
-  registrator.createCertificates();
-  await registrator.registerCa();
-  var result = await registrator.createRule();
-  expect(result).toBeUndefined();
-  expect(registrator.results.rule).toBeNull();
-  expect(registrator.response.statusCode)
-    .toBe(registrator.errorCodes.errorOfCreateIotRule);
-
   delete process.env.ACTIVATOR_QUEUE_URL;
   delete process.env.ACTIVATOR_ROLE_ARN;
   AWSMock.restore('Iot');

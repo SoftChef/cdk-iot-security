@@ -18,6 +18,7 @@ export interface CaRegistratorProps {
 export interface VerifierProps {
   name: string;
   arn: string;
+  //lambdaFunction?: Function;
 }
 
 export class CaRegistrator extends NodejsFunction {

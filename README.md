@@ -2,6 +2,20 @@
 
 ## Usage
 
+    import { JustInTimeRegistration } from '@softchef/cdk-iot-security';
+
+    const jitr = new JustInTimeRegistration(stack, id, {});
+
+    const jitr = new JustInTimeRegistration(stack, id, {
+        verifier: [
+            {
+                name: "verifier_name",
+                arn: "verifier_arn
+            }
+        ],
+        api: RestAPI,
+    })
+
     // No verifier specified
     var caRegisterApi = new CaRegisterApi(stack, 'id', {});
 
