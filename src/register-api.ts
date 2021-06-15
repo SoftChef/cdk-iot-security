@@ -13,6 +13,24 @@ export class CaRegisterApi extends Construct {
   public api: RestApi;
   public activator: ClientActivator;
   public registrator: CaRegistrator;
+
+  /**
+   * Initialize a CA Registration API.
+   *
+   * This API is
+   * consist of three parts, a Registrator mainly
+   * registering CA, an Activator mainly activating
+   * the client certificate, and a RestApi as the
+   * entry of the Registrator.
+   *
+   * If a RestApi is provided as an input property,
+   * This Api would add a POST method to the path
+   * '/register'. Otherwise, a RestApi with the same
+   * method is created.
+   * @param scope
+   * @param id
+   * @param props
+   */
   constructor(scope: Construct, id: string, props: CaRegisterApiProps) {
     super(scope, `CaRegisterApi-${id}`);
     this.activator = new ClientActivator(this, id);

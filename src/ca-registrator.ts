@@ -21,6 +21,12 @@ export interface VerifierProps {
 }
 
 export class CaRegistrator extends NodejsFunction {
+  /**
+   * Initialize the CA Registrator Function.
+   * @param scope
+   * @param id
+   * @param props
+   */
   constructor(scope: Construct, id: string, props: CaRegistratorProps) {
     let environment: {[key: string]: string} = {
       ACTIVATOR_ARN: props.activatorFunction.functionArn,
@@ -41,6 +47,12 @@ export class CaRegistrator extends NodejsFunction {
 }
 
 class CaRegistationRole extends Role {
+  /**
+   * Initialize the CA Registration Role granted the neccessary
+   * permission to register CA and create IoT Rule.
+   * @param scope
+   * @param id
+   */
   constructor(scope: Construct, id:string) {
     super(scope, `CaRegistrationRole-${id}`, {
       roleName: `CaRegistrationRole-${id}`,
@@ -53,7 +65,6 @@ class CaRegistationRole extends Role {
     this.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,
       actions: [
-        'lambda:CreateFunction',
         'iam:PassRole',
         'iam:CreateRole',
         'iam:AttachRolePolicy',
