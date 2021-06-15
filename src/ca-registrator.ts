@@ -49,24 +49,6 @@ class CaRegistationRole extends Role {
         ManagedPolicy.fromAwsManagedPolicyName(
           'service-role/AWSLambdaBasicExecutionRole'),
       ],
-      /*inlinePolicies: {
-        CaRegistrationPolicy: new PolicyDocument({
-          statements: [new PolicyStatement({
-            effect: Effect.ALLOW,
-            actions: [
-              'lambda:CreateFunction',
-              'iam:PassRole',
-              'iam:CreateRole',
-              'iam:AttachRolePolicy',
-              'iot:RegisterCACertificate',
-              'iot:TagResource',
-              'iot:GetRegistrationCode',
-              'iot:CreateTopicRule',
-            ],
-            resources: ['*'],
-          })],
-        }),
-      },*/
     });
     this.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,

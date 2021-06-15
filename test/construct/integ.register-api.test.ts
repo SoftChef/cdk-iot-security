@@ -4,7 +4,7 @@ import { SynthUtils } from '@aws-cdk/assert';
 import { App, Stack } from '@aws-cdk/core';
 import { CaRegisterApi } from '../../src/register-api';
 
-test('CaRegisterApi integration test 1', ()=>{
+test('CaRegisterApi integration test', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
   console.log(process.env.APPS_PATH);
