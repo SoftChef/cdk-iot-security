@@ -1,0 +1,1288 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CaRegisterApi integration test 1 1`] = `
+Object {
+  "Outputs": Object {
+    "CaRegisterApitestcaseEndpointEF186608": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "CaRegisterApitestcaseFF571B6E",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "CaRegisterApitestcaseDeploymentStageprodDE10CF92",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7ArtifactHash708CFE7E": Object {
+      "Description": "Artifact hash for asset \\"327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7\\"",
+      "Type": "String",
+    },
+    "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3Bucket815ED1F3": Object {
+      "Description": "S3 bucket for asset \\"327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7\\"",
+      "Type": "String",
+    },
+    "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3VersionKeyDD3AD57B": Object {
+      "Description": "S3 key for asset version \\"327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7\\"",
+      "Type": "String",
+    },
+    "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdArtifactHashA892B433": Object {
+      "Description": "Artifact hash for asset \\"a78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfd\\"",
+      "Type": "String",
+    },
+    "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3Bucket0FD11436": Object {
+      "Description": "S3 bucket for asset \\"a78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfd\\"",
+      "Type": "String",
+    },
+    "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3VersionKeyDC1515AF": Object {
+      "Description": "S3 key for asset version \\"a78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfd\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "CaRegisterApitestcaseAccount8E47E814": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseFF571B6E",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCloudWatchRoleCA9AE705",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "CaRegistrationRole-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCaRegistrationRoletestcaseDefaultPolicy8F06888E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "lambda:CreateFunction",
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:AttachRolePolicy",
+                "iot:RegisterCACertificate",
+                "iot:TagResource",
+                "iot:GetRegistrationCode",
+                "iot:CreateTopicRule",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationRoletestcaseDefaultPolicy8F06888E",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseCaRegistrationRoletestcaseDefaultPolicy8F06888E",
+        "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3Bucket0FD11436",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3VersionKeyDC1515AF",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3VersionKeyDC1515AF",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "ACTIVATOR_ARN": Object {
+              "Fn::GetAtt": Array [
+                "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcase5260B46C",
+                "Arn",
+              ],
+            },
+            "ACTIVATOR_QUEUE_URL": Object {
+              "Ref": "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+            },
+            "ACTIVATOR_ROLE_ARN": Object {
+              "Fn::GetAtt": Array [
+                "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseE10F69A2",
+                "Arn",
+              ],
+            },
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "test_verifier": "test_verifier_arn",
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcase5260B46C": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcaseDefaultPolicy843BC18C",
+        "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3Bucket815ED1F3",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3VersionKeyDD3AD57B",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3VersionKeyDD3AD57B",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseClientActivatortestcaseReceptortestcase2E91826882FBEAA3": Object {
+      "Properties": Object {
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+            "Arn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcase5260B46C",
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "iot:UpdateCertificate",
+                    "iot:DescribeCertificate",
+                    "lambda:InvokeFunction",
+                    "lambda:InvokeAsync",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "CaRegistrationPolicy",
+          },
+        ],
+        "RoleName": "ActivatorRole-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcaseDefaultPolicy843BC18C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "sqs:ReceiveMessage",
+                "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcaseDefaultPolicy843BC18C",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8": Object {
+      "DeletionPolicy": "Delete",
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseDefaultPolicy8B333511": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseDefaultPolicy8B333511",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseE10F69A2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseE10F69A2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "sqs:SendMessageBatch",
+                    "sqs:SendMessage",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::GetAtt": Array [
+                      "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "SqsPushPolicy",
+          },
+        ],
+        "RoleName": "PushRole-Receptor-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCloudWatchRoleCA9AE705": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseDeploymentA61510DD31c106b806b5ce17a0c9fb7449bdb5c6": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseregisterPOST14D94C4D",
+        "CaRegisterApitestcaseregister4C4AC1E7",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "CaRegisterApitestcaseDeploymentStageprodDE10CF92": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "CaRegisterApitestcaseDeploymentA61510DD31c106b806b5ce17a0c9fb7449bdb5c6",
+        },
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "CaRegisterApitestcaseFF571B6E": Object {
+      "Properties": Object {
+        "Name": "test-case",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "CaRegisterApitestcaseregister4C4AC1E7": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseFF571B6E",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "register",
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "CaRegisterApitestcaseregisterPOST14D94C4D": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "CaRegisterApitestcaseregister4C4AC1E7",
+        },
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "CaRegisterApitestcaseregisterPOSTApiPermissionTestteststackCaRegisterApitestcaseFF910C4APOSTregister6A6A521F": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "CaRegisterApitestcaseFF571B6E",
+              },
+              "/test-invoke-stage/POST/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "CaRegisterApitestcaseregisterPOSTApiPermissionteststackCaRegisterApitestcaseFF910C4APOSTregisterAF42F0FD": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "CaRegisterApitestcaseFF571B6E",
+              },
+              "/",
+              Object {
+                "Ref": "CaRegisterApitestcaseDeploymentStageprodDE10CF92",
+              },
+              "/POST/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+  },
+}
+`;
+
+exports[`CaRegisterApi integration test without specifying a verifier 1`] = `
+Object {
+  "Outputs": Object {
+    "CaRegisterApitestcaseEndpointEF186608": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "CaRegisterApitestcaseFF571B6E",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "CaRegisterApitestcaseDeploymentStageprodDE10CF92",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7ArtifactHash708CFE7E": Object {
+      "Description": "Artifact hash for asset \\"327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7\\"",
+      "Type": "String",
+    },
+    "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3Bucket815ED1F3": Object {
+      "Description": "S3 bucket for asset \\"327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7\\"",
+      "Type": "String",
+    },
+    "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3VersionKeyDD3AD57B": Object {
+      "Description": "S3 key for asset version \\"327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7\\"",
+      "Type": "String",
+    },
+    "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdArtifactHashA892B433": Object {
+      "Description": "Artifact hash for asset \\"a78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfd\\"",
+      "Type": "String",
+    },
+    "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3Bucket0FD11436": Object {
+      "Description": "S3 bucket for asset \\"a78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfd\\"",
+      "Type": "String",
+    },
+    "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3VersionKeyDC1515AF": Object {
+      "Description": "S3 key for asset version \\"a78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfd\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "CaRegisterApitestcaseAccount8E47E814": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseFF571B6E",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCloudWatchRoleCA9AE705",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "CaRegistrationRole-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCaRegistrationRoletestcaseDefaultPolicy8F06888E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "lambda:CreateFunction",
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:AttachRolePolicy",
+                "iot:RegisterCACertificate",
+                "iot:TagResource",
+                "iot:GetRegistrationCode",
+                "iot:CreateTopicRule",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationRoletestcaseDefaultPolicy8F06888E",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseCaRegistrationRoletestcaseDefaultPolicy8F06888E",
+        "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3Bucket0FD11436",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3VersionKeyDC1515AF",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParametersa78644892f52a5c28c0b346fb6860b1a591053d9ed72353e74551da25c650cfdS3VersionKeyDC1515AF",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "ACTIVATOR_ARN": Object {
+              "Fn::GetAtt": Array [
+                "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcase5260B46C",
+                "Arn",
+              ],
+            },
+            "ACTIVATOR_QUEUE_URL": Object {
+              "Ref": "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+            },
+            "ACTIVATOR_ROLE_ARN": Object {
+              "Fn::GetAtt": Array [
+                "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseE10F69A2",
+                "Arn",
+              ],
+            },
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistrationRoletestcaseDDDC7E56",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcase5260B46C": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcaseDefaultPolicy843BC18C",
+        "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3Bucket815ED1F3",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3VersionKeyDD3AD57B",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters327e79f5b7960ef8d8eede522d6cd5a2b208e6de29c6eb404df6fb4b2552d3c7S3VersionKeyDD3AD57B",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseClientActivatortestcaseReceptortestcase2E91826882FBEAA3": Object {
+      "Properties": Object {
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+            "Arn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "CaRegisterApitestcaseClientActivatortestcaseActivatorFunctiontestcase5260B46C",
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "iot:UpdateCertificate",
+                    "iot:DescribeCertificate",
+                    "lambda:InvokeFunction",
+                    "lambda:InvokeAsync",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "CaRegistrationPolicy",
+          },
+        ],
+        "RoleName": "ActivatorRole-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcaseDefaultPolicy843BC18C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "sqs:ReceiveMessage",
+                "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcaseDefaultPolicy843BC18C",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseClientActivatortestcaseActivatorRoletestcase19676942",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8": Object {
+      "DeletionPolicy": "Delete",
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseDefaultPolicy8B333511": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseDefaultPolicy8B333511",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseE10F69A2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseClientActivatortestcaseReceptortestcasePushRoleReceptortestcaseE10F69A2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "sqs:SendMessageBatch",
+                    "sqs:SendMessage",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::GetAtt": Array [
+                      "CaRegisterApitestcaseClientActivatortestcaseReceptortestcaseF44F3DB8",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "SqsPushPolicy",
+          },
+        ],
+        "RoleName": "PushRole-Receptor-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCloudWatchRoleCA9AE705": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseDeploymentA61510DD31c106b806b5ce17a0c9fb7449bdb5c6": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseregisterPOST14D94C4D",
+        "CaRegisterApitestcaseregister4C4AC1E7",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "CaRegisterApitestcaseDeploymentStageprodDE10CF92": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "CaRegisterApitestcaseDeploymentA61510DD31c106b806b5ce17a0c9fb7449bdb5c6",
+        },
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "CaRegisterApitestcaseFF571B6E": Object {
+      "Properties": Object {
+        "Name": "test-case",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "CaRegisterApitestcaseregister4C4AC1E7": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseFF571B6E",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "register",
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "CaRegisterApitestcaseregisterPOST14D94C4D": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "CaRegisterApitestcaseregister4C4AC1E7",
+        },
+        "RestApiId": Object {
+          "Ref": "CaRegisterApitestcaseFF571B6E",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "CaRegisterApitestcaseregisterPOSTApiPermissionTestteststackCaRegisterApitestcaseFF910C4APOSTregister6A6A521F": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "CaRegisterApitestcaseFF571B6E",
+              },
+              "/test-invoke-stage/POST/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "CaRegisterApitestcaseregisterPOSTApiPermissionteststackCaRegisterApitestcaseFF910C4APOSTregisterAF42F0FD": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistratorFunctiontestcaseB58B98CE",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "CaRegisterApitestcaseFF571B6E",
+              },
+              "/",
+              Object {
+                "Ref": "CaRegisterApitestcaseDeploymentStageprodDE10CF92",
+              },
+              "/POST/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+  },
+}
+`;

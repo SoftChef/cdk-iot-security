@@ -10,17 +10,44 @@ import { Construct } from '@aws-cdk/core';
 export class ClientActivator extends Construct {
   public function: ActivationFunction;
   public role: Role;
-  public queue: Queue;
+  public receptor: Receptor;
   constructor(scope: Construct, id: string) {
     super(scope, `ClientActivator-${id}`);
-    this.role = new ActivationRole(this, id);
-    this.queue = new Queue(this, `ActivatorQueue-${id}`);
-    this.queue.grantConsumeMessages(this.role);
-    this.queue.grantSendMessages(this.role);
+    this.receptor = new Receptor(this, id);
+    const activationRole = new ActivationRole(this, id);
+    this.receptor.grantConsumeMessages(activationRole);
     this.function = new ActivationFunction(this, id, {
-      activationRole: this.role,
+      activationRole: activationRole,
     });
-    this.function.addEventSource(new SqsEventSource(this.queue));
+    this.function.addEventSource(new SqsEventSource(this.receptor));
+    this.role = this.receptor.getPushRole('iot.amazonaws.com');
+    this.receptor.grantSendMessages(this.role);
+  }
+}
+
+class Receptor extends Queue {
+  constructor(scope: Construct, id: string) {
+    super(scope, `Receptor-${id}`, {});
+  }
+
+  public getPushRole(principalName: string) {
+    return new Role(this, `PushRole-${this.node.id}`, {
+      roleName: `PushRole-${this.node.id}`,
+      assumedBy: new ServicePrincipal(principalName),
+      inlinePolicies: {
+        SqsPushPolicy: new PolicyDocument({
+          statements: [new PolicyStatement({
+            actions: [
+              'sqs:SendMessageBatch',
+              'sqs:SendMessage',
+            ],
+            resources: [
+              this.queueArn,
+            ],
+          })],
+        }),
+      },
+    });
   }
 }
 
@@ -30,6 +57,7 @@ interface ActivationFunctionProps {
 
 class ActivationFunction extends NodejsFunction {
   constructor(scope: Construct, id: string, props: ActivationFunctionProps) {
+    console.log(`${process.env.APPS_PATH}/activator/index.js`);
     super(scope, `ActivatorFunction-${id}`, {
       entry: `${process.env.APPS_PATH}/activator/index.js`,
       role: props.activationRole,
@@ -61,11 +89,5 @@ class ActivationRole extends Role {
         }),
       },
     });
-    this.assumeRolePolicy?.addStatements(new PolicyStatement({
-      effect: Effect.ALLOW,
-      actions: ['sts:AssumeRole'],
-      principals: [new ServicePrincipal('iot.amazonaws.com')],
-    }));
-    this.grantPassRole(new ServicePrincipal('iot.amazonaws.com'));
   }
 }

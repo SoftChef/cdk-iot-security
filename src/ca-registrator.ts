@@ -1,7 +1,7 @@
 import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
 import {
   Role, PolicyStatement, Effect,
-  ServicePrincipal, PolicyDocument, ManagedPolicy,
+  ServicePrincipal, /*PolicyDocument,*/ ManagedPolicy,
 } from '@aws-cdk/aws-iam';
 import { Function } from '@aws-cdk/aws-lambda';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
@@ -30,7 +30,7 @@ export class CaRegistrator extends NodejsFunction {
     props.verifiers?.forEach(verifier=> environment[verifier.name] = verifier.arn);
 
     super(scope, `CaRegistratorFunction-${id}`, {
-      entry: `${process.env.APPS_PATH}/registerCA/index.js`,
+      entry: `${process.env.APPS_PATH}/registrator/index.js`,
       role: new CaRegistationRole(scope, id),
       timeout: Duration.seconds(10),
       memorySize: 256,
@@ -42,31 +42,45 @@ export class CaRegistrator extends NodejsFunction {
 
 class CaRegistationRole extends Role {
   constructor(scope: Construct, id:string) {
-    super(scope, `CaRegistationRole-${id}`, {
-      roleName: 'CaRegistrationRole',
+    super(scope, `CaRegistrationRole-${id}`, {
+      roleName: `CaRegistrationRole-${id}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName(
           'service-role/AWSLambdaBasicExecutionRole'),
       ],
-      inlinePolicies: {
+      /*inlinePolicies: {
         CaRegistrationPolicy: new PolicyDocument({
           statements: [new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
               'lambda:CreateFunction',
               'iam:PassRole',
+              'iam:CreateRole',
+              'iam:AttachRolePolicy',
               'iot:RegisterCACertificate',
               'iot:TagResource',
               'iot:GetRegistrationCode',
-              'iam:CreateRole',
-              'iam:AttachRolePolicy',
               'iot:CreateTopicRule',
             ],
             resources: ['*'],
           })],
         }),
-      },
+      },*/
     });
+    this.addToPolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        'lambda:CreateFunction',
+        'iam:PassRole',
+        'iam:CreateRole',
+        'iam:AttachRolePolicy',
+        'iot:RegisterCACertificate',
+        'iot:TagResource',
+        'iot:GetRegistrationCode',
+        'iot:CreateTopicRule',
+      ],
+      resources: ['*'],
+    }));
   }
 }

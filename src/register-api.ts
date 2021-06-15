@@ -23,7 +23,7 @@ export class CaRegisterApi extends Construct {
     this.registrator = new CaRegistrator(this, id, {
       activatorFunction: this.activator.function,
       activatorRole: this.activator.role,
-      activatorQueueUrl: this.activator.queue.queueUrl,
+      activatorQueueUrl: this.activator.receptor.queueUrl,
       apiResource: resource,
       verifiers: props.verifiers,
     });
