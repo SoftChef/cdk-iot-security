@@ -5,6 +5,7 @@ import {
   GetRegistrationCodeResponse,
 } from 'aws-sdk/clients/iot';
 import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistrator';
+import { errorOfUnknownVerifier } from '../../../src/lambda-assets/registrator/errorCodes';
 
 AWS.config.region = 'local';
 AWSMock.setSDKInstance(AWS);
@@ -101,7 +102,7 @@ test('checkVerifier', ()=>{
   var registrator = new CaRegistrator(event);
   registrator.checkVerifier();
   expect(registrator.response.statusCode)
-    .toBe(registrator.errorCodes.errorOfUnknownVerifier);
+    .toBe(errorOfUnknownVerifier);
 
   // Event with a known verifier
   process.env.test_verifier = event.body.verifier.arn;

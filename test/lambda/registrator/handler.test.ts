@@ -7,41 +7,9 @@ import {
   CreateTopicRuleRequest,
 } from 'aws-sdk/clients/iot';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
-// import { handler } from '../../../src/lambda-assets/registrator/index';
+import * as errorCodes from '../../../src/lambda-assets/registrator/errorCodes';
 
 AWS.config.region = 'local';
-AWSMock.setSDKInstance(AWS);
-AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-  const response: GetRegistrationCodeResponse = {
-    registrationCode: 'registration_code',
-  };
-  callback(null, response);
-});
-AWSMock.mock('Iot', 'registerCACertificate', (param: RegisterCACertificateRequest, callback: Function)=>{
-  const response: RegisterCACertificateResponse = {
-    certificateId: 'ca_certificate_id',
-    certificateArn: 'ca_certificate_arn',
-  };
-  if (param.caCertificate && param.verificationCertificate) {
-    callback(null, response);
-  } else {
-    callback(new Error(), null);
-  }
-});
-AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
-  callback(null, {});
-});
-AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
-  callback(null, {});
-});
-AWSMock.mock('S3', 'upload', (param: PutObjectRequest, callback: Function)=>{
-  if (param.Bucket && param.Key && param.Body) {
-    callback(null, {});
-  } else {
-    console.log(param);
-    callback(new Error(), null);
-  }
-});
 
 var event = {
   body: {
@@ -68,31 +36,77 @@ var event = {
   },
 };
 
-process.env.AWS_REGION = 'us-east-1';
+process.env.AWS_REGION = 'local';
 process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
 process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
 process.env.test_verifier = event.body.verifier.arn;
 
-test('registrator handler', async ()=>{
+AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+  const response: GetRegistrationCodeResponse = {
+    registrationCode: 'registration_code',
+  };
+  callback(null, response);
+});
+AWSMock.mock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
+  const response: RegisterCACertificateResponse = {
+    certificateId: 'ca_certificate_id',
+    certificateArn: 'ca_certificate_arn',
+  };
+  callback(null, response);
+});
+AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
+  callback(null, {});
+});
+AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
+  callback(null, {});
+});
+AWSMock.mock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
+  callback(null, {});
+});
 
-  // var response = await handler(event);
-  // expect(response.statusCode).toBe(200);
+import { handler } from '../../../src/lambda-assets/registrator/index';
 
-  //   var registrator = new CaRegistrator(event);
-  //   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-  //   registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
-  //   registrator.s3 = new AWS.S3();
-  //   var response = await registrator.register();
-  //   expect(response).toBeDefined();
-  //   expect(registrator.response.statusCode).toBe(200);
+afterAll(() => {
+  AWSMock.restore();
+});
 
-//   var registrator = new CaRegistrator(
-//     Object.assign(event, { body: { bucket: null, key: null } }));
-//   registrator.iot = new AWS.Iot({ apiVersion: '2015-05-28' });
-//   registrator.cloudwatchLogs = new AWS.CloudWatchLogs();
-//   registrator.s3 = new AWS.S3();
-//   var response = await registrator.register();
-//   expect(response).toBeDefined();
-//   expect(response.statusCode).toBeDefined();
-//   expect(registrator.response.statusCode).not.toBe(200);
+test('Sucessfully execute the handler', async () => {
+  var response = await handler(event);
+  expect(response.statusCode).toBe(200);
+});
+
+test('Fail to upload the results', async () => {
+  AWSMock.remock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var response = await handler(event);
+  expect(response.statusCode)
+    .toBe(errorCodes.errorOfUploadingResult);
+});
+
+test('Fail to create Rule', async () => {
+  AWSMock.remock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var response = await handler(event);
+  expect(response.statusCode)
+    .toBe(errorCodes.errorOfCreateIotRule);
+});
+
+test('Fail to register CA', async () => {
+  AWSMock.remock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var response = await handler(event);
+  expect(response.statusCode)
+    .toBe(errorCodes.errorOfCaRegistration);
+});
+
+test('Fail to get CA registration code', async () => {
+  AWSMock.remock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+    callback(new Error(), {});
+  });
+  var response = await handler(event);
+  expect(response.statusCode)
+    .toBe(errorCodes.errorOfGetRegistrationCode);
 });

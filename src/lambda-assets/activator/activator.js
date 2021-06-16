@@ -1,15 +1,8 @@
 const AWS = require('aws-sdk');
 const { Response } = require('softchef-utility');
+const errorCodes = require('./errorCodes');
 
 exports.ClientActivator = class ClientActivator {
-    errorCodes = {
-        errorOfCheckingClientCertificate: 410,
-        errorOfInvokingVerifier: 411,
-        errorOfParsingVerifyingResult: 412,
-        errorOfActivating: 413,
-        failedToActivate: 414,
-        missingClientCertificateId: 415,
-    };
 
     constructor(record) {
         console.log(record);
@@ -32,7 +25,7 @@ exports.ClientActivator = class ClientActivator {
         if (!this.certificateId) {
             this.response = this.responseBuilder.error(
                 'Missing the client certificate ID',
-                this.errorCodes.missingClientCertificateId
+                errorCodes.missingClientCertificateId
             );
             console.log('Missing the client certificate ID');
         }
@@ -51,7 +44,7 @@ exports.ClientActivator = class ClientActivator {
         }).promise();
     }
 
-    async setActive() {
+    setActive() {
         return this.iot.updateCertificate({
             certificateId: this.certificateId,
             newStatus: "ACTIVE"

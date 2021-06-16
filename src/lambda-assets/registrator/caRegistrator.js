@@ -2,16 +2,9 @@
 const { S3, Iot, CloudWatchLogs } = require('aws-sdk');
 const { Request, Response } = require('softchef-utility');
 const { Certificates } = require('./certificates');
+const { errorOfUnknownVerifier } = require('./errorCodes');
 
 exports.CaRegistrator = class CaRegistrator {
-
-    errorCodes = {
-        errorOfGetRegistrationCode: 411,
-        errorOfCaRegistration: 412,
-        errorOfCreateIotRule: 413,
-        errorOfUnknownVerifier: 414,
-        errorOfUploadingResult: 415,
-    };
 
     constructor(event) {
         this.responseBuilder = new Response();
@@ -58,7 +51,7 @@ exports.CaRegistrator = class CaRegistrator {
         if (this.verifier.arn && process.env[this.verifier.name] !== this.verifier.arn) {
             const err = 'Received unknown verifier';
             console.log(err)
-            this.response = this.responseBuilder.error(err, this.errorCodes.errorOfUnknownVerifier);
+            this.response = this.responseBuilder.error(err, errorOfUnknownVerifier);
         } else {
             console.log('Verifier checked');
         }
@@ -146,7 +139,7 @@ exports.CaRegistrator = class CaRegistrator {
      * This function must run after running function "createRule".
      * @returns If successfully, return the response from the AWS SDK. Otherwise, undefined.
      */
-    async upload() {
+    upload() {
         const table = {
             certificates: this.certificates,
             results: this.results,
@@ -157,7 +150,7 @@ exports.CaRegistrator = class CaRegistrator {
             Key: `${caCertificateId}/${this.key}`,
             Body: Buffer.from(JSON.stringify(table))
         };
-        return  this.s3.upload(params).promise();
+        return this.s3.upload(params).promise();
     }
 
     reset(event) {
