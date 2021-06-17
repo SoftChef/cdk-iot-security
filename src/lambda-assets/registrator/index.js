@@ -1,4 +1,3 @@
-'use strict';
 const { CaRegistrator } = require('./caRegistrator');
 const errorCodes = require('./errorCodes');
 

@@ -8,6 +8,7 @@ import {
 } from 'aws-sdk/clients/iot';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
 import * as errorCodes from '../../../src/lambda-assets/registrator/errorCodes';
+import { handler } from '../../../src/lambda-assets/registrator/index';
 
 AWS.config.region = 'local';
 
@@ -36,35 +37,37 @@ var event = {
   },
 };
 
-process.env.AWS_REGION = 'local';
-process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
-process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
-process.env.test_verifier = event.body.verifier.arn;
 
-AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-  const response: GetRegistrationCodeResponse = {
-    registrationCode: 'registration_code',
-  };
-  callback(null, response);
-});
-AWSMock.mock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
-  const response: RegisterCACertificateResponse = {
-    certificateId: 'ca_certificate_id',
-    certificateArn: 'ca_certificate_arn',
-  };
-  callback(null, response);
-});
-AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
-  callback(null, {});
-});
-AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
-  callback(null, {});
-});
-AWSMock.mock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
-  callback(null, {});
-});
+beforeEach(() => {
 
-import { handler } from '../../../src/lambda-assets/registrator/index';
+  process.env.AWS_REGION = 'local';
+  process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
+  process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
+  process.env.test_verifier = event.body.verifier.arn;
+
+  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
+    const response: GetRegistrationCodeResponse = {
+      registrationCode: 'registration_code',
+    };
+    callback(null, response);
+  });
+  AWSMock.mock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
+    const response: RegisterCACertificateResponse = {
+      certificateId: 'ca_certificate_id',
+      certificateArn: 'ca_certificate_arn',
+    };
+    callback(null, response);
+  });
+  AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
+    callback(null, {});
+  });
+  AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
+    callback(null, {});
+  });
+  AWSMock.mock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
+    callback(null, {});
+  });
+});
 
 afterAll(() => {
   AWSMock.restore();

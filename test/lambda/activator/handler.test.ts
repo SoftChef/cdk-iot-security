@@ -7,8 +7,8 @@ import {
   UpdateCertificateRequest,
 } from 'aws-sdk/clients/iot';
 import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
-import { ClientActivator } from '../../../src/lambda-assets/activator/activator';
 import * as errorCodes from '../../../src/lambda-assets/activator/errorCodes';
+import { handler } from '../../../src/lambda-assets/activator/index';
 
 const record = {
   messageId: '203de074-ecd4-4cec-b4d8-6e0c6e7d2661',
@@ -30,7 +30,6 @@ const record = {
 AWS.config.region = 'local';
 
 beforeEach(() => {
-  AWSMock.setSDKInstance(AWS);
   AWSMock.mock('Iot', 'describeCertificate', (param: DescribeCertificateRequest, callback: Function)=>{
     const response: DescribeCertificateResponse = {
       certificateDescription: {
@@ -56,65 +55,67 @@ afterEach(() => {
   AWSMock.restore();
 });
 
-test('Initialize ClientActivator', ()=>{
-  let recordContent = JSON.parse(record.body);
-  var activator = new ClientActivator(record);
-  expect(activator.record).toMatchObject(recordContent);
-  expect(activator.verifierArn).toBeDefined();
-  expect(activator.verifierArn).toBe(recordContent.verifierArn);
-  expect(activator.certificateId).toBeDefined();
-  expect(activator.certificateId).toBe(recordContent.certificateId);
-  expect(activator.verified).toBeFalsy();
-  expect(activator.results.activation).toBeNull();
-  expect(activator.results.clientCertificateInfo).toBeNull();
-  expect(activator.results.verification).toBeNull();
+test('Successfully execute the handler', async () => {
+  var response = await handler({ Records: [record, record] });
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body).length).toBe(2);
+  expect(JSON.parse(response.body)[0].statusCode)
+    .toBe(200);
+  expect(JSON.parse(response.body)[1].statusCode)
+    .toBe(200);
 });
 
-test('Initialize ClientActivator without specifying verifier', ()=>{
-  let recordContent = JSON.parse(record.body);
-  delete recordContent.verifierArn;
-  var recordWithoutVerifier = Object.assign({}, record, { body: JSON.stringify(recordContent) });
-  var activator = new ClientActivator(recordWithoutVerifier);
-  expect(activator.verified).toBeTruthy();
+test('Fail to set the client certificate active', async () => {
+  AWSMock.remock('Iot', 'updateCertificate', (_param: UpdateCertificateRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var response = await handler({ Records: [record] });
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body)[0].statusCode)
+    .toBe(errorCodes.failedToActivate);
 });
 
-test('Call checkCertificateId', ()=>{
-  var activator = new ClientActivator(record);
-  activator.checkCertificateId();
-  expect(activator.response).toBeNull();
+test('Fail to parse the verifier response', async () => {
+  AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+    const body = JSON.stringify({});
+    const response: InvocationResponse = {
+      StatusCode: 200,
+      Payload: JSON.stringify({ body: body }),
+    };
+    callback(null, response);
+  });
+  var response = await handler({ Records: [record] });
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body)[0].statusCode)
+    .toBe(errorCodes.errorOfParsingVerifyingResult);
 });
 
-test('Call checkCertificateId without client certificate', ()=>{
+test('Fail to invoke the verifier', async () => {
+  AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var response = await handler({ Records: [record] });
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body)[0].statusCode)
+    .toBe(errorCodes.errorOfInvokingVerifier);
+});
+
+test('Fail to query the client certificate information', async () => {
+  AWSMock.remock('Iot', 'describeCertificate', (_param: DescribeCertificateRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var response = await handler({ Records: [record] });
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body)[0].statusCode)
+    .toBe(errorCodes.errorOfCheckingClientCertificate);
+});
+
+test('Missing the client certificate ID', async () => {
   let recordContent = JSON.parse(record.body);
   delete recordContent.certificateId;
   var recordWithoutCertificateId = Object.assign({}, record, { body: JSON.stringify(recordContent) });
-  var activator = new ClientActivator(recordWithoutCertificateId);
-  activator.checkCertificateId();
-  expect(activator.response).not.toBeNull();
-  expect(activator.response.statusCode)
+  var response = await handler({ Records: [recordWithoutCertificateId] });
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body)[0].statusCode)
     .toBe(errorCodes.missingClientCertificateId);
-});
-
-test('CallgetClientCertificateInfo', async ()=>{
-  var activator = new ClientActivator(record);
-  activator.iot = new AWS.Iot();
-  var result = await activator.getClientCertificateInfo();
-  expect(result).toBeDefined();
-});
-
-test('Call verify', async ()=>{
-  var activator = new ClientActivator(record);
-  activator.lambda = new AWS.Lambda();
-  var result = await activator.verify();
-  var payload = JSON.parse(result.Payload?.toString() || '{}');
-  var body = JSON.parse(payload.body);
-  expect(body.verified).toBeTruthy();
-});
-
-test('Call updateCertificate', async ()=>{
-  var activator = new ClientActivator(record);
-  activator.iot = new AWS.Iot();
-  activator.verified = true;
-  var result = await activator.setActive();
-  expect(result).toBeDefined();
 });

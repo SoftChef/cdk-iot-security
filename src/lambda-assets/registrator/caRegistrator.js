@@ -1,5 +1,4 @@
-'use strict';
-const { S3, Iot, CloudWatchLogs } = require('aws-sdk');
+const AWS = require('aws-sdk');
 const { Request, Response } = require('softchef-utility');
 const { Certificates } = require('./certificates');
 const { errorOfUnknownVerifier } = require('./errorCodes');
@@ -15,7 +14,7 @@ exports.CaRegistrator = class CaRegistrator {
         this.verifier = this.request.input('verifier') || {};
         this.bucket = this.request.input("bucket");        
         this.key = this.request.input("key");
-        this.csrSubjects = this.request.input("csrSubjects");
+        this.csrSubjects = this.request.input("csrSubjects") || {};
         this.caConfig = this.request.input("caConfig");
 
         this.certificates = {
@@ -42,9 +41,9 @@ exports.CaRegistrator = class CaRegistrator {
             upload: null,
         };
 
-        this.iot = new Iot({region: this.region, apiVersion: '2015-05-28'});
-        this.cloudwatchLogs = new CloudWatchLogs({region: this.region});
-        this.s3 = new S3({region: this.region});
+        this.iot = new AWS.Iot({region: this.region, apiVersion: '2015-05-28'});
+        this.cloudwatchLogs = new AWS.CloudWatchLogs({region: this.region});
+        this.s3 = new AWS.S3({region: this.region});
     }
 
     checkVerifier() {        
@@ -73,8 +72,8 @@ exports.CaRegistrator = class CaRegistrator {
      * @returns The created cretificates in PEM form, and the key pairs in PEM form.
      */
     createCertificates() {
-        this.csrSubjects = Object.assign(this.csrSubjects || {},
-            {commonName: this.results.registrationCode});
+        this.csrSubjects = Object.assign(
+            this.csrSubjects, {commonName: this.results.registrationCode});
         const certificates = Certificates.getCaRegistrationCertificates(this.csrSubjects);
         this.certificates = certificates;
         return certificates;
@@ -151,10 +150,6 @@ exports.CaRegistrator = class CaRegistrator {
             Body: Buffer.from(JSON.stringify(table))
         };
         return this.s3.upload(params).promise();
-    }
-
-    reset(event) {
-        Object.assign(this, new CaRegistrator(event));
     }
 
     /**
