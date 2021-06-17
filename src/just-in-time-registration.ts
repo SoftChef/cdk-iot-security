@@ -1,4 +1,4 @@
-import { RestApi } from '@aws-cdk/aws-apigateway';
+import { RestApi, AuthorizationType, Resource, IAuthorizer, LambdaIntegration } from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
 
 import { CaRegistrator, VerifierProps } from './ca-registrator';
@@ -6,7 +6,13 @@ import { DeviceActivator } from './device-activator';
 
 export interface JustInTimeRegistrationProps {
   verifiers?: [VerifierProps];
-  restApi?: RestApi;
+  restApiConfig?: RestApiProps;
+}
+
+export interface RestApiProps {
+  restApi: RestApi;
+  authorizationType?: AuthorizationType;
+  authorizer?: IAuthorizer;
 }
 
 export class JustInTimeRegistration extends Construct {
@@ -35,15 +41,37 @@ export class JustInTimeRegistration extends Construct {
     super(scope, `CaRegisterApi-${id}`);
     this.activator = new DeviceActivator(this, id);
 
-    this.restApi = props.restApi || new RestApi(this, id);
-    const resource = this.restApi.root.addResource('register');
+    this.restApi = props.restApiConfig?.restApi || new RestApi(this, id);
+    const resource: Resource = this.restApi.root.addResource('register');
 
     this.registrator = new CaRegistrator(this, id, {
       activatorFunction: this.activator.function,
       activatorRole: this.activator.role,
       activatorQueueUrl: this.activator.receptor.queueUrl,
-      apiResource: resource,
       verifiers: props.verifiers,
     });
+
+    let authorizationType: AuthorizationType = props.restApiConfig?.authorizationType || AuthorizationType.NONE;
+    switch (authorizationType) {
+      case AuthorizationType.COGNITO:
+      case AuthorizationType.CUSTOM:
+        if (!props.restApiConfig?.authorizer) {
+          throw new Error('You specify authorization type is COGNITO, but not specify authorizer.');
+        }
+        let authorizer: IAuthorizer = props.restApiConfig?.authorizer;
+        resource.addMethod('POST', new LambdaIntegration(this.registrator), {
+          authorizationType: authorizationType,
+          authorizer: authorizer,
+        });
+        break;
+      case AuthorizationType.IAM:
+        resource.addMethod('POST', new LambdaIntegration(this.registrator), {
+          authorizationType: authorizationType,
+        });
+        break;
+      case AuthorizationType.NONE:
+      default:
+        resource.addMethod('POST', new LambdaIntegration(this.registrator));
+    }
   }
 }

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
+// import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
 import {
   Role, PolicyStatement, Effect,
   ServicePrincipal, /*PolicyDocument,*/ ManagedPolicy,
@@ -12,7 +12,7 @@ export interface CaRegistratorProps {
   activatorFunction: Function;
   activatorRole: Role;
   activatorQueueUrl: string;
-  apiResource: Resource;
+  // apiResource: Resource;
   verifiers?: [VerifierProps];
 }
 
@@ -44,7 +44,7 @@ export class CaRegistrator extends NodejsFunction {
       memorySize: 256,
       environment: environment,
     });
-    props.apiResource.addMethod('POST', new LambdaIntegration(this));
+    // props.apiResource.addMethod('POST', new LambdaIntegration(this));
   }
 }
 
