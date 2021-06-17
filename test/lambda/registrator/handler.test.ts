@@ -79,8 +79,12 @@ test('Sucessfully execute the handler', async () => {
 });
 
 test('Fail to upload the results', async () => {
-  AWSMock.remock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
-    callback(new Error(), null);
+  AWSMock.remock('S3', 'upload', (param: PutObjectRequest, callback: Function)=>{
+    if (param.Body == '') {
+      callback(null, {});
+    } else {
+      callback(new Error(), null);
+    }
   });
   var response = await handler(event);
   expect(response.statusCode)

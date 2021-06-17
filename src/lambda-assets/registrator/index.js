@@ -31,7 +31,6 @@ exports.handler = async (event) => {
     var registrator = new CaRegistrator(event);
     
     registrator.checkVerifier();
-    registrator.checkBucket();
 
     try {
         const { registrationCode } = await registrator.getRegistrationCode();
@@ -41,6 +40,10 @@ exports.handler = async (event) => {
         registrator.response = registrator.responseBuilder.error(
             err, errorCodes.errorOfGetRegistrationCode);
         console.log(err, err.stack);
+    }
+
+    if (!registrator.response) {
+        await registrator.checkBucket();
     }
 
     if (!registrator.response) {

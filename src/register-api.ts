@@ -15,7 +15,7 @@ export class JustInTimeRegistration extends Construct {
   public registrator: CaRegistrator;
 
   /**
-   * Initialize a CA Registration API.
+   * Initialize a Just-In-Time Registration API.
    *
    * This API is
    * consist of three parts, a Registrator mainly

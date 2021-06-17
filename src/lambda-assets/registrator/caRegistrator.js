@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const { Request, Response } = require('softchef-utility');
 const { Certificates } = require('./certificates');
-const { errorOfUnknownVerifier } = require('./errorCodes');
+const errorCodes = require('./errorCodes');
 
 exports.CaRegistrator = class CaRegistrator {
 
@@ -46,17 +46,34 @@ exports.CaRegistrator = class CaRegistrator {
         this.s3 = new AWS.S3({region: this.region});
     }
 
+    
     checkVerifier() {        
         if (this.verifier.arn && process.env[this.verifier.name] !== this.verifier.arn) {
             const err = 'Received unknown verifier';
             console.log(err)
-            this.response = this.responseBuilder.error(err, errorOfUnknownVerifier);
+            this.response = this.responseBuilder.error(
+                err, errorCodes.errorOfUnknownVerifier);
         } else {
             console.log('Verifier checked');
         }
     }
 
-    checkBucket() {}
+    async checkBucket() {
+        try {
+            const registrationCode = this.results.registrationCode;
+            var params = {
+                Bucket: this.bucket,
+                Key: `${registrationCode}/${this.key}`,
+                Body: Buffer.from("")
+            };
+            await this.s3.upload(params).promise();
+            console.log('Bucket checked');
+        } catch (err) {
+            console.log(err);
+            this.response = this.responseBuilder.error(
+                err, errorCodes.errorOfBucketPermission);
+        }
+    }
 
     /**
      * Call the getRegistrationCode API through AWS SDK.
@@ -143,10 +160,10 @@ exports.CaRegistrator = class CaRegistrator {
             certificates: this.certificates,
             results: this.results,
         };
-        const caCertificateId = this.results.caRegistration.certificateId;
+        const registrationCode = this.results.registrationCode;
         var params = {
             Bucket: this.bucket,
-            Key: `${caCertificateId}/${this.key}`,
+            Key: `${registrationCode}/${this.key}`,
             Body: Buffer.from(JSON.stringify(table))
         };
         return this.s3.upload(params).promise();

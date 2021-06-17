@@ -14,7 +14,7 @@ import {
   PutObjectRequest,
 } from 'aws-sdk/clients/s3';
 import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistrator';
-import { errorOfUnknownVerifier } from '../../../src/lambda-assets/registrator/errorCodes';
+import * as errorCodes from '../../../src/lambda-assets/registrator/errorCodes';
 
 AWS.config.region = 'local';
 
@@ -134,7 +134,7 @@ test('Call checkVerifier when an unknown verifier is specified', ()=>{
   var registrator = new CaRegistrator(event);
   registrator.checkVerifier();
   expect(registrator.response.statusCode)
-    .toBe(errorOfUnknownVerifier);
+    .toBe(errorCodes.errorOfUnknownVerifier);
 });
 
 test('Call checkVerifier when a known verifier is specified', ()=>{
@@ -152,10 +152,20 @@ test('Call checkVerifier without any specified verifier', ()=>{
   expect(registrator.response).toBeNull();
 });
 
-test('Call checkBucket', () => {
+test('Call checkBucket', async () => {
   var registrator = new CaRegistrator(event);
-  registrator.checkBucket();
+  await registrator.checkBucket();
   expect(registrator.response).toBeNull();
+});
+
+test('Call checkBucket without upload permission', async () => {
+  AWSMock.remock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
+    callback(new Error(), null);
+  });
+  var registrator = new CaRegistrator(event);
+  await registrator.checkBucket();
+  expect(registrator.response.statusCode)
+    .toBe(errorCodes.errorOfBucketPermission);
 });
 
 test('Call getRegistrationCode', async ()=>{
