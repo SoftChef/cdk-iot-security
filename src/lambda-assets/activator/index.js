@@ -2,6 +2,11 @@ const { ClientActivator } = require('./activator');
 const errorCodes = require('./errorCodes');
 const { Response } = require('softchef-utility');
 
+/**
+ * The lambda function handler activating the client certificates.
+ * @param {Object} event The lambda function event, which is a bunch of SQS message.
+ * @returns The HTTP response containing the activation results.
+ */
 exports.handler = async (event) => {
     console.log({event: event});
 

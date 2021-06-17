@@ -4,7 +4,10 @@ const { Certificates } = require('./certificates');
 const errorCodes = require('./errorCodes');
 
 exports.CaRegistrator = class CaRegistrator {
-
+    /**
+     * Initialize the CA registrator.
+     * @param {Object} event The lambda function event
+     */
     constructor(event) {
         this.responseBuilder = new Response();
         this.request = new Request(event);
@@ -46,7 +49,9 @@ exports.CaRegistrator = class CaRegistrator {
         this.s3 = new AWS.S3({region: this.region});
     }
 
-    
+    /**
+     * Check if the verifier is valid for this registrator or not.
+     */
     checkVerifier() {        
         if (this.verifier.arn && process.env[this.verifier.name] !== this.verifier.arn) {
             const err = 'Received unknown verifier';
@@ -58,6 +63,10 @@ exports.CaRegistrator = class CaRegistrator {
         }
     }
 
+    /**
+     * Check if this registrator has the permission
+     * to upload object to the specified bucket or not
+     */
     async checkBucket() {
         try {
             const registrationCode = this.results.registrationCode;
@@ -114,8 +123,7 @@ exports.CaRegistrator = class CaRegistrator {
     }
 
     /**
-     * Call the createTopicRule API through AWS SDK. 
-     * This function must run after running function "registerCa".
+     * Call the createTopicRule API through AWS SDK.
      * @returns The Promise object of calling API.
      */
     async createRule() {
@@ -151,9 +159,8 @@ exports.CaRegistrator = class CaRegistrator {
     }
 
     /**
-     * Upload the created certificates and the executing results to the specified S3 Bucket through AWS SDK. 
-     * This function must run after running function "createRule".
-     * @returns If successfully, return the response from the AWS SDK. Otherwise, undefined.
+     * Call the upload API through AWS SDK.
+     * @returns The Promise object of calling API.
      */
     upload() {
         const table = {
@@ -168,20 +175,4 @@ exports.CaRegistrator = class CaRegistrator {
         };
         return this.s3.upload(params).promise();
     }
-
-    /**
-     * Run the whole work flow of registering a CA.
-     * @returns The Http response as the function returning for the lambda function.
-     */
-    /*async register() {
-        this.checkVerifier();
-        this.checkBucket();
-        await this.getRegistrationCode();
-        this.createCertificates();
-        await this.registerCa();
-        await this.createRule();
-        await this.upload();
-        this.response = this.response || this.responseBuilder.json(this.results);
-        return this.response;
-    }*/
 }

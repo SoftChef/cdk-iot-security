@@ -4,6 +4,10 @@ const errorCodes = require('./errorCodes');
 
 exports.ClientActivator = class ClientActivator {
 
+    /**
+     * Initialize a Client Activator
+     * @param {Object} record The AWS SQS message.
+     */
     constructor(record) {
         console.log(record);
         this.record = JSON.parse(record.body);
@@ -21,6 +25,9 @@ exports.ClientActivator = class ClientActivator {
         };
     }
 
+    /**
+     * Check if the client certificate ID is provided or not.
+     */
     checkCertificateId() {
         if (!this.certificateId) {
             this.response = this.responseBuilder.error(
@@ -31,12 +38,20 @@ exports.ClientActivator = class ClientActivator {
         }
     }
 
+    /**
+     * Call the describeCertificate API through AWS SDK.
+     * @returns The Promise object of calling API.
+     */
     getClientCertificateInfo() {
         return this.iot.describeCertificate({
             certificateId: this.certificateId,
         }).promise();
     }
 
+    /**
+     * Call the invoke API through AWS SDK.
+     * @returns The Promise object of calling API.
+     */
     verify() {
         return this.lambda.invoke({
             FunctionName: decodeURIComponent(this.verifierArn), 
@@ -44,6 +59,10 @@ exports.ClientActivator = class ClientActivator {
         }).promise();
     }
 
+    /**
+     * Call the updateCertificate API through AWS SDK.
+     * @returns The Promise object of calling API.
+     */
     setActive() {
         return this.iot.updateCertificate({
             certificateId: this.certificateId,
