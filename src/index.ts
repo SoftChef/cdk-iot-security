@@ -1,1 +1,1 @@
-export * from './register-api';
+export * from './just-in-time-registration';

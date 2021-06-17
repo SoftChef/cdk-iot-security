@@ -19,12 +19,14 @@ const project = new AwsCdkConstructLibrary({
     'aws-cdk',
   ],
   deps: [
-    '@aws-cdk/assert',
     'aws-sdk',
     'path',
     'node-forge',
     'softchef-utility',
     'aws-sdk-mock',
+  ],
+  peerDeps: [
+    '@aws-cdk/assert',
   ],
   devDeps: [
     'esbuild',
@@ -34,6 +36,10 @@ const project = new AwsCdkConstructLibrary({
     compilerOptions: {
       allowJs: true,
     },
+  },
+  eslintOptions: {
+    dirs: ['src', 'src/lambda-assets'],
+    fileExtensions: ['.ts', '.js'],
   },
 });
 project.synth();

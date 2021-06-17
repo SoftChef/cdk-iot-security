@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {
   Role, PolicyStatement, Effect,
   ServicePrincipal, PolicyDocument, ManagedPolicy,
@@ -7,15 +8,15 @@ import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Queue } from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
 
-export class ClientActivator extends Construct {
+export class DeviceActivator extends Construct {
   public function: ActivationFunction;
   public role: Role;
   public receptor: Receptor;
 
   /**
-   * Initialize the Client Activator.
+   * Initialize the Device Activator.
    *
-   * The Client Activator is mainly consist of three parts,
+   * The Device Activator is mainly consist of three parts,
    * a Lambda Function providing the Activation functionality,
    * a Receptor which is a SQS Queue receiving the messages
    * from the CA-associated Iot Rules created by the Registrator,
@@ -26,7 +27,7 @@ export class ClientActivator extends Construct {
    * @param id
    */
   constructor(scope: Construct, id: string) {
-    super(scope, `ClientActivator-${id}`);
+    super(scope, `DeviceActivator-${id}`);
     this.receptor = new Receptor(this, id);
     const activationRole = new ActivationRole(this, id);
     this.receptor.grantConsumeMessages(activationRole);
@@ -49,8 +50,10 @@ class Receptor extends Queue {
     super(scope, `Receptor-${id}`, {});
   }
   public getPushRole(principalName: string) {
-    return new Role(this, `PushRole-${this.node.id}`, {
-      roleName: `PushRole-${this.node.id}`,
+    let segs = this.node.id.split('-');
+    let id = segs.slice(1).join('-');
+    return new Role(this, `PushRole-${id}`, {
+      roleName: `ReceptorPushRoleName-${id}`,
       assumedBy: new ServicePrincipal(principalName),
       inlinePolicies: {
         SqsPushPolicy: new PolicyDocument({
@@ -81,9 +84,8 @@ class ActivationFunction extends NodejsFunction {
    * @param props
    */
   constructor(scope: Construct, id: string, props: ActivationFunctionProps) {
-    console.log(`${process.env.APPS_PATH}/activator/index.js`);
     super(scope, `ActivatorFunction-${id}`, {
-      entry: `${process.env.APPS_PATH}/activator/index.js`,
+      entry: path.resolve(__dirname, './lambda-assets/activator/index.js'),
       role: props.activationRole,
     });
   }
@@ -93,13 +95,13 @@ class ActivationRole extends Role {
   /**
    * Initialize the Activator Role which allows the activator
    * to invoke other Lambda Functions, especially the verifier,
-   * and operate the client certificates.
+   * and operate the device certificates.
    * @param scope
    * @param id
    */
   constructor(scope: Construct, id:string) {
     super(scope, `ActivatorRole-${id}`, {
-      roleName: `ActivatorRole-${id}`,
+      roleName: `ActivatorRoleName-${id}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName(

@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
 import {
   Role, PolicyStatement, Effect,
@@ -37,7 +38,7 @@ export class CaRegistrator extends NodejsFunction {
     props.verifiers?.forEach(verifier=> environment[verifier.name] = verifier.arn);
 
     super(scope, `CaRegistratorFunction-${id}`, {
-      entry: `${process.env.APPS_PATH}/registrator/index.js`,
+      entry: path.resolve(__dirname, './lambda-assets/registrator/index.js'),
       role: new CaRegistationRole(scope, id),
       timeout: Duration.seconds(10),
       memorySize: 256,
@@ -56,7 +57,7 @@ class CaRegistationRole extends Role {
    */
   constructor(scope: Construct, id:string) {
     super(scope, `CaRegistrationRole-${id}`, {
-      roleName: `CaRegistrationRole-${id}`,
+      roleName: `CaRegistrationRoleName-${id}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName(

@@ -2,7 +2,7 @@ import * as path from 'path';
 import '@aws-cdk/assert/jest';
 import { SynthUtils } from '@aws-cdk/assert';
 import { App, Stack } from '@aws-cdk/core';
-import { JustInTimeRegistration } from '../../src/register-api';
+import { JustInTimeRegistration } from '../../src/just-in-time-registration';
 
 test('CaRegisterApi integration test', ()=>{
   process.env.BASE_PATH = __dirname;
@@ -40,13 +40,13 @@ test('CaRegisterApi integration test', ()=>{
   expect(stack).toCountResources('AWS::Lambda::Function', 2);
   expect(stack).toCountResources('AWS::IAM::Role', 4);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'CaRegistrationRole-' + name,
+    RoleName: 'CaRegistrationRoleName-' + name,
   });
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'ActivatorRole-' + name,
+    RoleName: 'ActivatorRoleName-' + name,
   });
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'PushRole-Receptor-' + name,
+    RoleName: 'ReceptorPushRoleName-' + name,
   });
   expect(stack).toCountResources('AWS::SQS::Queue', 1);
 });

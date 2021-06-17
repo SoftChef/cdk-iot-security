@@ -2,7 +2,7 @@ import { RestApi } from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
 
 import { CaRegistrator, VerifierProps } from './ca-registrator';
-import { ClientActivator } from './client-activator';
+import { DeviceActivator } from './device-activator';
 
 export interface JustInTimeRegistrationProps {
   verifiers?: [VerifierProps];
@@ -11,7 +11,7 @@ export interface JustInTimeRegistrationProps {
 
 export class JustInTimeRegistration extends Construct {
   public restApi: RestApi;
-  public activator: ClientActivator;
+  public activator: DeviceActivator;
   public registrator: CaRegistrator;
 
   /**
@@ -20,7 +20,7 @@ export class JustInTimeRegistration extends Construct {
    * This API is
    * consist of three parts, a Registrator mainly
    * registering CA, an Activator mainly activating
-   * the client certificate, and a RestApi as the
+   * the device certificate, and a RestApi as the
    * entry of the Registrator.
    *
    * If a RestApi is provided as an input property,
@@ -33,7 +33,7 @@ export class JustInTimeRegistration extends Construct {
    */
   constructor(scope: Construct, id: string, props: JustInTimeRegistrationProps) {
     super(scope, `CaRegisterApi-${id}`);
-    this.activator = new ClientActivator(this, id);
+    this.activator = new DeviceActivator(this, id);
 
     this.restApi = props.restApi || new RestApi(this, id);
     const resource = this.restApi.root.addResource('register');
