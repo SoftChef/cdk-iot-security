@@ -18,8 +18,7 @@ export interface CaRegistratorProps {
 
 export interface VerifierProps {
   name: string;
-  arn: string;
-  //lambdaFunction?: Function;
+  lambdaFunction: Function;
 }
 
 export class CaRegistrator extends NodejsFunction {
@@ -35,7 +34,8 @@ export class CaRegistrator extends NodejsFunction {
       ACTIVATOR_ROLE_ARN: props.activatorRole.roleArn,
       ACTIVATOR_QUEUE_URL: props.activatorQueueUrl,
     };
-    props.verifiers?.forEach(verifier=> environment[verifier.name] = verifier.arn);
+    props.verifiers?.forEach(
+      verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
 
     super(scope, `CaRegistratorFunction-${id}`, {
       entry: path.resolve(__dirname, './lambda-assets/registrator/index.js'),

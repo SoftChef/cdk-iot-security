@@ -1,6 +1,7 @@
 import * as path from 'path';
 import '@aws-cdk/assert/jest';
 import { SynthUtils } from '@aws-cdk/assert';
+import { Function, InlineCode, Runtime } from '@aws-cdk/aws-lambda';
 import { App, Stack } from '@aws-cdk/core';
 import { JustInTimeRegistration } from '../../src/just-in-time-registration';
 
@@ -10,11 +11,16 @@ test('CaRegisterApi integration test', ()=>{
   console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
+  const verifierStack = new Stack(app, 'verifier-stack');
   const name = 'test-case';
   new JustInTimeRegistration(stack, name, {
     verifiers: [{
       name: 'test_verifier',
-      arn: 'test_verifier_arn',
+      lambdaFunction: new Function(verifierStack, name, {
+        code: new InlineCode('exports.handler = () => { return true; }'),
+        runtime: Runtime.NODEJS_12_X,
+        handler: 'index.js',
+      }),
     }],
   });
 

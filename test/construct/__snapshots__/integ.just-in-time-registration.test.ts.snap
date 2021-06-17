@@ -194,7 +194,9 @@ Object {
               ],
             },
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-            "test_verifier": "test_verifier_arn",
+            "test_verifier": Object {
+              "Fn::ImportValue": "verifier-stack:ExportsOutputFnGetAtttestcase9BC7DE4DArn30A02383",
+            },
           },
         },
         "Handler": "index.handler",
