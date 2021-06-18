@@ -7,10 +7,15 @@ import {
 } from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
 
-import { CaRegistrator, VerifierProps } from './ca-registrator';
+import {
+  CaRegistrator,
+  VerifierProps,
+  UploadProps,
+} from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 
 export interface JustInTimeRegistrationProps {
+  upload: UploadProps;
   verifiers?: [VerifierProps];
   restApiConfig?: RestApiProps;
 }
@@ -54,17 +59,18 @@ export class JustInTimeRegistration extends Construct {
       activatorFunction: this.activator.function,
       activatorRole: this.activator.role,
       activatorQueueUrl: this.activator.receptor.queueUrl,
+      upload: props.upload,
       verifiers: props.verifiers,
     });
 
     let authorizationType: AuthorizationType = props.restApiConfig?.authorizationType || AuthorizationType.NONE;
+    let authorizer: IAuthorizer|undefined = props.restApiConfig?.authorizer || undefined;
     switch (authorizationType) {
       case AuthorizationType.COGNITO:
       case AuthorizationType.CUSTOM:
-        if (!props.restApiConfig?.authorizer) {
-          throw new Error('You specify authorization type is COGNITO, but not specify authorizer.');
+        if (!authorizer) {
+          throw new LackOfAuthorizerError();
         }
-        let authorizer: IAuthorizer = props.restApiConfig?.authorizer;
         resource.addMethod('POST', new LambdaIntegration(this.registrator), {
           authorizationType: authorizationType,
           authorizer: authorizer,
@@ -79,5 +85,12 @@ export class JustInTimeRegistration extends Construct {
       default:
         resource.addMethod('POST', new LambdaIntegration(this.registrator));
     }
+  }
+}
+
+export class LackOfAuthorizerError extends Error {
+  constructor() {
+    let message = 'You specify authorization type is COGNITO, but not specify authorizer.';
+    super(message);
   }
 }

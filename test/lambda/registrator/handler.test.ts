@@ -9,10 +9,8 @@ import {
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
 import {
   UnknownVerifierError,
-} from '../../../src/lambda-assets/registrator/errorCodes';
-import { handler } from '../../../src/lambda-assets/registrator/index';
-
-AWS.config.region = 'local';
+} from '../../../src/lambda-assets/caRegistrator/errorCodes';
+import { handler } from '../../../src/lambda-assets/caRegistrator/index';
 
 var event = {
   body: {
@@ -25,23 +23,11 @@ var event = {
       organizationUnitName: 'web',
     },
     verifierName: 'test_verifier',
-    // verifier: {
-    //   name: 'test_verifier',
-    //   arn: 'arn_of_test_verifier',
-    // },
-    // bucket: 'bucketName',
-    // key: 'ca.json',
-    // caConfig: {
-    //   allowAutoRegistration: true,
-    //   registrationConfig: {},
-    //   setAsActive: true,
-    //   tags: [{ Key: 'ca', Value: '01' }],
-    // },
   },
 };
 
-
 beforeEach(() => {
+  AWS.config.region = 'local';
   AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
     const response: GetRegistrationCodeResponse = {
       registrationCode: 'registration_code',
@@ -73,7 +59,7 @@ beforeEach(() => {
   process.env.BUCKET_KEY = 'bucket_key';
 });
 
-afterAll(() => {
+afterEach(() => {
   AWSMock.restore();
 });
 

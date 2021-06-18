@@ -1,5 +1,5 @@
 import * as forge from 'node-forge';
-import { Certificates } from '../../../src/lambda-assets/registrator/certificates';
+import { Certificates } from '../../../src/lambda-assets/caRegistrator/certificates';
 
 test('test getCaRegistrationCertificates', ()=>{
   const csrSubjects = {

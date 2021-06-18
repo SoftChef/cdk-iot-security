@@ -10,8 +10,8 @@ import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
 import {
   ParsingVerifyingResultError,
   MissingClientCertificateIdError,
-} from '../../../src/lambda-assets/activator/error';
-import { handler } from '../../../src/lambda-assets/activator/index';
+} from '../../../src/lambda-assets/deviceActivator/error';
+import { handler } from '../../../src/lambda-assets/deviceActivator/index';
 
 const record = {
   messageId: '203de074-ecd4-4cec-b4d8-6e0c6e7d2661',
@@ -30,9 +30,8 @@ const record = {
   awsRegion: 'us-east-1',
 };
 
-AWS.config.region = 'local';
-
 beforeEach(() => {
+  AWS.config.region = 'local';
   AWSMock.mock('Iot', 'describeCertificate', (param: DescribeCertificateRequest, callback: Function)=>{
     const response: DescribeCertificateResponse = {
       certificateDescription: {

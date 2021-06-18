@@ -1,19 +1,25 @@
 import * as path from 'path';
-// import { LambdaIntegration, Resource } from '@aws-cdk/aws-apigateway';
 import {
   Role, PolicyStatement, Effect,
   ServicePrincipal, /*PolicyDocument,*/ ManagedPolicy,
 } from '@aws-cdk/aws-iam';
 import { Function } from '@aws-cdk/aws-lambda';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
+import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 
 export interface CaRegistratorProps {
   activatorFunction: Function;
   activatorRole: Role;
   activatorQueueUrl: string;
-  // apiResource: Resource;
+  upload: UploadProps;
   verifiers?: [VerifierProps];
+}
+
+export interface UploadProps {
+  bucket: Bucket;
+  prefix: string;
+  key: string;
 }
 
 export interface VerifierProps {
@@ -33,12 +39,14 @@ export class CaRegistrator extends NodejsFunction {
       ACTIVATOR_ARN: props.activatorFunction.functionArn,
       ACTIVATOR_ROLE_ARN: props.activatorRole.roleArn,
       ACTIVATOR_QUEUE_URL: props.activatorQueueUrl,
+      BUCKET_NAME: props.upload.bucket.bucketName,
+      BUCKET_PREFIX: props.upload.prefix,
+      BUCKET_KEY: props.upload.key,
     };
-    props.verifiers?.forEach(
-      verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
+    props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
 
     super(scope, `CaRegistratorFunction-${id}`, {
-      entry: path.resolve(__dirname, './lambda-assets/registrator/index.js'),
+      entry: path.resolve(__dirname, './lambda-assets/caRegistrator/index.js'),
       role: new CaRegistationRole(scope, id),
       timeout: Duration.seconds(10),
       memorySize: 256,

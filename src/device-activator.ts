@@ -85,7 +85,7 @@ class ActivationFunction extends NodejsFunction {
    */
   constructor(scope: Construct, id: string, props: ActivationFunctionProps) {
     super(scope, `ActivatorFunction-${id}`, {
-      entry: path.resolve(__dirname, './lambda-assets/activator/index.js'),
+      entry: path.resolve(__dirname, './lambda-assets/deviceActivator/index.js'),
       role: props.activationRole,
     });
   }

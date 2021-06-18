@@ -13,7 +13,7 @@ import {
 import {
   PutObjectRequest,
 } from 'aws-sdk/clients/s3';
-import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistrator';
+import { CaRegistrator } from '../../../src/lambda-assets/caRegistrator/caRegistrator';
 
 AWS.config.region = 'local';
 

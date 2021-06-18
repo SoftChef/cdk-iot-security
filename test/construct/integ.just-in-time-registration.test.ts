@@ -7,8 +7,12 @@ import {
   IAuthorizer,
 } from '@aws-cdk/aws-apigateway';
 import { Function, InlineCode, Runtime } from '@aws-cdk/aws-lambda';
+import { Bucket } from '@aws-cdk/aws-s3';
 import { App, Stack } from '@aws-cdk/core';
-import { JustInTimeRegistration } from '../../src/just-in-time-registration';
+import {
+  JustInTimeRegistration,
+  LackOfAuthorizerError,
+} from '../../src/just-in-time-registration';
 
 test('CaRegisterApi integration test', ()=>{
   process.env.BASE_PATH = __dirname;
@@ -18,6 +22,8 @@ test('CaRegisterApi integration test', ()=>{
   const stack = new Stack(app, 'test-stack');
   const verifierStack = new Stack(app, 'verifier-stack');
   const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   new JustInTimeRegistration(stack, name, {
     verifiers: [{
       name: 'test_verifier',
@@ -27,6 +33,11 @@ test('CaRegisterApi integration test', ()=>{
         handler: 'index.js',
       }),
     }],
+    upload: {
+      bucket: bucket,
+      prefix: 'test',
+      key: 'ca.json',
+    },
   });
 
   const expectedIds = {
@@ -69,22 +80,13 @@ test('CaRegisterApi integration test without specifying a verifier', ()=>{
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
-  new JustInTimeRegistration(stack, name, {});
-  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-});
-
-test('CaRegisterApi integration test with a specified RestApi and the IAM Authrozation Type is specified', ()=>{
-  process.env.BASE_PATH = __dirname;
-  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
-  const app = new App();
-  const stack = new Stack(app, 'test-stack');
-  const name = 'test-case';
-  const providedRestApi = new RestApi(stack, 'test-api');
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   new JustInTimeRegistration(stack, name, {
-    restApiConfig: {
-      restApi: providedRestApi,
-      authorizationType: AuthorizationType.IAM,
+    upload: {
+      bucket: bucket,
+      prefix: 'test',
+      key: 'ca.json',
     },
   });
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
@@ -97,11 +99,42 @@ test('CaRegisterApi integration test with a specified RestApi and the IAM Authro
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   const providedRestApi = new RestApi(stack, 'test-api');
   new JustInTimeRegistration(stack, name, {
     restApiConfig: {
       restApi: providedRestApi,
       authorizationType: AuthorizationType.IAM,
+    },
+    upload: {
+      bucket: bucket,
+      prefix: 'test',
+      key: 'ca.json',
+    },
+  });
+  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+});
+
+test('CaRegisterApi integration test with a specified RestApi and the IAM Authrozation Type is specified', ()=>{
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  console.log(process.env.APPS_PATH);
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+  const providedRestApi = new RestApi(stack, 'test-api');
+  new JustInTimeRegistration(stack, name, {
+    restApiConfig: {
+      restApi: providedRestApi,
+      authorizationType: AuthorizationType.IAM,
+    },
+    upload: {
+      bucket: bucket,
+      prefix: 'test',
+      key: 'ca.json',
     },
   });
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
@@ -114,6 +147,8 @@ test('Initialize CaRegisterApi with a Cognito-Authorized RestApi', ()=>{
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   const providedRestApi = new RestApi(stack, 'test-api');
   const providedIAuthorizer: IAuthorizer = {
     authorizerId: 'authorizer_id',
@@ -122,27 +157,68 @@ test('Initialize CaRegisterApi with a Cognito-Authorized RestApi', ()=>{
   new JustInTimeRegistration(stack, name, {
     restApiConfig: {
       restApi: providedRestApi,
-      authorizationType: AuthorizationType.IAM,
+      authorizationType: AuthorizationType.COGNITO,
       authorizer: providedIAuthorizer,
+    },
+    upload: {
+      bucket: bucket,
+      prefix: 'test',
+      key: 'ca.json',
     },
   });
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
 });
 
-// test('Initialize CaRegisterApi with a Cognito-Authorized RestApi but missing authorizer', ()=>{
-//   process.env.BASE_PATH = __dirname;
-//   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-//   console.log(process.env.APPS_PATH);
-//   const app = new App();
-//   const stack = new Stack(app, 'test-stack');
-//   const name = 'test-case';
-//   const providedRestApi = new RestApi(stack, 'test-api');
-//   expect(()=>{
-//     new JustInTimeRegistration(stack, name, {
-//       restApiConfig: {
-//         restApi: providedRestApi,
-//         authorizationType: AuthorizationType.IAM,
-//       },
-//     })
-//   }).toThrow('You specify authorization type is COGNITO, but not specify authorizer.');
-// });
+test('Initialize CaRegisterApi with a Custom-Authorized RestApi', ()=>{
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  console.log(process.env.APPS_PATH);
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+  const providedRestApi = new RestApi(stack, 'test-api');
+  const providedIAuthorizer: IAuthorizer = {
+    authorizerId: 'authorizer_id',
+    authorizationType: AuthorizationType.CUSTOM,
+  };
+  new JustInTimeRegistration(stack, name, {
+    restApiConfig: {
+      restApi: providedRestApi,
+      authorizationType: AuthorizationType.CUSTOM,
+      authorizer: providedIAuthorizer,
+    },
+    upload: {
+      bucket: bucket,
+      prefix: 'test',
+      key: 'ca.json',
+    },
+  });
+  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+});
+
+test('Initialize CaRegisterApi with a Cognito-Authorized RestApi but missing authorizer', ()=>{
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  console.log(process.env.APPS_PATH);
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+  const providedRestApi = new RestApi(stack, 'test-api');
+  expect(()=>{
+    new JustInTimeRegistration(stack, name, {
+      restApiConfig: {
+        restApi: providedRestApi,
+        authorizationType: AuthorizationType.COGNITO,
+      },
+      upload: {
+        bucket: bucket,
+        prefix: 'test',
+        key: 'ca.json',
+      },
+    });
+  }).toThrowError(LackOfAuthorizerError);
+});

@@ -16,6 +16,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-dynamodb',
     '@aws-cdk/aws-sqs',
     '@aws-cdk/aws-lambda-event-sources',
+    '@aws-cdk/aws-s3',
     'aws-cdk',
   ],
   deps: [

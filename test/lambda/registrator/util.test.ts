@@ -1,5 +1,5 @@
 import * as forge from 'node-forge';
-import { KeyGenerator as kg } from '../../../src/lambda-assets/registrator/util';
+import { KeyGenerator as kg } from '../../../src/lambda-assets/caRegistrator/util';
 
 test('test formattedSubjects', ()=>{
   const csrSubjects = {
