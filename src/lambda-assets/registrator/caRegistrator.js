@@ -11,20 +11,17 @@ exports.CaRegistrator = class CaRegistrator {
   constructor(event) {
     this.request = new Request(event);
     
-    this.verifier = this.request.input('verifier', {});
-    if (this.verifier.arn && process.env[this.verifier.name] !== this.verifier.arn) {
+    this.verifierName = this.request.input('verifierName');
+    if (this.verifierName && !process.env[this.verifierName]) {
       throw new errorCodes.UnknownVerifierError();
     }
+    this.verifierArn = process.env[this.verifierName];
 
     this.region = process.env.AWS_REGION;
 
     this.bucketName = process.env.BUCKET_NAME;
     this.bucketPrefix = process.env.BUCKET_PREFIX;
     this.bucketKey = process.env.BUCKET_KEY;
-
-    // this.bucketName = this.request.input('bucket');
-    // this.bucketKey = this.request.input('key');
-
 
     this.csrSubjects = this.request.input('csrSubjects', {});
     
@@ -85,15 +82,6 @@ exports.CaRegistrator = class CaRegistrator {
      * @returns The Promise object of calling API.
      */
   async registerCa() {
-    // var params = Object.assign({
-    //   caCertificate: this.certificates.ca.certificate,
-    //   verificationCertificate: this.certificates.verification.certificate,
-    //   allowAutoRegistration: true,
-    //   registrationConfig: {},
-    //   setAsActive: true,
-    //   tags: [{ Key: 'ca', Value: '01' }],
-    // }, this.caConfig || {});
-
     var params = {
       caCertificate: this.certificates.ca.certificate,
       verificationCertificate: this.certificates.verification.certificate,
@@ -122,7 +110,7 @@ exports.CaRegistrator = class CaRegistrator {
             },
           },
         ],
-        sql: `SELECT *, "${this.verifier.arn}" as verifierArn FROM '$aws/events/certificates/registered/${caCertificateId}'`,
+        sql: `SELECT *, "${this.verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${caCertificateId}'`,
       },
     };
     return this.iot.createTopicRule(params).promise();

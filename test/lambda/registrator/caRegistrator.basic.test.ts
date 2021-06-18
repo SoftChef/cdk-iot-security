@@ -27,10 +27,7 @@ let event = {
       organizationName: 'Soft Chef',
       organizationUnitName: 'web',
     },
-    verifier: {
-      name: 'test_verifier',
-      arn: 'arn_of_test_verifier',
-    },
+    verifierName: 'test_verifier',
   },
 };
 
@@ -98,10 +95,7 @@ afterEach(() => {
 test('Initialize CaRegistrator', ()=>{
   let caRegistrator = new CaRegistrator(event);
   expect(caRegistrator.region).toBe(process.env.AWS_REGION);
-  expect(caRegistrator.verifier).toMatchObject({
-    name: 'test_verifier',
-    arn: 'arn_of_test_verifier',
-  });
+  expect(caRegistrator.verifierName).toBe(event.body.verifierName);
   expect(caRegistrator.bucketName).toBe(process.env.BUCKET_NAME);
   expect(caRegistrator.bucketKey).toBe(process.env.BUCKET_KEY);
   expect(caRegistrator.bucketPrefix).toBe(process.env.BUCKET_PREFIX);
@@ -113,16 +107,16 @@ test('Initialize CaRegistrator', ()=>{
 
 test('Initialize CaRegistrator without specifying verifier', ()=>{
   let eventWithoutVerifier = Object.assign(
-    {}, event, { body: { verifier: {} } });
+    {}, event, { body: { verifierName: null } });
   let caRegistrator = new CaRegistrator(eventWithoutVerifier);
-  expect(caRegistrator.verifier).toMatchObject({});
+  expect(caRegistrator.verifierName).toBeNull();
 });
 
 test('Initialize CaRegistrator without specifying CSR subjects', ()=>{
   let eventWithoutCsrSubjects = Object.assign(
     {}, event, { body: { csrSubjects: null } });
   let caRegistrator = new CaRegistrator(eventWithoutCsrSubjects);
-  expect(caRegistrator.verifier).toMatchObject({});
+  expect(caRegistrator.verifierName).toBeNull();
 });
 
 test('Call getRegistrationCode', async ()=>{
@@ -159,16 +153,6 @@ test('Call registerCa with CA config being provided', async ()=>{
   let result = await caRegistrator.registerCa();
   expect(result).toBeDefined();
 });
-
-// test('Call registerCa without CA config being provided', async ()=>{
-//   let caRegistrator = new CaRegistrator(event);
-//   caRegistrator.caConfig = null;
-//   caRegistrator.results = Object.assign(
-//     {}, caRegistrator.results, { registrationCode: 'registration_code' });
-//   caRegistrator.createCertificates();
-//   let result = await caRegistrator.registerCa();
-//   expect(result).toBeDefined();
-// });
 
 test('Call createRule', async ()=>{
   let caRegistrator = new CaRegistrator(event);

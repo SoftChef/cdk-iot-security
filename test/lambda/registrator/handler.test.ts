@@ -24,29 +24,24 @@ var event = {
       organizationName: 'Soft Chef',
       organizationUnitName: 'web',
     },
-    verifier: {
-      name: 'test_verifier',
-      arn: 'arn_of_test_verifier',
-    },
-    bucket: 'bucketName',
-    key: 'ca.json',
-    caConfig: {
-      allowAutoRegistration: true,
-      registrationConfig: {},
-      setAsActive: true,
-      tags: [{ Key: 'ca', Value: '01' }],
-    },
+    verifierName: 'test_verifier',
+    // verifier: {
+    //   name: 'test_verifier',
+    //   arn: 'arn_of_test_verifier',
+    // },
+    // bucket: 'bucketName',
+    // key: 'ca.json',
+    // caConfig: {
+    //   allowAutoRegistration: true,
+    //   registrationConfig: {},
+    //   setAsActive: true,
+    //   tags: [{ Key: 'ca', Value: '01' }],
+    // },
   },
 };
 
 
 beforeEach(() => {
-
-  process.env.AWS_REGION = 'local';
-  process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
-  process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
-  process.env.test_verifier = event.body.verifier.arn;
-
   AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
     const response: GetRegistrationCodeResponse = {
       registrationCode: 'registration_code',
@@ -69,6 +64,13 @@ beforeEach(() => {
   AWSMock.mock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
     callback(null, {});
   });
+  process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
+  process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
+  process.env.AWS_REGION = 'us-east-1';
+  process.env.test_verifier = 'arn_of_test_verifier';
+  process.env.BUCKET_NAME = 'bucket_name';
+  process.env.BUCKET_PREFIX = 'bucket_prefix';
+  process.env.BUCKET_KEY = 'bucket_key';
 });
 
 afterAll(() => {
@@ -117,9 +119,9 @@ test('Fail to get CA registration code', async () => {
 });
 
 test('Provide the wrong verifier', async () => {
-  let eventWithoutVerifier = Object.assign({}, event, {
-    body: { verifier: { name: 'wrong', arn: 'wrong' } },
+  let eventWithWrongVerifier = Object.assign({}, event, {
+    body: { verifierName: 'wrong' },
   });
-  var response = await handler(eventWithoutVerifier);
+  var response = await handler(eventWithWrongVerifier);
   expect(response.statusCode).toBe(UnknownVerifierError.code);
 });
