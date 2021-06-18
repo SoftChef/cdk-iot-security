@@ -65,7 +65,7 @@ test('CaRegisterApi integration test', ()=>{
     RoleName: 'CaRegistrationRoleName-' + name,
   });
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'ActivatorRoleName-' + name,
+    RoleName: 'DeviceActivatorRoleName-' + name,
   });
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
     RoleName: 'ReceptorPushRoleName-' + name,

@@ -1,7 +1,4 @@
-const { CaRegistrator } = require('./caRegistrator');
-const {
-  UnknownVerifierError
-} = require('./errorCodes');
+const { CaRegistrationHelper } = require('./caRegistrationHelper');
 const { Request, Response } = require('softchef-utility');
 
 /**
@@ -35,7 +32,7 @@ exports.handler = async (event) => {
   request = new Request(event);
 
   try {
-    var registrator = new CaRegistrator(event);
+    var registrator = new CaRegistrationHelper(event);
     registrator.results.registrationCode = await registrator.getRegistrationCode();
     registrator.certificates = registrator.createCertificates();
     registrator.results.caRegistration = await registrator.registerCa();

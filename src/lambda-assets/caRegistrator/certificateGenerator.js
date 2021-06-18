@@ -1,7 +1,7 @@
 'use strict';
 const forge = require('node-forge');
 
-exports.KeyGenerator = class KeyGenerator {
+exports.CertificateGenerator = class CertificateGenerator {
   /**
      * Generate a certificate template which can be further
      * used to generate a CA or a verification certificate.
@@ -9,7 +9,7 @@ exports.KeyGenerator = class KeyGenerator {
      * @param {Number} years The valid time interval of the generated certificate.
      * @returns The certificate template.
      */
-  static generateCertificateTemplate(attr, years) {
+  static _generateCertificateTemplate(attr, years) {
     let certificate = forge.pki.createCertificate();
     certificate.setSubject(attr);
     certificate.setIssuer(attr);
@@ -27,9 +27,9 @@ exports.KeyGenerator = class KeyGenerator {
      * @param {Number} years The valid time interval of the generated certificate. The default value is 1.
      * @returns A CA certificate.
      */
-  static generateCACertificate(publicKey, privateKey, certificateSubjects, years=1) {
-    let attrs = this.formattedSubjects(certificateSubjects);
-    let caCertificate = this.generateCertificateTemplate(attrs, years);
+  static _generateCACertificate(publicKey, privateKey, certificateSubjects, years=1) {
+    let attrs = this._formattedSubjects(certificateSubjects);
+    let caCertificate = this._generateCertificateTemplate(attrs, years);
     caCertificate.publicKey = publicKey;
     caCertificate.serialNumber = '01';
     caCertificate.setExtensions([{
@@ -53,9 +53,9 @@ exports.KeyGenerator = class KeyGenerator {
      * @param {Number} years The valid time interval of the generated certificate. The default value is 1.
      * @returns A verification certificate.
      */
-  static generateVerificationCertificate(caPrivateKey, caCertificate, verificationKeys, years=1) {
+  static _generateVerificationCertificate(caPrivateKey, caCertificate, verificationKeys, years=1) {
     let attrs = caCertificate.subject.attributes;
-    let certificate = this.generateCertificateTemplate(attrs, years);
+    let certificate = this._generateCertificateTemplate(attrs, years);
     certificate.publicKey = verificationKeys.publicKey;
     certificate.sign(caPrivateKey, forge.md.sha256.create());
     return certificate;
@@ -66,7 +66,7 @@ exports.KeyGenerator = class KeyGenerator {
      * @param {Object} props The property object defining the content of CSR subjects.
      * @returns An array with formatted subjects.
      */
-  static formattedSubjects(props) {
+  static _formattedSubjects(props) {
     return [{
       name: 'commonName',
       value: props.commonName || '',
@@ -86,5 +86,42 @@ exports.KeyGenerator = class KeyGenerator {
       shortName: 'OU',
       value: props.organizationUnitName || '',
     }];
+  }
+
+  /**
+     * Get the cetificates for registering a CA.
+     * The returned object contains the public key of the CA,
+     * the private key of the CA,
+     * the certificate of the CA,
+     * the public key of the verification,
+     * the private key of the verification,
+     * and the certificate of the verification.
+     * @param {Object} caCertSubjects The object defining the content of CSR subjects.
+     * @returns
+     */
+   static getCaRegistrationCertificates(caCertSubjects) {
+    const caKeys = forge.pki.rsa.generateKeyPair(2048);
+    const caCertificate = this._generateCACertificate(
+      caKeys.publicKey, caKeys.privateKey, caCertSubjects);
+    const verificationKeys = forge.pki.rsa.generateKeyPair(2048);
+    const verificationCertificate = this._generateVerificationCertificate(
+      caKeys.privateKey, caCertificate, verificationKeys);
+    const certificates = {
+      ca: {
+        keys: {
+          publicKey: forge.pki.publicKeyToPem(caKeys.publicKey),
+          privateKey: forge.pki.privateKeyToPem(caKeys.privateKey),
+        },
+        certificate: forge.pki.certificateToPem(caCertificate),
+      },
+      verification: {
+        keys: {
+          publicKey: forge.pki.publicKeyToPem(verificationKeys.publicKey),
+          privateKey: forge.pki.privateKeyToPem(verificationKeys.privateKey),
+        },
+        certificate: forge.pki.certificateToPem(verificationCertificate),
+      },
+    };
+    return certificates;
   }
 };

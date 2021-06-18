@@ -1,11 +1,11 @@
 const AWS = require('aws-sdk');
 const { Request } = require('softchef-utility');
-const { Certificates } = require('./certificates');
-const errorCodes = require('./errorCodes');
+const { CertificateGenerator } = require('./certificateGenerator');
+const error = require('./error');
 
-exports.CaRegistrator = class CaRegistrator {
+exports.CaRegistrationHelper = class CaRegistrationHelper {
   /**
-   * Initialize the CA registrator.
+   * Initialize the CA Registration Helper.
    * @param {Object} event The lambda function event
    */
   constructor(event) {
@@ -13,19 +13,14 @@ exports.CaRegistrator = class CaRegistrator {
     
     this.verifierName = this.request.input('verifierName');
     if (this.verifierName && !process.env[this.verifierName]) {
-      throw new errorCodes.UnknownVerifierError();
+      throw new error.UnknownVerifierError();
     }
     this.verifierArn = process.env[this.verifierName];
-
     this.region = process.env.AWS_REGION;
-
     this.bucketName = process.env.BUCKET_NAME;
     this.bucketPrefix = process.env.BUCKET_PREFIX;
     this.bucketKey = process.env.BUCKET_KEY;
-
     this.csrSubjects = this.request.input('csrSubjects', {});
-    
-
     this.certificates = {
       ca: {
         keys: {
@@ -71,7 +66,7 @@ exports.CaRegistrator = class CaRegistrator {
   createCertificates() {
     this.csrSubjects = Object.assign(
       this.csrSubjects, { commonName: this.results.registrationCode });
-    const certificates = Certificates.getCaRegistrationCertificates(this.csrSubjects);
+    const certificates = CertificateGenerator.getCaRegistrationCertificates(this.csrSubjects);
     this.certificates = certificates;
     return certificates;
   }

@@ -9,7 +9,7 @@ import {
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
 import {
   UnknownVerifierError,
-} from '../../../src/lambda-assets/caRegistrator/errorCodes';
+} from '../../../src/lambda-assets/caRegistrator/error';
 import { handler } from '../../../src/lambda-assets/caRegistrator/index';
 
 var event = {

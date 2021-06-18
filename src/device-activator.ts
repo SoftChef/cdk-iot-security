@@ -78,13 +78,13 @@ interface ActivationFunctionProps {
 
 class ActivationFunction extends NodejsFunction {
   /**
-   * Inistialize the Activator Function.
+   * Inistialize the Device Activator Function.
    * @param scope
    * @param id
    * @param props
    */
   constructor(scope: Construct, id: string, props: ActivationFunctionProps) {
-    super(scope, `ActivatorFunction-${id}`, {
+    super(scope, `DeviceActivatorFunction-${id}`, {
       entry: path.resolve(__dirname, './lambda-assets/deviceActivator/index.js'),
       role: props.activationRole,
     });
@@ -93,15 +93,15 @@ class ActivationFunction extends NodejsFunction {
 
 class ActivationRole extends Role {
   /**
-   * Initialize the Activator Role which allows the activator
+   * Initialize the Device Activator Role which allows the activator
    * to invoke other Lambda Functions, especially the verifier,
    * and operate the device certificates.
    * @param scope
    * @param id
    */
   constructor(scope: Construct, id:string) {
-    super(scope, `ActivatorRole-${id}`, {
-      roleName: `ActivatorRoleName-${id}`,
+    super(scope, `DeviceActivatorRole-${id}`, {
+      roleName: `DeviceActivatorRoleName-${id}`,
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName(

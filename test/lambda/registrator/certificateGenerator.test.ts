@@ -1,5 +1,5 @@
 import * as forge from 'node-forge';
-import { KeyGenerator as kg } from '../../../src/lambda-assets/caRegistrator/util';
+import { CertificateGenerator as cg } from '../../../src/lambda-assets/caRegistrator/certificateGenerator';
 
 test('test formattedSubjects', ()=>{
   const csrSubjects = {
@@ -12,7 +12,7 @@ test('test formattedSubjects', ()=>{
   };
 
   // Expected type and element amount
-  var subjects = kg.formattedSubjects(csrSubjects);
+  var subjects = cg._formattedSubjects(csrSubjects);
   expect(typeof subjects).toBe(typeof []);
   expect(subjects.length).toBe(Object.keys(subjects).length);
 
@@ -32,7 +32,7 @@ test('test formattedSubjects', ()=>{
   expect(expectedElements.length).toBe(0);
 
   // Match the default value
-  var subjects = kg.formattedSubjects({});
+  var subjects = cg._formattedSubjects({});
   var expectedElements = [
     { name: 'commonName', value: '' },
     { name: 'countryName', value: '' },
@@ -57,10 +57,10 @@ test('test generateCertificateTemplate', ()=>{
     organizationName: 'Soft Chef',
     organizationUnitName: 'web',
   };
-  const attr = kg.formattedSubjects(csrSubjects);
+  const attr = cg._formattedSubjects(csrSubjects);
 
   // Match the subjects
-  var cert = kg.generateCertificateTemplate(attr, 1);
+  var cert = cg._generateCertificateTemplate(attr, 1);
   var expectedElements = [
     { name: 'commonName', value: 'SoftChef' },
     { name: 'countryName', value: 'TW' },
@@ -77,7 +77,7 @@ test('test generateCertificateTemplate', ()=>{
 
   // Match the time interval
   expect(cert.validity.notAfter.getFullYear() - cert.validity.notBefore.getFullYear()).toBe(1);
-  var cert = kg.generateCertificateTemplate(attr, 10);
+  var cert = cg._generateCertificateTemplate(attr, 10);
   expect(cert.validity.notAfter.getFullYear() - cert.validity.notBefore.getFullYear()).toBe(10);
 });
 
@@ -93,7 +93,7 @@ test('test generateCACertificate', ()=>{
 
   // Match the certificate contents
   var keys = forge.pki.rsa.generateKeyPair(2048);
-  var caCertificate = kg.generateCACertificate(keys.publicKey, keys.privateKey, csrSubjects);
+  var caCertificate = cg._generateCACertificate(keys.publicKey, keys.privateKey, csrSubjects);
   expect(caCertificate.publicKey).toBe(keys.publicKey);
   expect(caCertificate.verify(caCertificate)).toBe(true);
   expect(caCertificate.serialNumber).toBe('01');
@@ -120,10 +120,53 @@ test('test generateVerificationCertificate', ()=>{
   };
   var caKeys = forge.pki.rsa.generateKeyPair(2048);
   var veriKeys = forge.pki.rsa.generateKeyPair(2048);
-  var caCertificate = kg.generateCACertificate(caKeys.publicKey, caKeys.privateKey, csrSubjects);
-  var vefiCert = kg.generateVerificationCertificate(caKeys.privateKey, caCertificate, veriKeys);
+  var caCertificate = cg._generateCACertificate(caKeys.publicKey, caKeys.privateKey, csrSubjects);
+  var vefiCert = cg._generateVerificationCertificate(caKeys.privateKey, caCertificate, veriKeys);
   // Match the public key
   expect(vefiCert.publicKey).toBe(veriKeys.publicKey);
   // Expect the verification certificate is signed by the CA certificate
   expect(caCertificate.verify(vefiCert)).toBe(true);
+});
+
+test('test getCaRegistrationCertificates', ()=>{
+  const csrSubjects = {
+    commonName: 'SoftChef',
+    countryName: 'TW',
+    stateName: 'TP',
+    localityName: 'TW',
+    organizationName: 'Soft Chef',
+    organizationUnitName: 'web',
+  };
+  var certificates = cg.getCaRegistrationCertificates(csrSubjects);
+
+  // Certificates information are defined
+  expect(typeof certificates.ca.keys.privateKey).toBe(typeof '');
+  expect(typeof certificates.ca.keys.publicKey).toBe(typeof '');
+  expect(typeof certificates.ca.certificate).toBe(typeof '');
+  expect(typeof certificates.verification.keys.privateKey).toBe(typeof '');
+  expect(typeof certificates.verification.keys.publicKey).toBe(typeof '');
+  expect(typeof certificates.verification.certificate).toBe(typeof '');
+
+  // Verification certificate is signed with CA certificate
+  var caCert = forge.pki.certificateFromPem(certificates.ca.certificate);
+  var veriCert = forge.pki.certificateFromPem(certificates.verification.certificate);
+  expect(caCert.verify(veriCert)).toBe(true);
+
+  // CA keys are paired
+  var privateKey = forge.pki.privateKeyFromPem(certificates.ca.keys.privateKey);
+  var publicKey = forge.pki.publicKeyFromPem(certificates.ca.keys.publicKey);
+  var md = forge.md.sha1.create();
+  md.update('test', 'utf8');
+  var signature = privateKey.sign(md);
+  expect(publicKey.verify(md.digest().getBytes(), signature)).toBe(true);
+  expect(forge.pki.publicKeyToPem(caCert.publicKey)).toBe(certificates.ca.keys.publicKey);
+
+  // Verification keys are paired
+  var privateKey = forge.pki.privateKeyFromPem(certificates.verification.keys.privateKey);
+  var publicKey = forge.pki.publicKeyFromPem(certificates.verification.keys.publicKey);
+  var md = forge.md.sha1.create();
+  md.update('test', 'utf8');
+  var signature = privateKey.sign(md);
+  expect(publicKey.verify(md.digest().getBytes(), signature)).toBe(true);
+
 });
