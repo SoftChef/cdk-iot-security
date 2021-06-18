@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const { Request, Response } = require('softchef-utility');
+const { Request } = require('softchef-utility');
 const { Certificates } = require('./certificates');
 const errorCodes = require('./errorCodes');
 
@@ -17,10 +17,17 @@ exports.CaRegistrator = class CaRegistrator {
     }
 
     this.region = process.env.AWS_REGION;
-    this.bucket = this.request.input('bucket');
-    this.key = this.request.input('key');
+
+    this.bucketName = process.env.BUCKET_NAME;
+    this.bucketPrefix = process.env.BUCKET_PREFIX;
+    this.bucketKey = process.env.BUCKET_KEY;
+
+    // this.bucketName = this.request.input('bucket');
+    // this.bucketKey = this.request.input('key');
+
+
     this.csrSubjects = this.request.input('csrSubjects', {});
-    this.caConfig = this.request.input('caConfig');
+    
 
     this.certificates = {
       ca: {
@@ -78,14 +85,23 @@ exports.CaRegistrator = class CaRegistrator {
      * @returns The Promise object of calling API.
      */
   async registerCa() {
-    var params = Object.assign({
+    // var params = Object.assign({
+    //   caCertificate: this.certificates.ca.certificate,
+    //   verificationCertificate: this.certificates.verification.certificate,
+    //   allowAutoRegistration: true,
+    //   registrationConfig: {},
+    //   setAsActive: true,
+    //   tags: [{ Key: 'ca', Value: '01' }],
+    // }, this.caConfig || {});
+
+    var params = {
       caCertificate: this.certificates.ca.certificate,
       verificationCertificate: this.certificates.verification.certificate,
       allowAutoRegistration: true,
       registrationConfig: {},
       setAsActive: true,
       tags: [{ Key: 'ca', Value: '01' }],
-    }, this.caConfig || {});
+    };
     return this.iot.registerCACertificate(params).promise();
   }
 
@@ -123,8 +139,8 @@ exports.CaRegistrator = class CaRegistrator {
     };
     const registrationCode = this.results.registrationCode;
     var params = {
-      Bucket: this.bucket,
-      Key: `${registrationCode}/${this.key}`,
+      Bucket: this.bucketName,
+      Key: `${this.bucketPrefix}/${registrationCode}/${this.bucketKey}`,
       Body: Buffer.from(JSON.stringify(table)),
     };
     return this.s3.upload(params).promise();

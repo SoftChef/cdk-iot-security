@@ -17,7 +17,7 @@ import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistra
 
 AWS.config.region = 'local';
 
-var event = {
+let event = {
   body: {
     csrSubjects: {
       commonName: '',
@@ -30,14 +30,6 @@ var event = {
     verifier: {
       name: 'test_verifier',
       arn: 'arn_of_test_verifier',
-    },
-    bucket: 'bucketName',
-    key: 'ca.json',
-    caConfig: {
-      allowAutoRegistration: true,
-      registrationConfig: {},
-      setAsActive: true,
-      tags: [{ Key: 'ca', Value: '01' }],
     },
   },
 };
@@ -94,6 +86,9 @@ beforeEach(() => {
   process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'us-east-1';
   process.env.test_verifier = 'arn_of_test_verifier';
+  process.env.BUCKET_NAME = 'bucket_name';
+  process.env.BUCKET_PREFIX = 'bucket_prefix';
+  process.env.BUCKET_KEY = 'bucket_key';
 });
 
 afterEach(() => {
@@ -101,121 +96,105 @@ afterEach(() => {
 });
 
 test('Initialize CaRegistrator', ()=>{
-  var registrator = new CaRegistrator(event);
-  expect(registrator.region).toBe(process.env.AWS_REGION);
-  expect(registrator.verifier).toMatchObject({
+  let caRegistrator = new CaRegistrator(event);
+  expect(caRegistrator.region).toBe(process.env.AWS_REGION);
+  expect(caRegistrator.verifier).toMatchObject({
     name: 'test_verifier',
     arn: 'arn_of_test_verifier',
   });
-  expect(registrator.bucket).toBe(event.body.bucket);
-  expect(registrator.key).toBe(event.body.key);
-  expect(registrator.csrSubjects).toBe(event.body.csrSubjects);
-  expect(registrator.caConfig).toBe(event.body.caConfig);
-  expect(registrator.certificates.ca.keys.privateKey).toBeNull();
-  expect(registrator.certificates).toMatchObject(nullCertificates);
-  expect(registrator.results).toMatchObject(nullResults);
+  expect(caRegistrator.bucketName).toBe(process.env.BUCKET_NAME);
+  expect(caRegistrator.bucketKey).toBe(process.env.BUCKET_KEY);
+  expect(caRegistrator.bucketPrefix).toBe(process.env.BUCKET_PREFIX);
+  expect(caRegistrator.csrSubjects).toBe(event.body.csrSubjects);
+  expect(caRegistrator.certificates.ca.keys.privateKey).toBeNull();
+  expect(caRegistrator.certificates).toMatchObject(nullCertificates);
+  expect(caRegistrator.results).toMatchObject(nullResults);
 });
 
 test('Initialize CaRegistrator without specifying verifier', ()=>{
-  var eventWithoutVerifier = Object.assign(
+  let eventWithoutVerifier = Object.assign(
     {}, event, { body: { verifier: {} } });
-  var registrator = new CaRegistrator(eventWithoutVerifier);
-  expect(registrator.verifier).toMatchObject({});
+  let caRegistrator = new CaRegistrator(eventWithoutVerifier);
+  expect(caRegistrator.verifier).toMatchObject({});
 });
 
 test('Initialize CaRegistrator without specifying CSR subjects', ()=>{
-  var eventWithoutCsrSubjects = Object.assign(
+  let eventWithoutCsrSubjects = Object.assign(
     {}, event, { body: { csrSubjects: null } });
-  var registrator = new CaRegistrator(eventWithoutCsrSubjects);
-  expect(registrator.verifier).toMatchObject({});
+  let caRegistrator = new CaRegistrator(eventWithoutCsrSubjects);
+  expect(caRegistrator.verifier).toMatchObject({});
 });
 
-// test('Call checkBucket', async () => {
-//   var registrator = new CaRegistrator(event);
-//   await registrator.checkBucket();
-//   expect(registrator.response).toBeNull();
-// });
-
-// test('Call checkBucket without upload permission', async () => {
-//   AWSMock.remock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
-//     callback(new Error(), null);
-//   });
-//   var registrator = new CaRegistrator(event);
-//   await registrator.checkBucket();
-//   expect(registrator.response.statusCode)
-//     .toBe(errorCodes.errorOfBucketPermission);
-// });
-
 test('Call getRegistrationCode', async ()=>{
-  var registrator = new CaRegistrator(event);
-  var { registrationCode } = await registrator.getRegistrationCode();
+  let caRegistrator = new CaRegistrator(event);
+  let { registrationCode } = await caRegistrator.getRegistrationCode();
   expect(registrationCode).toBe('registration_code');
 });
 
 test('Call createCertificates', async ()=>{
-  var registrator = new CaRegistrator(event);
-  registrator.results = Object.assign(
-    registrator.results, { registrationCode: 'registration_code' });
-  var cert = registrator.createCertificates();
+  let caRegistrator = new CaRegistrator(event);
+  caRegistrator.results = Object.assign(
+    caRegistrator.results, { registrationCode: 'registration_code' });
+  let cert = caRegistrator.createCertificates();
   expect(cert).toBeDefined();
-  expect(registrator.certificates.ca.keys.privateKey).not.toBeNull();
-  expect(registrator.certificates.ca.keys.publicKey).not.toBeNull();
-  expect(registrator.certificates.ca.certificate).not.toBeNull();
-  expect(registrator.certificates.verification.keys.privateKey).not.toBeNull();
-  expect(registrator.certificates.verification.keys.publicKey).not.toBeNull();
-  expect(registrator.certificates.verification.certificate).not.toBeNull();
-  expect(typeof registrator.certificates.ca.certificate).toBe(typeof '');
-  expect(typeof registrator.certificates.ca.keys.privateKey).toBe(typeof '');
-  expect(typeof registrator.certificates.ca.keys.publicKey).toBe(typeof '');
-  expect(typeof registrator.certificates.verification.certificate).toBe(typeof '');
-  expect(typeof registrator.certificates.verification.keys.privateKey).toBe(typeof '');
-  expect(typeof registrator.certificates.verification.keys.publicKey).toBe(typeof '');
+  expect(caRegistrator.certificates.ca.keys.privateKey).not.toBeNull();
+  expect(caRegistrator.certificates.ca.keys.publicKey).not.toBeNull();
+  expect(caRegistrator.certificates.ca.certificate).not.toBeNull();
+  expect(caRegistrator.certificates.verification.keys.privateKey).not.toBeNull();
+  expect(caRegistrator.certificates.verification.keys.publicKey).not.toBeNull();
+  expect(caRegistrator.certificates.verification.certificate).not.toBeNull();
+  expect(typeof caRegistrator.certificates.ca.certificate).toBe(typeof '');
+  expect(typeof caRegistrator.certificates.ca.keys.privateKey).toBe(typeof '');
+  expect(typeof caRegistrator.certificates.ca.keys.publicKey).toBe(typeof '');
+  expect(typeof caRegistrator.certificates.verification.certificate).toBe(typeof '');
+  expect(typeof caRegistrator.certificates.verification.keys.privateKey).toBe(typeof '');
+  expect(typeof caRegistrator.certificates.verification.keys.publicKey).toBe(typeof '');
 });
 
 test('Call registerCa with CA config being provided', async ()=>{
-  var registrator = new CaRegistrator(event);
-  registrator.results = Object.assign(
-    {}, registrator.results, { registrationCode: 'registration_code' });
-  registrator.createCertificates();
-  var result = await registrator.registerCa();
+  let caRegistrator = new CaRegistrator(event);
+  caRegistrator.results = Object.assign(
+    {}, caRegistrator.results, { registrationCode: 'registration_code' });
+  caRegistrator.createCertificates();
+  let result = await caRegistrator.registerCa();
   expect(result).toBeDefined();
 });
 
-test('Call registerCa without CA config being provided', async ()=>{
-  var registrator = new CaRegistrator(event);
-  registrator.caConfig = null;
-  registrator.results = Object.assign(
-    {}, registrator.results, { registrationCode: 'registration_code' });
-  registrator.createCertificates();
-  var result = await registrator.registerCa();
-  expect(result).toBeDefined();
-});
+// test('Call registerCa without CA config being provided', async ()=>{
+//   let caRegistrator = new CaRegistrator(event);
+//   caRegistrator.caConfig = null;
+//   caRegistrator.results = Object.assign(
+//     {}, caRegistrator.results, { registrationCode: 'registration_code' });
+//   caRegistrator.createCertificates();
+//   let result = await caRegistrator.registerCa();
+//   expect(result).toBeDefined();
+// });
 
 test('Call createRule', async ()=>{
-  var registrator = new CaRegistrator(event);
-  Object.assign(registrator.results, {
-    registrationCode: await registrator.getRegistrationCode(),
+  let caRegistrator = new CaRegistrator(event);
+  Object.assign(caRegistrator.results, {
+    registrationCode: await caRegistrator.getRegistrationCode(),
   });
-  registrator.createCertificates();
-  Object.assign(registrator.results, {
-    caRegistration: await registrator.registerCa(),
+  caRegistrator.createCertificates();
+  Object.assign(caRegistrator.results, {
+    caRegistration: await caRegistrator.registerCa(),
   });
-  var result = await registrator.createRule();
+  let result = await caRegistrator.createRule();
   expect(result).toBeDefined();
 });
 
 test('Call upload', async ()=>{
-  var registrator = new CaRegistrator(event);
-  Object.assign(registrator.results, {
-    registrationCode: await registrator.getRegistrationCode(),
+  let caRegistrator = new CaRegistrator(event);
+  Object.assign(caRegistrator.results, {
+    registrationCode: await caRegistrator.getRegistrationCode(),
   });
-  registrator.createCertificates();
-  Object.assign(registrator.results, {
-    caRegistration: await registrator.registerCa(),
+  caRegistrator.createCertificates();
+  Object.assign(caRegistrator.results, {
+    caRegistration: await caRegistrator.registerCa(),
   });
-  Object.assign(registrator.results, {
-    rule: await registrator.createRule(),
+  Object.assign(caRegistrator.results, {
+    rule: await caRegistrator.createRule(),
   });
-  var result = await registrator.upload();
+  let result = await caRegistrator.upload();
   expect(result).toBeDefined();
 });
