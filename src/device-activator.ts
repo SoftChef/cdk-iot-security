@@ -9,8 +9,18 @@ import { Queue } from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
 
 export class DeviceActivator extends Construct {
-  public function: ActivationFunction;
-  public role: Role;
+  /**
+   * The Device Activation Function.
+   */
+  public function: DeviceActivationFunction;
+  /**
+   * The Receptor-Pushing Role for assigning to the Iot Rules.
+   */
+  public queuePushingRole: Role;
+
+  /**
+   * The AWS SQS Queue collecting the messages received from the IoT rules.
+   */
   public receptor: Receptor;
 
   /**
@@ -31,14 +41,14 @@ export class DeviceActivator extends Construct {
     this.receptor = new Receptor(this, id);
     const activationRole = new ActivationRole(this, id);
     this.receptor.grantConsumeMessages(activationRole);
-    this.function = new ActivationFunction(this, id, {
-      activationRole: activationRole,
+    this.function = new DeviceActivationFunction(this, id, {
+      deviceActivationRole: activationRole,
     });
     this.function.addEventSource(new SqsEventSource(this.receptor, {
       batchSize: 1,
     }));
-    this.role = this.receptor.getPushRole('iot.amazonaws.com');
-    this.receptor.grantSendMessages(this.role);
+    this.queuePushingRole = this.receptor.getPushRole('iot.amazonaws.com');
+    this.receptor.grantSendMessages(this.queuePushingRole);
   }
 }
 
@@ -74,21 +84,24 @@ class Receptor extends Queue {
   }
 }
 
-interface ActivationFunctionProps {
-  activationRole: Role;
+interface DeviceActivationFunctionProps {
+  /**
+   * The Role for the Device Activator to complete the device activation work flow.
+   */
+  deviceActivationRole: Role;
 }
 
-class ActivationFunction extends NodejsFunction {
+class DeviceActivationFunction extends NodejsFunction {
   /**
    * Inistialize the Device Activator Function.
    * @param scope
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: ActivationFunctionProps) {
+  constructor(scope: Construct, id: string, props: DeviceActivationFunctionProps) {
     super(scope, `DeviceActivatorFunction-${id}`, {
       entry: path.resolve(__dirname, './lambda-assets/deviceActivator/index.js'),
-      role: props.activationRole,
+      role: props.deviceActivationRole,
     });
   }
 }

@@ -17,7 +17,6 @@ import {
 test('CaRegisterApi integration test', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const verifierStack = new Stack(app, 'verifier-stack');
@@ -76,7 +75,6 @@ test('CaRegisterApi integration test', ()=>{
 test('CaRegisterApi integration test without specifying a verifier', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
@@ -95,7 +93,6 @@ test('CaRegisterApi integration test without specifying a verifier', ()=>{
 test('CaRegisterApi integration test with a specified RestApi and the IAM Authrozation Type is specified', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
@@ -119,7 +116,6 @@ test('CaRegisterApi integration test with a specified RestApi and the IAM Authro
 test('CaRegisterApi integration test with a specified RestApi and the IAM Authrozation Type is specified', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
@@ -143,7 +139,6 @@ test('CaRegisterApi integration test with a specified RestApi and the IAM Authro
 test('Initialize CaRegisterApi with a Cognito-Authorized RestApi', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
@@ -172,7 +167,6 @@ test('Initialize CaRegisterApi with a Cognito-Authorized RestApi', ()=>{
 test('Initialize CaRegisterApi with a Custom-Authorized RestApi', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';
@@ -201,7 +195,6 @@ test('Initialize CaRegisterApi with a Custom-Authorized RestApi', ()=>{
 test('Initialize CaRegisterApi with a Cognito-Authorized RestApi but missing authorizer', ()=>{
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  console.log(process.env.APPS_PATH);
   const app = new App();
   const stack = new Stack(app, 'test-stack');
   const name = 'test-case';

@@ -335,6 +335,7 @@ Object {
     },
     "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseReceptortestcase84FE82A61B06833F": Object {
       "Properties": Object {
+        "BatchSize": 1,
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
             "CaRegisterApitestcaseDeviceActivatortestcaseReceptortestcaseC43B02DB",
@@ -912,6 +913,7 @@ Object {
     },
     "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseReceptortestcase84FE82A61B06833F": Object {
       "Properties": Object {
+        "BatchSize": 1,
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
             "CaRegisterApitestcaseDeviceActivatortestcaseReceptortestcaseC43B02DB",
@@ -1559,6 +1561,7 @@ Object {
     },
     "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseReceptortestcase84FE82A61B06833F": Object {
       "Properties": Object {
+        "BatchSize": 1,
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
             "CaRegisterApitestcaseDeviceActivatortestcaseReceptortestcaseC43B02DB",
@@ -2276,6 +2279,7 @@ Object {
     },
     "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseReceptortestcase84FE82A61B06833F": Object {
       "Properties": Object {
+        "BatchSize": 1,
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
             "CaRegisterApitestcaseDeviceActivatortestcaseReceptortestcaseC43B02DB",
@@ -2853,6 +2857,7 @@ Object {
     },
     "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseReceptortestcase84FE82A61B06833F": Object {
       "Properties": Object {
+        "BatchSize": 1,
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
             "CaRegisterApitestcaseDeviceActivatortestcaseReceptortestcaseC43B02DB",
@@ -3501,6 +3506,7 @@ Object {
     },
     "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseReceptortestcase84FE82A61B06833F": Object {
       "Properties": Object {
+        "BatchSize": 1,
         "EventSourceArn": Object {
           "Fn::GetAtt": Array [
             "CaRegisterApitestcaseDeviceActivatortestcaseReceptortestcaseC43B02DB",

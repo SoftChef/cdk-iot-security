@@ -23,7 +23,13 @@ export interface UploadProps {
 }
 
 export interface VerifierProps {
+  /**
+   * The verifier name.
+   */
   name: string;
+  /**
+   * The verifier Lambda Function
+   */
   lambdaFunction: Function;
 }
 

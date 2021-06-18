@@ -29,7 +29,7 @@ export interface RestApiProps {
 export class JustInTimeRegistration extends Construct {
   public restApi: RestApi;
   public activator: DeviceActivator;
-  public registrator: CaRegistrator;
+  public caRegistrator: CaRegistrator;
 
   /**
    * Initialize a Just-In-Time Registration API.
@@ -55,9 +55,9 @@ export class JustInTimeRegistration extends Construct {
     this.restApi = props.restApiConfig?.restApi || new RestApi(this, id);
     const resource: Resource = this.restApi.root.addResource('register');
 
-    this.registrator = new CaRegistrator(this, id, {
+    this.caRegistrator = new CaRegistrator(this, id, {
       activatorFunction: this.activator.function,
-      activatorRole: this.activator.role,
+      activatorRole: this.activator.queuePushingRole,
       activatorQueueUrl: this.activator.receptor.queueUrl,
       upload: props.upload,
       verifiers: props.verifiers,
@@ -71,19 +71,19 @@ export class JustInTimeRegistration extends Construct {
         if (!authorizer) {
           throw new LackOfAuthorizerError();
         }
-        resource.addMethod('POST', new LambdaIntegration(this.registrator), {
+        resource.addMethod('POST', new LambdaIntegration(this.caRegistrator), {
           authorizationType: authorizationType,
           authorizer: authorizer,
         });
         break;
       case AuthorizationType.IAM:
-        resource.addMethod('POST', new LambdaIntegration(this.registrator), {
+        resource.addMethod('POST', new LambdaIntegration(this.caRegistrator), {
           authorizationType: authorizationType,
         });
         break;
       case AuthorizationType.NONE:
       default:
-        resource.addMethod('POST', new LambdaIntegration(this.registrator));
+        resource.addMethod('POST', new LambdaIntegration(this.caRegistrator));
     }
   }
 }
