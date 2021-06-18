@@ -1,4 +1,10 @@
-import { RestApi, AuthorizationType, Resource, IAuthorizer, LambdaIntegration } from '@aws-cdk/aws-apigateway';
+import {
+  RestApi,
+  AuthorizationType,
+  Resource,
+  IAuthorizer,
+  LambdaIntegration,
+} from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
 
 import { CaRegistrator, VerifierProps } from './ca-registrator';

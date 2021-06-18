@@ -1,6 +1,11 @@
 import * as path from 'path';
 import '@aws-cdk/assert/jest';
 import { SynthUtils } from '@aws-cdk/assert';
+import {
+  RestApi,
+  AuthorizationType,
+  IAuthorizer,
+} from '@aws-cdk/aws-apigateway';
 import { Function, InlineCode, Runtime } from '@aws-cdk/aws-lambda';
 import { App, Stack } from '@aws-cdk/core';
 import { JustInTimeRegistration } from '../../src/just-in-time-registration';
@@ -67,3 +72,77 @@ test('CaRegisterApi integration test without specifying a verifier', ()=>{
   new JustInTimeRegistration(stack, name, {});
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
 });
+
+test('CaRegisterApi integration test with a specified RestApi and the IAM Authrozation Type is specified', ()=>{
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  console.log(process.env.APPS_PATH);
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const providedRestApi = new RestApi(stack, 'test-api');
+  new JustInTimeRegistration(stack, name, {
+    restApiConfig: {
+      restApi: providedRestApi,
+      authorizationType: AuthorizationType.IAM,
+    },
+  });
+  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+});
+
+test('CaRegisterApi integration test with a specified RestApi and the IAM Authrozation Type is specified', ()=>{
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  console.log(process.env.APPS_PATH);
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const providedRestApi = new RestApi(stack, 'test-api');
+  new JustInTimeRegistration(stack, name, {
+    restApiConfig: {
+      restApi: providedRestApi,
+      authorizationType: AuthorizationType.IAM,
+    },
+  });
+  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+});
+
+test('Initialize CaRegisterApi with a Cognito-Authorized RestApi', ()=>{
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  console.log(process.env.APPS_PATH);
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const providedRestApi = new RestApi(stack, 'test-api');
+  const providedIAuthorizer: IAuthorizer = {
+    authorizerId: 'authorizer_id',
+    authorizationType: AuthorizationType.COGNITO,
+  };
+  new JustInTimeRegistration(stack, name, {
+    restApiConfig: {
+      restApi: providedRestApi,
+      authorizationType: AuthorizationType.IAM,
+      authorizer: providedIAuthorizer,
+    },
+  });
+  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+});
+
+// test('Initialize CaRegisterApi with a Cognito-Authorized RestApi but missing authorizer', ()=>{
+//   process.env.BASE_PATH = __dirname;
+//   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+//   console.log(process.env.APPS_PATH);
+//   const app = new App();
+//   const stack = new Stack(app, 'test-stack');
+//   const name = 'test-case';
+//   const providedRestApi = new RestApi(stack, 'test-api');
+//   expect(()=>{
+//     new JustInTimeRegistration(stack, name, {
+//       restApiConfig: {
+//         restApi: providedRestApi,
+//         authorizationType: AuthorizationType.IAM,
+//       },
+//     })
+//   }).toThrow('You specify authorization type is COGNITO, but not specify authorizer.');
+// });

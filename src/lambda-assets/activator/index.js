@@ -1,6 +1,9 @@
 const { Response } = require('softchef-utility');
-const { ClientActivator } = require('./activator');
-const errorCodes = require('./errorCodes');
+const {
+  ParsingVerifyingResultError,
+  MissingClientCertificateIdError,
+} = require('./error');
+const AWS = require('aws-sdk');
 
 /**
  * The lambda function handler activating the client certificates.
@@ -8,69 +11,59 @@ const errorCodes = require('./errorCodes');
  * @returns The HTTP response containing the activation results.
  */
 exports.handler = async (event) => {
-  console.log({ event: event });
+  let [ record ] = event.Records;
+  record = JSON.parse(record.body);
+  certificateId = record.certificateId;
+  verifierArn = record.verifierArn;
+  verified = verifierArn? false : true;
+  results = {
+    clientCertificateInfo: null,
+    verification: null,
+    activation: null,
+  };
+  
+  responseBuilder = new Response();
+  let iot = new AWS.Iot();
+  let lambda = new AWS.Lambda();
+  let response = null; 
 
-  let responses = [];
-
-  for (let record of event.Records) {
-    var activator = new ClientActivator(record);
-    activator.checkCertificateId();
-
-    if (!activator.response) {
-      try {
-        var result = await activator.getClientCertificateInfo();
-        activator.results.clientCertificateInfo = result;
-      } catch (err) {
-        activator.response = activator.responseBuilder.error(
-          err, errorCodes.errorOfCheckingClientCertificate);
-        console.log(err, err.stack);
-      }
-    }
-
-    if (!activator.response && activator.verifierArn) {
-      var result = null;
-      try {
-        result = await activator.verify();
-      } catch (err) {
-        activator.response = activator.responseBuilder.error(
-          err, errorCodes.errorOfInvokingVerifier);
-        console.log(err, err.stack);
-      }
-      if (result) {
-        try {
-          const payload = JSON.parse(result.Payload);
-          const body = JSON.parse(payload.body);
-          if (body.verified != true && body.verified != false) {
-            throw new Error('Fail to parse the verifier response: ' + result.Payload);
-          }
-          activator.verified = body.verified;
-          activator.results.verification = body;
-        } catch (err) {
-          activator.response = activator.responseBuilder.error(
-            err, errorCodes.errorOfParsingVerifyingResult);
-          console.log(err, err.stack);
-        }
-      }
-    }
-
-    if (!activator.response && activator.verified) {
-      try {
-        var result = await activator.setActive();
-        activator.results.activation = result;
-        activator.response = activator.responseBuilder.json(Object.assign({
-          certificateId: activator.certificateId,
-          verifierArn: activator.verifierArn,
-          verified: activator.verified,
-        }, activator.results));
-        console.log(activator.response);
-      } catch (err) {
-        activator.response = activator.responseBuilder.error(
-          err, errorCodes.failedToActivate);
-        console.log(err, err.stack);
-      }
-    }
-
-    responses.push(activator.response);
+  if (!certificateId) {
+    throw new MissingClientCertificateIdError();
   }
-  return new Response().json(responses);
+
+  var result = await iot.describeCertificate({
+    certificateId: certificateId,
+  }).promise();
+  results.clientCertificateInfo = result;
+
+  if (verifierArn) {
+    var result = await lambda.invoke({
+      FunctionName: decodeURIComponent(verifierArn),
+      Payload: Buffer.from(JSON.stringify(results.clientCertificateInfo)),
+    }).promise();
+
+    const payload = JSON.parse(result.Payload);
+    const body = JSON.parse(payload.body);
+    if (body.verified != true && body.verified != false) {
+      throw new ParsingVerifyingResultError();
+    }
+    verified = body.verified;
+    results.verification = body;
+  }
+
+  if (verified) {
+    var result = await iot.updateCertificate({
+      certificateId: certificateId,
+      newStatus: 'ACTIVE',
+    }).promise();
+    results.activation = result;
+  }
+
+  response = responseBuilder.json(Object.assign({
+    certificateId: certificateId,
+    verifierArn: verifierArn,
+    verified: verified,
+  }, results));
+  console.log(response);
+  return response;
 };

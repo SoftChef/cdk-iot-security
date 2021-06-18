@@ -14,7 +14,6 @@ import {
   PutObjectRequest,
 } from 'aws-sdk/clients/s3';
 import { CaRegistrator } from '../../../src/lambda-assets/registrator/caRegistrator';
-import * as errorCodes from '../../../src/lambda-assets/registrator/errorCodes';
 
 AWS.config.region = 'local';
 
@@ -94,6 +93,7 @@ beforeEach(() => {
   process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'us-east-1';
+  process.env.test_verifier = 'arn_of_test_verifier';
 });
 
 afterEach(() => {
@@ -130,43 +130,21 @@ test('Initialize CaRegistrator without specifying CSR subjects', ()=>{
   expect(registrator.verifier).toMatchObject({});
 });
 
-test('Call checkVerifier when an unknown verifier is specified', ()=>{
-  var registrator = new CaRegistrator(event);
-  registrator.checkVerifier();
-  expect(registrator.response.statusCode)
-    .toBe(errorCodes.errorOfUnknownVerifier);
-});
+// test('Call checkBucket', async () => {
+//   var registrator = new CaRegistrator(event);
+//   await registrator.checkBucket();
+//   expect(registrator.response).toBeNull();
+// });
 
-test('Call checkVerifier when a known verifier is specified', ()=>{
-  process.env.test_verifier = event.body.verifier.arn;
-  var registrator = new CaRegistrator(event);
-  registrator.checkVerifier();
-  expect(registrator.response).toBeNull();
-  delete process.env.test_verifier;
-});
-
-test('Call checkVerifier without any specified verifier', ()=>{
-  var registrator = new CaRegistrator(
-    Object.assign({}, event, { body: { verifier: {} } }));
-  registrator.checkVerifier();
-  expect(registrator.response).toBeNull();
-});
-
-test('Call checkBucket', async () => {
-  var registrator = new CaRegistrator(event);
-  await registrator.checkBucket();
-  expect(registrator.response).toBeNull();
-});
-
-test('Call checkBucket without upload permission', async () => {
-  AWSMock.remock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
-  var registrator = new CaRegistrator(event);
-  await registrator.checkBucket();
-  expect(registrator.response.statusCode)
-    .toBe(errorCodes.errorOfBucketPermission);
-});
+// test('Call checkBucket without upload permission', async () => {
+//   AWSMock.remock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
+//     callback(new Error(), null);
+//   });
+//   var registrator = new CaRegistrator(event);
+//   await registrator.checkBucket();
+//   expect(registrator.response.statusCode)
+//     .toBe(errorCodes.errorOfBucketPermission);
+// });
 
 test('Call getRegistrationCode', async ()=>{
   var registrator = new CaRegistrator(event);

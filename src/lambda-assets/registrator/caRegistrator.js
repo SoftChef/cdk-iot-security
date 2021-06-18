@@ -5,19 +5,21 @@ const errorCodes = require('./errorCodes');
 
 exports.CaRegistrator = class CaRegistrator {
   /**
-     * Initialize the CA registrator.
-     * @param {Object} event The lambda function event
-     */
+   * Initialize the CA registrator.
+   * @param {Object} event The lambda function event
+   */
   constructor(event) {
-    this.responseBuilder = new Response();
     this.request = new Request(event);
-    this.response = null;
+    
+    this.verifier = this.request.input('verifier', {});
+    if (this.verifier.arn && process.env[this.verifier.name] !== this.verifier.arn) {
+      throw new errorCodes.UnknownVerifierError();
+    }
 
     this.region = process.env.AWS_REGION;
-    this.verifier = this.request.input('verifier') || {};
     this.bucket = this.request.input('bucket');
     this.key = this.request.input('key');
-    this.csrSubjects = this.request.input('csrSubjects') || {};
+    this.csrSubjects = this.request.input('csrSubjects', {});
     this.caConfig = this.request.input('caConfig');
 
     this.certificates = {
@@ -44,44 +46,9 @@ exports.CaRegistrator = class CaRegistrator {
       upload: null,
     };
 
-    this.iot = new AWS.Iot({ region: this.region, apiVersion: '2015-05-28' });
+    this.iot = new AWS.Iot({ region: this.region });
     this.cloudwatchLogs = new AWS.CloudWatchLogs({ region: this.region });
     this.s3 = new AWS.S3({ region: this.region });
-  }
-
-  /**
-     * Check if the verifier is valid for this registrator or not.
-     */
-  checkVerifier() {
-    if (this.verifier.arn && process.env[this.verifier.name] !== this.verifier.arn) {
-      const err = 'Received unknown verifier';
-      console.log(err);
-      this.response = this.responseBuilder.error(
-        err, errorCodes.errorOfUnknownVerifier);
-    } else {
-      console.log('Verifier checked');
-    }
-  }
-
-  /**
-     * Check if this registrator has the permission
-     * to upload object to the specified bucket or not
-     */
-  async checkBucket() {
-    try {
-      const registrationCode = this.results.registrationCode;
-      var params = {
-        Bucket: this.bucket,
-        Key: `${registrationCode}/${this.key}`,
-        Body: Buffer.from(''),
-      };
-      await this.s3.upload(params).promise();
-      console.log('Bucket checked');
-    } catch (err) {
-      console.log(err);
-      this.response = this.responseBuilder.error(
-        err, errorCodes.errorOfBucketPermission);
-    }
   }
 
   /**
@@ -128,15 +95,6 @@ exports.CaRegistrator = class CaRegistrator {
      */
   async createRule() {
     const caCertificateId = this.results.caRegistration.certificateId;
-
-    const logGroupName = `/jitr/clientRegister/${caCertificateId}`;
-    await this.cloudwatchLogs.createLogGroup({ logGroupName: logGroupName }).promise().catch();
-
-    var log = {
-      logGroupName: logGroupName,
-      roleArn: process.env.ACTIVATOR_ROLE_ARN,
-    };
-
     var params = {
       ruleName: `ActivationRule_${caCertificateId}`,
       topicRulePayload: {
@@ -147,11 +105,7 @@ exports.CaRegistrator = class CaRegistrator {
               roleArn: process.env.ACTIVATOR_ROLE_ARN,
             },
           },
-          {
-            cloudwatchLogs: log,
-          },
         ],
-        errorAction: { cloudwatchLogs: log },
         sql: `SELECT *, "${this.verifier.arn}" as verifierArn FROM '$aws/events/certificates/registered/${caCertificateId}'`,
       },
     };

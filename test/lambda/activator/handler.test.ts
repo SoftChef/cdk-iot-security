@@ -7,7 +7,10 @@ import {
   UpdateCertificateRequest,
 } from 'aws-sdk/clients/iot';
 import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
-import * as errorCodes from '../../../src/lambda-assets/activator/errorCodes';
+import {
+  ParsingVerifyingResultError,
+  MissingClientCertificateIdError,
+} from '../../../src/lambda-assets/activator/error';
 import { handler } from '../../../src/lambda-assets/activator/index';
 
 const record = {
@@ -56,23 +59,36 @@ afterEach(() => {
 });
 
 test('Successfully execute the handler', async () => {
-  var response = await handler({ Records: [record, record] });
+  var response = await handler({ Records: [record] });
   expect(response.statusCode).toBe(200);
-  expect(JSON.parse(response.body).length).toBe(2);
-  expect(JSON.parse(response.body)[0].statusCode)
-    .toBe(200);
-  expect(JSON.parse(response.body)[1].statusCode)
-    .toBe(200);
+});
+
+test('Successfully execute the handler without specifying a verifier', async () => {
+  let recordContent = JSON.parse(record.body);
+  delete recordContent.verifierArn;
+  var recordWithoutVerifier = Object.assign({}, record, { body: JSON.stringify(recordContent) });
+  var response = await handler({ Records: [recordWithoutVerifier] });
+  expect(response.statusCode).toBe(200);
+});
+
+test('Successfully execute the handler but fail to be verified', async () => {
+  AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+    const body = JSON.stringify({ verified: false });
+    const response: InvocationResponse = {
+      StatusCode: 200,
+      Payload: JSON.stringify({ body: body }),
+    };
+    callback(null, response);
+  });
+  var response = await handler({ Records: [record] });
+  expect(response.statusCode).toBe(200);
 });
 
 test('Fail to set the client certificate active', async () => {
   AWSMock.remock('Iot', 'updateCertificate', (_param: UpdateCertificateRequest, callback: Function)=>{
     callback(new Error(), null);
   });
-  var response = await handler({ Records: [record] });
-  expect(response.statusCode).toBe(200);
-  expect(JSON.parse(response.body)[0].statusCode)
-    .toBe(errorCodes.failedToActivate);
+  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
 test('Fail to parse the verifier response', async () => {
@@ -84,38 +100,35 @@ test('Fail to parse the verifier response', async () => {
     };
     callback(null, response);
   });
-  var response = await handler({ Records: [record] });
-  expect(response.statusCode).toBe(200);
-  expect(JSON.parse(response.body)[0].statusCode)
-    .toBe(errorCodes.errorOfParsingVerifyingResult);
+  await expect(handler({ Records: [record] })).rejects.toThrowError(ParsingVerifyingResultError);
 });
 
 test('Fail to invoke the verifier', async () => {
   AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
     callback(new Error(), null);
   });
-  var response = await handler({ Records: [record] });
-  expect(response.statusCode).toBe(200);
-  expect(JSON.parse(response.body)[0].statusCode)
-    .toBe(errorCodes.errorOfInvokingVerifier);
+  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
 test('Fail to query the client certificate information', async () => {
   AWSMock.remock('Iot', 'describeCertificate', (_param: DescribeCertificateRequest, callback: Function)=>{
     callback(new Error(), null);
   });
-  var response = await handler({ Records: [record] });
-  expect(response.statusCode).toBe(200);
-  expect(JSON.parse(response.body)[0].statusCode)
-    .toBe(errorCodes.errorOfCheckingClientCertificate);
+  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
 test('Missing the client certificate ID', async () => {
   let recordContent = JSON.parse(record.body);
   delete recordContent.certificateId;
-  var recordWithoutCertificateId = Object.assign({}, record, { body: JSON.stringify(recordContent) });
-  var response = await handler({ Records: [recordWithoutCertificateId] });
-  expect(response.statusCode).toBe(200);
-  expect(JSON.parse(response.body)[0].statusCode)
-    .toBe(errorCodes.missingClientCertificateId);
+  var recordWithoutCertificateId = Object.assign({}, { body: JSON.stringify(recordContent) });
+  expect(JSON.parse(record.body).certificateId);
+
+  await expect(handler({ Records: [recordWithoutCertificateId] })).rejects.toThrowError(MissingClientCertificateIdError);
+});
+
+test('Get Error Codes successfully', () => {
+  expect(new MissingClientCertificateIdError().code)
+    .toBe(MissingClientCertificateIdError.code);
+  expect(new ParsingVerifyingResultError().code)
+    .toBe(ParsingVerifyingResultError.code);
 });

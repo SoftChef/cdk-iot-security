@@ -1,5 +1,8 @@
 const { CaRegistrator } = require('./caRegistrator');
-const errorCodes = require('./errorCodes');
+const {
+  UnknownVerifierError
+} = require('./errorCodes');
+const { Request, Response } = require('softchef-utility');
 
 /**
  * event example
@@ -28,64 +31,21 @@ const errorCodes = require('./errorCodes');
  * @returns The HTTP response containing the registration result.
  */
 exports.handler = async (event) => {
-  var registrator = new CaRegistrator(event);
-
-  registrator.checkVerifier();
+  responseBuilder = new Response();
+  request = new Request(event);
 
   try {
-    const { registrationCode } = await registrator.getRegistrationCode();
-    console.log(`Registration Code: ${registrationCode}`);
-    registrator.results.registrationCode = registrationCode;
+    var registrator = new CaRegistrator(event);
+    registrator.results.registrationCode = await registrator.getRegistrationCode();
+    registrator.certificates = registrator.createCertificates();
+    registrator.results.caRegistration = await registrator.registerCa();
+    registrator.results.rule = await registrator.createRule();
+    registrator.results.upload = await registrator.upload();
+    response = responseBuilder.json(registrator.results);
   } catch (err) {
-    registrator.response = registrator.responseBuilder.error(
-      err, errorCodes.errorOfGetRegistrationCode);
-    console.log(err, err.stack);
+    console.log(err);
+    response = responseBuilder.error(err, err.code);
   }
 
-  if (!registrator.response) {
-    await registrator.checkBucket();
-  }
-
-  if (!registrator.response) {
-    registrator.createCertificates();
-  }
-
-  if (!registrator.response) {
-    try {
-      const result = await registrator.registerCa();
-      console.log('CA Registration: ' + JSON.stringify(result));
-      registrator.results.caRegistration = result;
-    } catch (err) {
-      registrator.response = registrator.responseBuilder.error(
-        err, errorCodes.errorOfCaRegistration);
-      console.log(err, err.stack);
-    }
-  }
-
-  if (!registrator.response) {
-    try {
-      const result = await registrator.createRule();
-      console.log('Create Rule: ' + JSON.stringify(result));
-      registrator.results.rule = result;
-    } catch (err) {
-      registrator.response = registrator.responseBuilder.error(
-        err, errorCodes.errorOfCreateIotRule);
-      console.log(err, err.stack);
-    }
-  }
-
-  if (!registrator.response) {
-    try {
-      const result = await registrator.upload();
-      console.log('Upload: ' + JSON.stringify(result));
-      registrator.results.upload = result;
-    } catch (err) {
-      registrator.response = registrator.responseBuilder.error(
-        err, errorCodes.errorOfUploadingResult);
-      console.log(err, err.stack);
-    }
-  }
-
-  registrator.response = registrator.response || registrator.responseBuilder.json(registrator.results);
-  return registrator.response;
+  return response;
 };

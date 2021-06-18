@@ -7,7 +7,9 @@ import {
   CreateTopicRuleRequest,
 } from 'aws-sdk/clients/iot';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
-import * as errorCodes from '../../../src/lambda-assets/registrator/errorCodes';
+import {
+  UnknownVerifierError,
+} from '../../../src/lambda-assets/registrator/errorCodes';
 import { handler } from '../../../src/lambda-assets/registrator/index';
 
 AWS.config.region = 'local';
@@ -87,8 +89,7 @@ test('Fail to upload the results', async () => {
     }
   });
   var response = await handler(event);
-  expect(response.statusCode)
-    .toBe(errorCodes.errorOfUploadingResult);
+  expect(response.statusCode).toBe(500);
 });
 
 test('Fail to create Rule', async () => {
@@ -96,8 +97,7 @@ test('Fail to create Rule', async () => {
     callback(new Error(), null);
   });
   var response = await handler(event);
-  expect(response.statusCode)
-    .toBe(errorCodes.errorOfCreateIotRule);
+  expect(response.statusCode).toBe(500);
 });
 
 test('Fail to register CA', async () => {
@@ -105,8 +105,7 @@ test('Fail to register CA', async () => {
     callback(new Error(), null);
   });
   var response = await handler(event);
-  expect(response.statusCode)
-    .toBe(errorCodes.errorOfCaRegistration);
+  expect(response.statusCode).toBe(500);
 });
 
 test('Fail to get CA registration code', async () => {
@@ -114,6 +113,13 @@ test('Fail to get CA registration code', async () => {
     callback(new Error(), {});
   });
   var response = await handler(event);
-  expect(response.statusCode)
-    .toBe(errorCodes.errorOfGetRegistrationCode);
+  expect(response.statusCode).toBe(500);
+});
+
+test('Provide the wrong verifier', async () => {
+  let eventWithoutVerifier = Object.assign({}, event, {
+    body: { verifier: { name: 'wrong', arn: 'wrong' } },
+  });
+  var response = await handler(eventWithoutVerifier);
+  expect(response.statusCode).toBe(UnknownVerifierError.code);
 });

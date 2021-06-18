@@ -44,7 +44,6 @@ export class CaRegistrator extends NodejsFunction {
       memorySize: 256,
       environment: environment,
     });
-    // props.apiResource.addMethod('POST', new LambdaIntegration(this));
   }
 }
 

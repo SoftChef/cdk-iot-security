@@ -1,6 +1,10 @@
-exports.errorOfGetRegistrationCode = 411;
-exports.errorOfCaRegistration = 412;
-exports.errorOfCreateIotRule = 413;
-exports.errorOfUnknownVerifier = 414;
-exports.errorOfUploadingResult = 415;
-exports.errorOfBucketPermission = 416;
+exports.UnknownVerifierError = class UnknownVerifierError extends Error{
+    static code = 411;
+    constructor() {
+        let message = "Received unknown verifier";
+        super(message);
+    }
+    get code() {
+        return UnknownVerifierError.code;
+    }
+}
