@@ -7,11 +7,11 @@ import {
   UpdateCertificateRequest,
 } from 'aws-sdk/clients/iot';
 import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
+import { handler } from '../../../src/lambda-assets/deviceActivator/index';
 import {
   ParsingVerifyingResultError,
   MissingClientCertificateIdError,
-} from '../../../src/lambda-assets/deviceActivator/error';
-import { handler } from '../../../src/lambda-assets/deviceActivator/index';
+} from '../../../src/lambda-assets/errors';
 
 const record = {
   messageId: '203de074-ecd4-4cec-b4d8-6e0c6e7d2661',

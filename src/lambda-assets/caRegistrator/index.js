@@ -1,5 +1,7 @@
-const { CaRegistrationHelper } = require('./caRegistrationHelper');
 const { Request, Response } = require('softchef-utility');
+const { UnknownVerifierError } = require('../errors');
+const AWS = require('aws-sdk');
+const { CertificateGenerator } = require('./certificateGenerator');
 
 /**
  * event example
@@ -28,21 +30,90 @@ const { Request, Response } = require('softchef-utility');
  * @returns The HTTP response containing the registration result.
  */
 exports.handler = async (event) => {
-  responseBuilder = new Response();
-  request = new Request(event);
+  const request = new Request(event);
+  const response = new Response();
+
+  let csrSubjects = request.input('csrSubjects', {});  
+  const verifierName = request.input('verifierName');
+  const verifierArn = process.env[verifierName];
+
+  const region = process.env.AWS_REGION;
+  const iot = new AWS.Iot({ region: region });
+  const s3 = new AWS.S3({ region: region });
+
+  const bucketName = process.env.BUCKET_NAME;
+  const bucketPrefix = process.env.BUCKET_PREFIX;
+  const queueUrl = process.env.DEIVCE_ACTIVATOR_QUEUE_URL;
+  const deviceActivatorRoleArn = process.env.DEIVCE_ACTIVATOR_ROLE_ARN;
+
+  let certificates = {
+    ca: {
+      keys: {
+        publicKey: null,
+        privateKey: null,
+      },
+      certificate: null,
+    },
+    verification: {
+      keys: {
+        publicKey: null,
+        privateKey: null,
+      },
+      certificate: null,
+    },
+  };
+
+  let results = {
+    registrationCode: null,
+    caRegistration: null,
+    upload: null,
+  };
 
   try {
-    var registrator = new CaRegistrationHelper(event);
-    registrator.results.registrationCode = await registrator.getRegistrationCode();
-    registrator.certificates = registrator.createCertificates();
-    registrator.results.caRegistration = await registrator.registerCa();
-    registrator.results.rule = await registrator.createRule();
-    registrator.results.upload = await registrator.upload();
-    response = responseBuilder.json(registrator.results);
+    if (verifierName && !process.env[verifierName]) {
+      throw new UnknownVerifierError();
+    }
+
+    results.registrationCode = await iot.getRegistrationCode({}).promise();
+    csrSubjects = Object.assign(csrSubjects, { commonName: results.registrationCode });
+
+    certificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+    results.caRegistration = await iot.registerCACertificate({
+      caCertificate: certificates.ca.certificate,
+      verificationCertificate: certificates.verification.certificate,
+      allowAutoRegistration: true,
+      registrationConfig: {},
+      setAsActive: true,
+      tags: [{ Key: 'ca', Value: '01' }],
+    }).promise();
+
+    await iot.createTopicRule({
+      ruleName: `ActivationRule_${results.caRegistration.caCertificateId}`,
+      topicRulePayload: {
+        actions: [
+          {
+            sqs: {
+              queueUrl: queueUrl,
+              roleArn: deviceActivatorRoleArn,
+            },
+          },
+        ],
+        sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${results.caRegistration.caCertificateId}'`,
+      },
+    }).promise();
+
+    results.upload = await s3.upload({
+      Bucket: bucketName,
+      Key: `${bucketPrefix}/${results.caRegistration.certificateId}/ca.json`,
+      Body: Buffer.from(JSON.stringify({
+        certificates: certificates,
+        results: results,
+      })),
+    }).promise();
+
+    return response.json(results);
   } catch (err) {
     console.log(err);
-    response = responseBuilder.error(err, err.code);
+    return response.error(err, err.code);
   }
-
-  return response;
 };

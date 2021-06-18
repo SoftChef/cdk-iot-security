@@ -12,10 +12,21 @@ exports.ParsingVerifyingResultError = class ParsingVerifyingResultError extends 
 exports.MissingClientCertificateIdError = class MissingClientCertificateIdError extends Error {
     static code = 415;
     constructor() {
-        let message = " The message is lack of the client certificate ID."
+        let message = "The message is lack of the client certificate ID."
         super(message);
     }
     get code() {
         return MissingClientCertificateIdError.code;
+    }
+}
+
+exports.UnknownVerifierError = class UnknownVerifierError extends Error{
+    static code = 411;
+    constructor() {
+        let message = "Received unknown verifier";
+        super(message);
+    }
+    get code() {
+        return UnknownVerifierError.code;
     }
 }

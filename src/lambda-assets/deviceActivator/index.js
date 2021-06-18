@@ -2,7 +2,7 @@ const { Response } = require('softchef-utility');
 const {
   ParsingVerifyingResultError,
   MissingClientCertificateIdError,
-} = require('./error');
+} = require('../errors');
 const AWS = require('aws-sdk');
 
 /**

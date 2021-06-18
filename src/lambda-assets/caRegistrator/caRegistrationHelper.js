@@ -1,26 +1,21 @@
 const AWS = require('aws-sdk');
 const { Request } = require('softchef-utility');
 const { CertificateGenerator } = require('./certificateGenerator');
-const error = require('./error');
+const { UnknownVerifierError } = require('../errors');
 
 exports.CaRegistrationHelper = class CaRegistrationHelper {
   /**
    * Initialize the CA Registration Helper.
    * @param {Object} event The lambda function event
    */
-  constructor(event) {
-    this.request = new Request(event);
-    
-    this.verifierName = this.request.input('verifierName');
-    if (this.verifierName && !process.env[this.verifierName]) {
-      throw new error.UnknownVerifierError();
-    }
+  constructor(verifierName, csrSubjects) {    
+    this.verifierName = verifierName
     this.verifierArn = process.env[this.verifierName];
     this.region = process.env.AWS_REGION;
     this.bucketName = process.env.BUCKET_NAME;
     this.bucketPrefix = process.env.BUCKET_PREFIX;
     this.bucketKey = process.env.BUCKET_KEY;
-    this.csrSubjects = this.request.input('csrSubjects', {});
+    this.csrSubjects = csrSubjects
     this.certificates = {
       ca: {
         keys: {
@@ -120,10 +115,10 @@ exports.CaRegistrationHelper = class CaRegistrationHelper {
       certificates: this.certificates,
       results: this.results,
     };
-    const registrationCode = this.results.registrationCode;
+    const caCertificateId = this.results.caRegistration.certificateId;
     var params = {
       Bucket: this.bucketName,
-      Key: `${this.bucketPrefix}/${registrationCode}/${this.bucketKey}`,
+      Key: `${this.bucketPrefix}/${caCertificateId}/ca.json`,
       Body: Buffer.from(JSON.stringify(table)),
     };
     return this.s3.upload(params).promise();

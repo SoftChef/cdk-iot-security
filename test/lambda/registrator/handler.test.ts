@@ -7,12 +7,12 @@ import {
   CreateTopicRuleRequest,
 } from 'aws-sdk/clients/iot';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
+import { handler } from '../../../src/lambda-assets/caRegistrator/index';
 import {
   UnknownVerifierError,
-} from '../../../src/lambda-assets/caRegistrator/error';
-import { handler } from '../../../src/lambda-assets/caRegistrator/index';
+} from '../../../src/lambda-assets/errors';
 
-var event = {
+const event = {
   body: {
     csrSubjects: {
       commonName: '',
@@ -50,8 +50,8 @@ beforeEach(() => {
   AWSMock.mock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
     callback(null, {});
   });
-  process.env.ACTIVATOR_QUEUE_URL = 'activator_queue_url';
-  process.env.ACTIVATOR_ROLE_ARN = 'activator_role_arn';
+  process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
+  process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'us-east-1';
   process.env.test_verifier = 'arn_of_test_verifier';
   process.env.BUCKET_NAME = 'bucket_name';
@@ -65,6 +65,8 @@ afterEach(() => {
 
 test('Sucessfully execute the handler', async () => {
   var response = await handler(event);
+  console.log('response: ');
+  console.log(response);
   expect(response.statusCode).toBe(200);
 });
 

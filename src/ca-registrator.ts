@@ -9,9 +9,9 @@ import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 
 export interface CaRegistratorProps {
-  activatorFunction: Function;
-  activatorRole: Role;
-  activatorQueueUrl: string;
+  // deviceActivatorFunction: Function;
+  deviceActivatorRole: Role;
+  deviceActivatorQueueUrl: string;
   upload: UploadProps;
   verifiers?: [VerifierProps];
 }
@@ -19,7 +19,6 @@ export interface CaRegistratorProps {
 export interface UploadProps {
   bucket: Bucket;
   prefix: string;
-  key: string;
 }
 
 export interface VerifierProps {
@@ -42,12 +41,11 @@ export class CaRegistrator extends NodejsFunction {
    */
   constructor(scope: Construct, id: string, props: CaRegistratorProps) {
     let environment: {[key: string]: string} = {
-      ACTIVATOR_ARN: props.activatorFunction.functionArn,
-      ACTIVATOR_ROLE_ARN: props.activatorRole.roleArn,
-      ACTIVATOR_QUEUE_URL: props.activatorQueueUrl,
+      // ACTIVATOR_ARN: props.deviceActivatorFunction.functionArn,
+      DEIVCE_ACTIVATOR_ROLE_ARN: props.deviceActivatorRole.roleArn,
+      DEIVCE_ACTIVATOR_QUEUE_URL: props.deviceActivatorQueueUrl,
       BUCKET_NAME: props.upload.bucket.bucketName,
       BUCKET_PREFIX: props.upload.prefix,
-      BUCKET_KEY: props.upload.key,
     };
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
 

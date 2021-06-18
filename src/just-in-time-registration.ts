@@ -56,9 +56,8 @@ export class JustInTimeRegistration extends Construct {
     const resource: Resource = this.restApi.root.addResource('register');
 
     this.caRegistrator = new CaRegistrator(this, id, {
-      activatorFunction: this.activator.function,
-      activatorRole: this.activator.queuePushingRole,
-      activatorQueueUrl: this.activator.receptor.queueUrl,
+      deviceActivatorRole: this.activator.deviceActivatorQueuePushingRole,
+      deviceActivatorQueueUrl: this.activator.receptor.queueUrl,
       upload: props.upload,
       verifiers: props.verifiers,
     });

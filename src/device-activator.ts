@@ -1,7 +1,8 @@
 import * as path from 'path';
 import {
   Role, PolicyStatement, Effect,
-  ServicePrincipal, PolicyDocument, ManagedPolicy,
+  ServicePrincipal, PolicyDocument,
+  Policy,
 } from '@aws-cdk/aws-iam';
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
@@ -12,16 +13,16 @@ export class DeviceActivator extends Construct {
   /**
    * The Device Activation Function.
    */
-  public function: DeviceActivationFunction;
+  public deviceActivationFunction: DeviceActivationFunction;
   /**
    * The Receptor-Pushing Role for assigning to the Iot Rules.
    */
-  public queuePushingRole: Role;
+  public deviceActivatorQueuePushingRole: Role;
 
   /**
    * The AWS SQS Queue collecting the messages received from the IoT rules.
    */
-  public receptor: Receptor;
+  public receptor: DeviceActivatorQueue;
 
   /**
    * Initialize the Device Activator.
@@ -38,21 +39,20 @@ export class DeviceActivator extends Construct {
    */
   constructor(scope: Construct, id: string) {
     super(scope, `DeviceActivator-${id}`);
-    this.receptor = new Receptor(this, id);
-    const activationRole = new ActivationRole(this, id);
-    this.receptor.grantConsumeMessages(activationRole);
-    this.function = new DeviceActivationFunction(this, id, {
-      deviceActivationRole: activationRole,
-    });
-    this.function.addEventSource(new SqsEventSource(this.receptor, {
+    this.receptor = new DeviceActivatorQueue(this, id);
+    // const activationRole = new ActivationRole(this, id);
+    // this.receptor.grantConsumeMessages(activationRole);
+    this.deviceActivationFunction = new DeviceActivationFunction(this, id);
+    this.receptor.grantConsumeMessages(this.deviceActivationFunction);
+    this.deviceActivationFunction.addEventSource(new SqsEventSource(this.receptor, {
       batchSize: 1,
     }));
-    this.queuePushingRole = this.receptor.getPushRole('iot.amazonaws.com');
-    this.receptor.grantSendMessages(this.queuePushingRole);
+    this.deviceActivatorQueuePushingRole = this.receptor.getPushRole('iot.amazonaws.com');
+    this.receptor.grantSendMessages(this.deviceActivatorQueuePushingRole);
   }
 }
 
-class Receptor extends Queue {
+class DeviceActivatorQueue extends Queue {
   /**
    * Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
    * @param scope
@@ -84,13 +84,6 @@ class Receptor extends Queue {
   }
 }
 
-interface DeviceActivationFunctionProps {
-  /**
-   * The Role for the Device Activator to complete the device activation work flow.
-   */
-  deviceActivationRole: Role;
-}
-
 class DeviceActivationFunction extends NodejsFunction {
   /**
    * Inistialize the Device Activator Function.
@@ -98,33 +91,14 @@ class DeviceActivationFunction extends NodejsFunction {
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: DeviceActivationFunctionProps) {
+  constructor(scope: Construct, id: string) {
     super(scope, `DeviceActivatorFunction-${id}`, {
       entry: path.resolve(__dirname, './lambda-assets/deviceActivator/index.js'),
-      role: props.deviceActivationRole,
     });
-  }
-}
-
-class ActivationRole extends Role {
-  /**
-   * Initialize the Device Activator Role which allows the activator
-   * to invoke other Lambda Functions, especially the verifier,
-   * and operate the device certificates.
-   * @param scope
-   * @param id
-   */
-  constructor(scope: Construct, id:string) {
-    super(scope, `DeviceActivatorRole-${id}`, {
-      roleName: `DeviceActivatorRoleName-${id}`,
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-      managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName(
-          'service-role/AWSLambdaBasicExecutionRole'),
-      ],
-      inlinePolicies: {
-        CaRegistrationPolicy: new PolicyDocument({
-          statements: [new PolicyStatement({
+    this.role?.attachInlinePolicy(
+      new Policy(this, `DeviceActivationPolicy-${id}`, {
+        statements: [
+          new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
               'iot:UpdateCertificate',
@@ -133,9 +107,9 @@ class ActivationRole extends Role {
               'lambda:InvokeAsync',
             ],
             resources: ['*'],
-          })],
-        }),
-      },
-    });
+          }),
+        ],
+      }),
+    );
   }
 }
