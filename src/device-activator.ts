@@ -34,7 +34,9 @@ export class DeviceActivator extends Construct {
     this.function = new ActivationFunction(this, id, {
       activationRole: activationRole,
     });
-    this.function.addEventSource(new SqsEventSource(this.receptor));
+    this.function.addEventSource(new SqsEventSource(this.receptor, {
+      batchSize: 1,
+    }));
     this.role = this.receptor.getPushRole('iot.amazonaws.com');
     this.receptor.grantSendMessages(this.role);
   }
