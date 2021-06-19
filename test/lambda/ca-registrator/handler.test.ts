@@ -1,18 +1,18 @@
-import * as AWS from 'aws-sdk';
-import * as AWSMock from 'aws-sdk-mock';
-import { CreateLogGroupRequest } from 'aws-sdk/clients/cloudwatchlogs';
 import {
-  GetRegistrationCodeResponse,
-  GetRegistrationCodeRequest,
-  RegisterCACertificateResponse,
-  RegisterCACertificateRequest,
-  CreateTopicRuleRequest,
-} from 'aws-sdk/clients/iot';
-import { PutObjectRequest } from 'aws-sdk/clients/s3';
-import { handler } from '../../../src/lambda-assets/ca-registrator/app';
+  IoTClient,
+  GetRegistrationCodeCommand,
+  RegisterCACertificateCommand,
+  CreateTopicRuleCommand,
+} from '@aws-sdk/client-iot';
+import {
+  S3Client,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
+import { mockClient } from 'aws-sdk-client-mock';
+import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
   UnknownVerifierError,
-} from '../../../src/lambda-assets/ca-registrator/errors';
+} from '../../../lambda-assets/ca-registrator/errors';
 
 const event = {
   body: {
@@ -28,33 +28,22 @@ const event = {
   },
 };
 
+const iotMock = mockClient(IoTClient);
+const s3Mock = mockClient(S3Client);
+
 beforeEach(() => {
-  AWS.config.region = 'local';
-  AWSMock.mock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-    const response: GetRegistrationCodeResponse = {
-      registrationCode: 'registration_code',
-    };
-    callback(null, response);
+  iotMock.on(GetRegistrationCodeCommand).resolves({
+    registrationCode: 'registration_code',
   });
-  AWSMock.mock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
-    const response: RegisterCACertificateResponse = {
-      certificateId: 'ca_certificate_id',
-      certificateArn: 'ca_certificate_arn',
-    };
-    callback(null, response);
+  iotMock.on(RegisterCACertificateCommand).resolves({
+    certificateId: 'ca_certificate_id',
+    certificateArn: 'ca_certificate_arn',
   });
-  AWSMock.mock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
-    callback(null, {});
-  });
-  AWSMock.mock('CloudWatchLogs', 'createLogGroup', (_param: CreateLogGroupRequest, callback: Function)=>{
-    callback(null, {});
-  });
-  AWSMock.mock('S3', 'upload', (_param: PutObjectRequest, callback: Function)=>{
-    callback(null, {});
-  });
+  iotMock.on(CreateTopicRuleCommand).resolves({});
+  s3Mock.on(PutObjectCommand).resolves({});
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
-  process.env.AWS_REGION = 'us-east-1';
+  process.env.AWS_REGION = 'local';
   process.env.test_verifier = 'arn_of_test_verifier';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
@@ -62,7 +51,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  AWSMock.restore();
+  iotMock.reset();
+  s3Mock.reset();
 });
 
 test('Sucessfully execute the handler', async () => {
@@ -72,44 +62,41 @@ test('Sucessfully execute the handler', async () => {
   expect(response.statusCode).toBe(200);
 });
 
+test('Sucessfully execute the handler without providing a verifier', async () => {
+  let eventWithoutVerifier: any = Object.assign({}, event);
+  delete eventWithoutVerifier.body.verifierName;
+  var response = await handler(eventWithoutVerifier);
+  console.log('response: ');
+  console.log(response);
+  expect(response.statusCode).toBe(200);
+});
+
 test('Fail to upload the results', async () => {
-  AWSMock.remock('S3', 'upload', (param: PutObjectRequest, callback: Function)=>{
-    if (param.Body == '') {
-      callback(null, {});
-    } else {
-      callback(new Error(), null);
-    }
-  });
+  s3Mock.on(PutObjectCommand).rejects(new Error());
   var response = await handler(event);
   expect(response.statusCode).toBe(500);
 });
 
 test('Fail to create Rule', async () => {
-  AWSMock.remock('Iot', 'createTopicRule', (_param: CreateTopicRuleRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
+  iotMock.on(CreateTopicRuleCommand).rejects(new Error());
   var response = await handler(event);
   expect(response.statusCode).toBe(500);
 });
 
 test('Fail to register CA', async () => {
-  AWSMock.remock('Iot', 'registerCACertificate', (_param: RegisterCACertificateRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
+  iotMock.on(RegisterCACertificateCommand).rejects(new Error());
   var response = await handler(event);
   expect(response.statusCode).toBe(500);
 });
 
 test('Fail to get CA registration code', async () => {
-  AWSMock.remock('Iot', 'getRegistrationCode', (_param: GetRegistrationCodeRequest, callback: Function)=>{
-    callback(new Error(), {});
-  });
+  iotMock.on(GetRegistrationCodeCommand).rejects(new Error());
   var response = await handler(event);
   expect(response.statusCode).toBe(500);
 });
 
 test('Provide the wrong verifier', async () => {
-  let eventWithWrongVerifier = Object.assign({}, event, {
+  let eventWithWrongVerifier: any = Object.assign({}, event, {
     body: { verifierName: 'wrong' },
   });
   var response = await handler(eventWithWrongVerifier);

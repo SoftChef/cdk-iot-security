@@ -1,17 +1,18 @@
-
-import * as AWS from 'aws-sdk';
-import * as AWSMock from 'aws-sdk-mock';
 import {
-  DescribeCertificateRequest,
-  DescribeCertificateResponse,
-  UpdateCertificateRequest,
-} from 'aws-sdk/clients/iot';
-import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
-import { handler } from '../../../src/lambda-assets/device-activator/app';
+  DescribeCertificateCommand,
+  UpdateCertificateCommand,
+  IoTClient,
+} from '@aws-sdk/client-iot';
+import {
+  InvokeCommand,
+  LambdaClient,
+} from '@aws-sdk/client-lambda';
+import { mockClient } from 'aws-sdk-client-mock';
+import { handler } from '../../../lambda-assets/device-activator/app';
 import {
   ParsingVerifyingResultError,
   MissingClientCertificateIdError,
-} from '../../../src/lambda-assets/device-activator/errors';
+} from '../../../lambda-assets/device-activator/errors';
 
 const record = {
   messageId: '203de074-ecd4-4cec-b4d8-6e0c6e7d2661',
@@ -30,31 +31,48 @@ const record = {
   awsRegion: 'us-east-1',
 };
 
+const iotMock = mockClient(IoTClient);
+const lambdaMock = mockClient(LambdaClient);
+
 beforeEach(() => {
-  AWS.config.region = 'local';
-  AWSMock.mock('Iot', 'describeCertificate', (param: DescribeCertificateRequest, callback: Function)=>{
-    const response: DescribeCertificateResponse = {
-      certificateDescription: {
-        certificateId: param.certificateId,
-      },
-    };
-    callback(null, response);
+  iotMock.on(DescribeCertificateCommand).resolves({
+    certificateDescription: {
+      certificateId: 'test_certificate_id',
+    },
   });
-  AWSMock.mock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
-    const body = JSON.stringify({ verified: true });
-    const response: InvocationResponse = {
-      StatusCode: 200,
-      Payload: JSON.stringify({ body: body }),
-    };
-    callback(null, response);
+  // AWSMock.mock('Iot', 'describeCertificate', (param: DescribeCertificateRequest, callback: Function)=>{
+  //   const response: DescribeCertificateResponse = {
+  //     certificateDescription: {
+  //       certificateId: param.certificateId,
+  //     },
+  //   };
+  //   callback(null, response);
+  // });
+  lambdaMock.on(InvokeCommand).resolves({
+    StatusCode: 200,
+    Payload: new TextEncoder().encode(
+      JSON.stringify({ body: { verified: true } }),
+    ),
   });
-  AWSMock.mock('Iot', 'updateCertificate', (_param: UpdateCertificateRequest, callback: Function)=>{
-    callback(null, {});
-  });
+  // AWSMock.mock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+  //   const body = JSON.stringify({ verified: true });
+  //   const response: InvocationResponse = {
+  //     StatusCode: 200,
+  //     Payload: JSON.stringify({ body: body }),
+  //   };
+  //   callback(null, response);
+  // });
+  iotMock.on(UpdateCertificateCommand).resolves({});
+  // AWSMock.mock('Iot', 'updateCertificate', (_param: UpdateCertificateRequest, callback: Function)=>{
+  //   callback(null, {});
+  // });
+  process.env.AWS_REGION = 'local';
 });
 
 afterEach(() => {
-  AWSMock.restore();
+  // AWSMock.restore();
+  iotMock.reset();
+  lambdaMock.reset();
 });
 
 test('Successfully execute the handler', async () => {
@@ -71,48 +89,63 @@ test('Successfully execute the handler without specifying a verifier', async () 
 });
 
 test('Successfully execute the handler but fail to be verified', async () => {
-  AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
-    const body = JSON.stringify({ verified: false });
-    const response: InvocationResponse = {
-      StatusCode: 200,
-      Payload: JSON.stringify({ body: body }),
-    };
-    callback(null, response);
+  lambdaMock.on(InvokeCommand).resolves({
+    StatusCode: 200,
+    Payload: new TextEncoder().encode(
+      JSON.stringify({ body: { verified: false } }),
+    ),
   });
+  // AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+  //   const body = JSON.stringify({ verified: false });
+  //   const response: InvocationResponse = {
+  //     StatusCode: 200,
+  //     Payload: JSON.stringify({ body: body }),
+  //   };
+  //   callback(null, response);
+  // });
   var response = await handler({ Records: [record] });
   expect(response.statusCode).toBe(200);
 });
 
 test('Fail to set the client certificate active', async () => {
-  AWSMock.remock('Iot', 'updateCertificate', (_param: UpdateCertificateRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
+  iotMock.on(UpdateCertificateCommand).rejects(new Error());
+  // AWSMock.remock('Iot', 'updateCertificate', (_param: UpdateCertificateRequest, callback: Function)=>{
+  //   callback(new Error(), null);
+  // });
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
 test('Fail to parse the verifier response', async () => {
-  AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
-    const body = JSON.stringify({});
-    const response: InvocationResponse = {
-      StatusCode: 200,
-      Payload: JSON.stringify({ body: body }),
-    };
-    callback(null, response);
+  lambdaMock.on(InvokeCommand).resolves({
+    StatusCode: 200,
+    Payload: new TextEncoder().encode(
+      JSON.stringify({ body: {} }),
+    ),
   });
+  // AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+  //   const body = JSON.stringify({});
+  //   const response: InvocationResponse = {
+  //     StatusCode: 200,
+  //     Payload: JSON.stringify({ body: body }),
+  //   };
+  //   callback(null, response);
+  // });
   await expect(handler({ Records: [record] })).rejects.toThrowError(ParsingVerifyingResultError);
 });
 
 test('Fail to invoke the verifier', async () => {
-  AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
+  lambdaMock.on(InvokeCommand).rejects(new Error());
+  // AWSMock.remock('Lambda', 'invoke', (_param: InvocationRequest, callback: Function)=>{
+  //   callback(new Error(), null);
+  // });
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
 test('Fail to query the client certificate information', async () => {
-  AWSMock.remock('Iot', 'describeCertificate', (_param: DescribeCertificateRequest, callback: Function)=>{
-    callback(new Error(), null);
-  });
+  iotMock.on(DescribeCertificateCommand).rejects(new Error());
+  // AWSMock.remock('Iot', 'describeCertificate', (_param: DescribeCertificateRequest, callback: Function)=>{
+  //   callback(new Error(), null);
+  // });
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
@@ -121,7 +154,6 @@ test('Missing the client certificate ID', async () => {
   delete recordContent.certificateId;
   var recordWithoutCertificateId = Object.assign({}, { body: JSON.stringify(recordContent) });
   expect(JSON.parse(record.body).certificateId);
-
   await expect(handler({ Records: [recordWithoutCertificateId] })).rejects.toThrowError(MissingClientCertificateIdError);
 });
 
