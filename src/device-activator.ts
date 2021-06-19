@@ -12,6 +12,8 @@ import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import * as sqs from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
 
+// export module DeviceActivator {
+// export class DeviceActivator extends Construct {
 export class DeviceActivator extends Construct {
   /**
    * The Device Activation Function.
