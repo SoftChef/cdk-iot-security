@@ -13,10 +13,7 @@ import {
 } from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { App, Stack } from '@aws-cdk/core';
-import {
-  JustInTimeRegistration,
-  LackOfAuthorizerError,
-} from '../../src/just-in-time-registration';
+import { JustInTimeRegistration } from '../../src/just-in-time-registration';
 
 test('CaRegisterApi integration test', () => {
   process.env.BASE_PATH = __dirname;
@@ -210,5 +207,9 @@ test('Initialize CaRegisterApi with a Cognito-Authorized RestApi but missing aut
         prefix: 'test',
       },
     });
-  }).toThrowError(LackOfAuthorizerError);
+  }).toThrowError(JustInTimeRegistration.LackOfAuthorizerError);
+});
+
+test('Initialize LackOfAuthorizerError', () => {
+  expect(new JustInTimeRegistration.LackOfAuthorizerError() instanceof JustInTimeRegistration.LackOfAuthorizerError).toBeTruthy();
 });

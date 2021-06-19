@@ -11,7 +11,7 @@ import { handler } from '../../../src/lambda-assets/device-activator/app';
 import {
   ParsingVerifyingResultError,
   MissingClientCertificateIdError,
-} from '../../../src/lambda-assets/errors';
+} from '../../../src/lambda-assets/device-activator/errors';
 
 const record = {
   messageId: '203de074-ecd4-4cec-b4d8-6e0c6e7d2661',

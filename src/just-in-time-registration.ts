@@ -6,29 +6,13 @@ import {
   LambdaIntegration,
 } from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
-import {
-  CaRegistrationFunction,
-  VerifierProps,
-  VaultProps,
-} from './ca-registrator';
+import { CaRegistrationFunction } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
-
-export interface JustInTimeRegistrationProps {
-  vault: VaultProps;
-  verifiers?: [VerifierProps];
-  restApiConfig?: RestApiProps;
-}
-
-export interface RestApiProps {
-  restApi: RestApi;
-  authorizationType?: AuthorizationType;
-  authorizer?: IAuthorizer;
-}
 
 export class JustInTimeRegistration extends Construct {
   public restApi: RestApi;
   public activator: DeviceActivator;
-  public caRegistrator: CaRegistrationFunction;
+  public caRegistrationFunction: CaRegistrationFunction;
 
   /**
    * Initialize a Just-In-Time Registration API.
@@ -47,47 +31,56 @@ export class JustInTimeRegistration extends Construct {
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: JustInTimeRegistrationProps) {
+  constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
     super(scope, `CaRegisterApi-${id}`);
     this.activator = new DeviceActivator(this, id);
-
     this.restApi = props.restApiConfig?.restApi || new RestApi(this, id);
     const resource: Resource = this.restApi.root.addResource('register');
-
-    this.caRegistrator = new CaRegistrationFunction(this, id, {
-      deviceActivatorQueue: this.activator.deviceActivatorQueue,
+    this.caRegistrationFunction = new CaRegistrationFunction(this, id, {
+      deviceActivatorQueue: this.activator.queue,
       vault: props.vault,
       verifiers: props.verifiers,
     });
-
     let authorizationType: AuthorizationType = props.restApiConfig?.authorizationType || AuthorizationType.NONE;
     let authorizer: IAuthorizer|undefined = props.restApiConfig?.authorizer || undefined;
     switch (authorizationType) {
       case AuthorizationType.COGNITO:
       case AuthorizationType.CUSTOM:
         if (!authorizer) {
-          throw new LackOfAuthorizerError();
+          throw new JustInTimeRegistration.LackOfAuthorizerError();
         }
-        resource.addMethod('POST', new LambdaIntegration(this.caRegistrator), {
+        resource.addMethod('POST', new LambdaIntegration(this.caRegistrationFunction), {
           authorizationType: authorizationType,
           authorizer: authorizer,
         });
         break;
       case AuthorizationType.IAM:
-        resource.addMethod('POST', new LambdaIntegration(this.caRegistrator), {
+        resource.addMethod('POST', new LambdaIntegration(this.caRegistrationFunction), {
           authorizationType: authorizationType,
         });
         break;
       case AuthorizationType.NONE:
       default:
-        resource.addMethod('POST', new LambdaIntegration(this.caRegistrator));
+        resource.addMethod('POST', new LambdaIntegration(this.caRegistrationFunction));
     }
   }
 }
 
-export class LackOfAuthorizerError extends Error {
-  constructor() {
-    let message = 'You specify authorization type is COGNITO, but not specify authorizer.';
-    super(message);
+export namespace JustInTimeRegistration {
+  export class LackOfAuthorizerError extends Error {
+    constructor() {
+      let message = 'You specify authorization type is COGNITO, but not specify authorizer.';
+      super(message);
+    }
+  }
+  export interface Props {
+    vault: CaRegistrationFunction.VaultProps;
+    verifiers?: [CaRegistrationFunction.VerifierProps];
+    restApiConfig?: RestApiProps;
+  }
+  export interface RestApiProps {
+    restApi: RestApi;
+    authorizationType?: AuthorizationType;
+    authorizer?: IAuthorizer;
   }
 }

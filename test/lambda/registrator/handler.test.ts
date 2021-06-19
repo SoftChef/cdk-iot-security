@@ -10,7 +10,7 @@ import { PutObjectRequest } from 'aws-sdk/clients/s3';
 import { handler } from '../../../src/lambda-assets/ca-registrator/app';
 import {
   UnknownVerifierError,
-} from '../../../src/lambda-assets/errors';
+} from '../../../src/lambda-assets/ca-registrator/errors';
 
 const event = {
   body: {

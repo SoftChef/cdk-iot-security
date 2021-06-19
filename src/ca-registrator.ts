@@ -8,29 +8,7 @@ import { Function } from '@aws-cdk/aws-lambda';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
-import { DeviceActivatorQueue } from './device-activator';
-
-export interface CaRegistrationFunctionProps {
-  deviceActivatorQueue: DeviceActivatorQueue;
-  vault: VaultProps;
-  verifiers?: [VerifierProps];
-}
-
-export interface VaultProps {
-  bucket: Bucket;
-  prefix: string;
-}
-
-export interface VerifierProps {
-  /**
-   * The verifier name.
-   */
-  name: string;
-  /**
-   * The verifier Lambda Function
-   */
-  lambdaFunction: Function;
-}
+import { DeviceActivator } from './device-activator';
 
 export class CaRegistrationFunction extends NodejsFunction {
   /**
@@ -39,7 +17,7 @@ export class CaRegistrationFunction extends NodejsFunction {
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: CaRegistrationFunctionProps) {
+  constructor(scope: Construct, id: string, props: CaRegistrationFunction.CaRegistrationFunctionProps) {
     let environment: {[key: string]: string} = {
       DEIVCE_ACTIVATOR_ROLE_ARN: props.deviceActivatorQueue.pushingRole.roleArn,
       DEIVCE_ACTIVATOR_QUEUE_URL: props.deviceActivatorQueue.queueUrl,
@@ -59,47 +37,56 @@ export class CaRegistrationFunction extends NodejsFunction {
         effect: Effect.ALLOW,
         actions: [
           'iam:PassRole',
-          'iam:CreateRole',
-          'iam:AttachRolePolicy',
           'iot:RegisterCACertificate',
-          'iot:TagResource',
           'iot:GetRegistrationCode',
           'iot:CreateTopicRule',
         ],
         resources: ['*'],
       })],
     }));
+    props.vault.bucket.grantWrite(this);
   }
 }
 
-// class CaRegistationRole extends Role {
-//   /**
-//    * Initialize the CA Registration Role granted the neccessary
-//    * permission to register CA and create IoT Rule.
-//    * @param scope
-//    * @param id
-//    */
-//   constructor(scope: Construct, id:string) {
-//     super(scope, `CaRegistrationRole-${id}`, {
-//       roleName: `CaRegistrationRoleName-${id}`,
-//       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-//       managedPolicies: [
-//         ManagedPolicy.fromAwsManagedPolicyName(
-//           'service-role/AWSLambdaBasicExecutionRole'),
-//       ],
-//     });
-//     this.addToPolicy(new PolicyStatement({
-//       effect: Effect.ALLOW,
-//       actions: [
-//         'iam:PassRole',
-//         'iam:CreateRole',
-//         'iam:AttachRolePolicy',
-//         'iot:RegisterCACertificate',
-//         'iot:TagResource',
-//         'iot:GetRegistrationCode',
-//         'iot:CreateTopicRule',
-//       ],
-//       resources: ['*'],
-//     }));
-//   }
-// }
+export namespace CaRegistrationFunction {
+  export interface CaRegistrationFunctionProps {
+    /**
+     * The AWS SQS Queue collecting the MQTT messages sending
+     * from the CA-associated Iot Rule, which sends a message
+     * every time a client register its certificate.
+     */
+    deviceActivatorQueue: DeviceActivator.Queue;
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
+    vault: VaultProps;
+    /**
+     * The verifiers to verify the client certificates.
+     */
+    verifiers?: [VerifierProps];
+  }
+
+
+  export interface VaultProps {
+    /**
+     * The S3 bucket
+     */
+    bucket: Bucket;
+    /**
+     * The specified prefix to save the file.
+     */
+    prefix: string;
+  }
+
+  export interface VerifierProps {
+    /**
+     * The verifier name.
+     */
+    name: string;
+    /**
+     * The verifier Lambda Function
+     */
+    lambdaFunction: Function;
+  }
+}

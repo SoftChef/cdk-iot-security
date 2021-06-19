@@ -1,5 +1,5 @@
 const { Request, Response } = require('softchef-utility');
-const { UnknownVerifierError } = require('../errors');
+const { UnknownVerifierError } = require('./errors');
 const AWS = require('aws-sdk');
 const { CertificateGenerator } = require('./certificate-generator');
 
@@ -31,7 +31,6 @@ exports.handler = async (event) => {
 
   let csrSubjects = request.input('csrSubjects', {});  
   const verifierName = request.input('verifierName');
-  const verifierArn = process.env[verifierName];
 
   const region = process.env.AWS_REGION;
   const iot = new AWS.Iot({ region: region });
@@ -63,20 +62,21 @@ exports.handler = async (event) => {
     if (verifierName && !process.env[verifierName]) {
       throw new UnknownVerifierError();
     }
-    const registrationCode = await iot.getRegistrationCode({}).promise();
+    const verifierArn = process.env[verifierName] || "";
+    const { registrationCode } = await iot.getRegistrationCode({}).promise();
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
     certificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
-    const caRegistration = await iot.registerCACertificate({
+    const { certificateId, certificateArn } = await iot.registerCACertificate({
       caCertificate: certificates.ca.certificate,
       verificationCertificate: certificates.verification.certificate,
       allowAutoRegistration: true,
       registrationConfig: {},
       setAsActive: true,
-      tags: [{ Key: 'ca', Value: '01' }],
+      // tags: [{ Key: 'ca', Value: '01' }],
     }).promise();
 
     await iot.createTopicRule({
-      ruleName: `ActivationRule_${caRegistration.caCertificateId}`,
+      ruleName: `ActivationRule_${certificateId}`,
       topicRulePayload: {
         actions: [
           {
@@ -86,19 +86,22 @@ exports.handler = async (event) => {
             },
           },
         ],
-        sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${caRegistration.caCertificateId}'`,
+        sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
       },
     }).promise();
 
     await s3.upload({
       Bucket: bucketName,
-      Key: `${bucketPrefix}/${caRegistration.certificateId}/ca.json`,
-      Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, caRegistration))),
+      Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
+      Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
+        certificateId: certificateId,
+        certificateArn: certificateArn
+      }))),
     }).promise();
 
-    return response.json(caRegistration);
-  } catch (err) {
-    console.log(err);
-    return response.error(err, err.code);
+    return response.json(certificateId);
+  } catch (error) {
+    console.log(error);
+    return response.error(error, error.code);
   }
 };

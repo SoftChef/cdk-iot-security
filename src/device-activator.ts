@@ -9,19 +9,19 @@ import {
 } from '@aws-cdk/aws-iam';
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import { Queue } from '@aws-cdk/aws-sqs';
+import * as sqs from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
 
 export class DeviceActivator extends Construct {
   /**
    * The Device Activation Function.
    */
-  public deviceActivationFunction: DeviceActivationFunction;
+  public function: DeviceActivator.Function;
 
   /**
    * The AWS SQS Queue collecting the messages received from the IoT rules.
    */
-  public deviceActivatorQueue: DeviceActivatorQueue;
+  public queue: DeviceActivator.Queue;
 
   /**
    * Initialize the Device Activator.
@@ -38,87 +38,84 @@ export class DeviceActivator extends Construct {
    */
   constructor(scope: Construct, id: string) {
     super(scope, `DeviceActivator-${id}`);
-    this.deviceActivatorQueue = new DeviceActivatorQueue(this, id);
-    this.deviceActivationFunction = new DeviceActivationFunction(this, id);
-    this.deviceActivatorQueue.grantConsumeMessages(this.deviceActivationFunction);
-    this.deviceActivationFunction.addEventSource(
-      new SqsEventSource(this.deviceActivatorQueue, { batchSize: 1 }),
+    this.queue = new DeviceActivator.Queue(this, id);
+    this.function = new DeviceActivator.Function(this, id);
+    this.queue.grantConsumeMessages(this.function);
+    this.function.addEventSource(
+      new SqsEventSource(this.queue, { batchSize: 1 }),
     );
   }
 }
 
 export namespace DeviceActivator {
-
-}
-
-export class DeviceActivatorQueue extends Queue {
-  public readonly pushingRole: DeviceActivatorQueue.PushingRole;
-  /**
-   * Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
-   * @param scope
-   * @param id
-   */
-  constructor(scope: Construct, id: string) {
-    super(scope, `DeviceActivatorQueue-${id}`, {});
-    this.pushingRole = new DeviceActivatorQueue.PushingRole(this, 'iot.amazonaws.com');
-  }
-}
-
-export namespace DeviceActivatorQueue {
-  /**
-   * The Role allowing pushing messages into a specific Device Activator Queue.
-   */
-  export class PushingRole extends Role {
-    constructor(queue: DeviceActivatorQueue, principalName: string) {
-      let id = queue.node.id.replace('DeviceActivatorQueue', 'DeviceActivatorQueuePushingRole');
-      let roleName = queue.node.id.replace('DeviceActivatorQueue', 'DeviceActivatorQueuePushingRoleName');
-      super(queue, id, {
-        roleName: roleName,
-        assumedBy: new ServicePrincipal(principalName),
-        inlinePolicies: {
-          SqsPushPolicy: new PolicyDocument({
-            statements: [new PolicyStatement({
-              actions: [
-                'sqs:SendMessageBatch',
-                'sqs:SendMessage',
-              ],
-              resources: [
-                queue.queueArn,
-              ],
-            })],
-          }),
-        },
+  export class Function extends NodejsFunction {
+    /**
+     * Inistialize the Device Activator Function.
+     * @param scope
+     * @param id
+     * @param props
+     */
+    constructor(scope: Construct, id: string) {
+      super(scope, `DeviceActivatorFunction-${id}`, {
+        entry: path.resolve(__dirname, './lambda-assets/device-activator/app.js'),
       });
+      this.role?.attachInlinePolicy(
+        new Policy(this, `DeviceActivationFunctionPolicy-${id}`, {
+          statements: [
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: [
+                'iot:UpdateCertificate',
+                'iot:DescribeCertificate',
+                'lambda:InvokeFunction',
+                'lambda:InvokeAsync',
+              ],
+              resources: ['*'],
+            }),
+          ],
+        }),
+      );
     }
   }
-}
 
-class DeviceActivationFunction extends NodejsFunction {
-  /**
-   * Inistialize the Device Activator Function.
-   * @param scope
-   * @param id
-   * @param props
-   */
-  constructor(scope: Construct, id: string) {
-    super(scope, `DeviceActivatorFunction-${id}`, {
-      entry: path.resolve(__dirname, './lambda-assets/device-activator/app.js'),
-    });
-    this.role?.attachInlinePolicy(
-      new Policy(this, `DeviceActivationFunctionPolicy-${id}`, {
-        statements: [
-          new PolicyStatement({
-            effect: Effect.ALLOW,
-            actions: [
-              'iot:UpdateCertificate',
-              'iot:DescribeCertificate',
-              'lambda:InvokeFunction',
-              'lambda:InvokeAsync',
-            ],
-            resources: ['*'],
-          }),
-        ],
-      }),
-    );
+  export class Queue extends sqs.Queue {
+    public readonly pushingRole: Queue.PushingRole;
+    /**
+     * Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
+     * @param scope
+     * @param id
+     */
+    constructor(scope: Construct, id: string) {
+      super(scope, `DeviceActivatorQueue-${id}`, {});
+      this.pushingRole = new Queue.PushingRole(this, 'iot.amazonaws.com');
+    }
+  }
+  export namespace Queue {
+    /**
+     * The Role allowing pushing messages into a specific Device Activator Queue.
+     */
+    export class PushingRole extends Role {
+      constructor(queue: Queue, principalName: string) {
+        let id = queue.node.id.replace('DeviceActivatorQueue', 'DeviceActivatorQueuePushingRole');
+        let roleName = queue.node.id.replace('DeviceActivatorQueue', 'DeviceActivatorQueuePushingRoleName');
+        super(queue, id, {
+          roleName: roleName,
+          assumedBy: new ServicePrincipal(principalName),
+          inlinePolicies: {
+            SqsPushPolicy: new PolicyDocument({
+              statements: [new PolicyStatement({
+                actions: [
+                  'sqs:SendMessageBatch',
+                  'sqs:SendMessage',
+                ],
+                resources: [
+                  queue.queueArn,
+                ],
+              })],
+            }),
+          },
+        });
+      }
+    }
   }
 }
