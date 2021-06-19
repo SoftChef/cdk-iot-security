@@ -25,6 +25,9 @@ const project = new AwsCdkConstructLibrary({
     'node-forge',
     'softchef-utility',
     'aws-sdk-mock',
+    '@types/node-forge',
+    "@aws-sdk/client-iot",
+    "@aws-sdk/client-s3",
   ],
   peerDeps: [
     '@aws-cdk/assert',

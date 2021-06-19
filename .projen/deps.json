@@ -218,6 +218,18 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/client-iot",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-sdk/client-s3",
+      "type": "runtime"
+    },
+    {
+      "name": "@types/node-forge",
+      "type": "runtime"
+    },
+    {
       "name": "aws-cdk",
       "version": "^1.109.0",
       "type": "runtime"
