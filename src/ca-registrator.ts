@@ -4,13 +4,12 @@ import {
   Effect,
   Policy,
 } from '@aws-cdk/aws-iam';
-import { Function } from '@aws-cdk/aws-lambda';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
+import * as lambda from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 import { DeviceActivator } from './device-activator';
 
-export class CaRegistrationFunction extends NodejsFunction {
+export class CaRegistrationFunction extends lambda.Function {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
@@ -27,7 +26,9 @@ export class CaRegistrationFunction extends NodejsFunction {
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
 
     super(scope, `CaRegistrationFunction-${id}`, {
-      entry: path.resolve(__dirname, './lambda-assets/ca-registrator/app.js'),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
+      runtime: lambda.Runtime.NODEJS_14_X,
+      handler: 'app.handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
       environment: environment,
@@ -87,6 +88,6 @@ export namespace CaRegistrationFunction {
     /**
      * The verifier Lambda Function
      */
-    lambdaFunction: Function;
+    lambdaFunction: lambda.Function;
   }
 }

@@ -19,26 +19,33 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-s3',
     'aws-cdk',
   ],
-  deps: [
+  bundledDeps: [
     'aws-sdk',
     'path',
     'node-forge',
     'softchef-utility',
-    'aws-sdk-mock',
     '@types/node-forge',
-    "@aws-sdk/client-iot",
-    "@aws-sdk/client-s3",
+    '@types/node@15.12.4',
+    '@aws-sdk/client-iot',
+    '@aws-sdk/client-s3',
+    '@aws-sdk/client-lambda',
+    '@softchef/lambda-events',
   ],
   peerDeps: [
     '@aws-cdk/assert',
   ],
   devDeps: [
     'esbuild',
-    '@types/node-forge',
+    'aws-sdk-mock',
+    'aws-sdk-client-mock',
   ],
   tsconfig: {
     compilerOptions: {
       allowJs: true,
+      lib: [
+        'DOM',
+        'ES2020',
+      ],
     },
   },
   eslintOptions: {

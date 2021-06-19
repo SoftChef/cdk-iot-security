@@ -2,8 +2,10 @@ import * as AWS from 'aws-sdk';
 import * as AWSMock from 'aws-sdk-mock';
 import { CreateLogGroupRequest } from 'aws-sdk/clients/cloudwatchlogs';
 import {
-  GetRegistrationCodeResponse, GetRegistrationCodeRequest,
-  RegisterCACertificateResponse, RegisterCACertificateRequest,
+  GetRegistrationCodeResponse,
+  GetRegistrationCodeRequest,
+  RegisterCACertificateResponse,
+  RegisterCACertificateRequest,
   CreateTopicRuleRequest,
 } from 'aws-sdk/clients/iot';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';

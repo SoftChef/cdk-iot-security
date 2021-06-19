@@ -7,8 +7,8 @@ import {
   PolicyDocument,
   Policy,
 } from '@aws-cdk/aws-iam';
+import * as lambda from '@aws-cdk/aws-lambda';
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import * as sqs from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
 
@@ -48,7 +48,7 @@ export class DeviceActivator extends Construct {
 }
 
 export namespace DeviceActivator {
-  export class Function extends NodejsFunction {
+  export class Function extends lambda.Function {
     /**
      * Inistialize the Device Activator Function.
      * @param scope
@@ -57,7 +57,9 @@ export namespace DeviceActivator {
      */
     constructor(scope: Construct, id: string) {
       super(scope, `DeviceActivatorFunction-${id}`, {
-        entry: path.resolve(__dirname, './lambda-assets/device-activator/app.js'),
+        code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/device-activator')),
+        handler: 'app.handler',
+        runtime: lambda.Runtime.NODEJS_14_X,
       });
       this.role?.attachInlinePolicy(
         new Policy(this, `DeviceActivationFunctionPolicy-${id}`, {

@@ -10,10 +10,6 @@
       "type": "build"
     },
     {
-      "name": "@types/node-forge",
-      "type": "build"
-    },
-    {
       "name": "@types/node",
       "version": "^10.17.0",
       "type": "build"
@@ -24,6 +20,14 @@
     },
     {
       "name": "@typescript-eslint/parser",
+      "type": "build"
+    },
+    {
+      "name": "aws-sdk-client-mock",
+      "type": "build"
+    },
+    {
+      "name": "aws-sdk-mock",
       "type": "build"
     },
     {
@@ -81,13 +85,7 @@
       "type": "build"
     },
     {
-      "name": "npm-check-updates",
-      "version": "^11",
-      "type": "build"
-    },
-    {
       "name": "projen",
-      "version": "^0.18.16",
       "type": "build"
     },
     {
@@ -102,6 +100,47 @@
     {
       "name": "typescript",
       "type": "build"
+    },
+    {
+      "name": "@aws-sdk/client-iot",
+      "type": "bundled"
+    },
+    {
+      "name": "@aws-sdk/client-lambda",
+      "type": "bundled"
+    },
+    {
+      "name": "@aws-sdk/client-s3",
+      "type": "bundled"
+    },
+    {
+      "name": "@softchef/lambda-events",
+      "type": "bundled"
+    },
+    {
+      "name": "@types/node-forge",
+      "type": "bundled"
+    },
+    {
+      "name": "@types/node",
+      "version": "15.12.4",
+      "type": "bundled"
+    },
+    {
+      "name": "aws-sdk",
+      "type": "bundled"
+    },
+    {
+      "name": "node-forge",
+      "type": "bundled"
+    },
+    {
+      "name": "path",
+      "type": "bundled"
+    },
+    {
+      "name": "softchef-utility",
+      "type": "bundled"
     },
     {
       "name": "@aws-cdk/assert",
@@ -218,40 +257,8 @@
       "type": "runtime"
     },
     {
-      "name": "@aws-sdk/client-iot",
-      "type": "runtime"
-    },
-    {
-      "name": "@aws-sdk/client-s3",
-      "type": "runtime"
-    },
-    {
-      "name": "@types/node-forge",
-      "type": "runtime"
-    },
-    {
       "name": "aws-cdk",
       "version": "^1.109.0",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-sdk",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-sdk-mock",
-      "type": "runtime"
-    },
-    {
-      "name": "node-forge",
-      "type": "runtime"
-    },
-    {
-      "name": "path",
-      "type": "runtime"
-    },
-    {
-      "name": "softchef-utility",
       "type": "runtime"
     }
   ],
