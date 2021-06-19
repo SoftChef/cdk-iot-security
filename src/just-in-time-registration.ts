@@ -6,16 +6,15 @@ import {
   LambdaIntegration,
 } from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
-
 import {
-  CaRegistrator,
+  CaRegistrationFunction,
   VerifierProps,
-  UploadProps,
+  VaultProps,
 } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 
 export interface JustInTimeRegistrationProps {
-  upload: UploadProps;
+  vault: VaultProps;
   verifiers?: [VerifierProps];
   restApiConfig?: RestApiProps;
 }
@@ -29,7 +28,7 @@ export interface RestApiProps {
 export class JustInTimeRegistration extends Construct {
   public restApi: RestApi;
   public activator: DeviceActivator;
-  public caRegistrator: CaRegistrator;
+  public caRegistrator: CaRegistrationFunction;
 
   /**
    * Initialize a Just-In-Time Registration API.
@@ -55,10 +54,9 @@ export class JustInTimeRegistration extends Construct {
     this.restApi = props.restApiConfig?.restApi || new RestApi(this, id);
     const resource: Resource = this.restApi.root.addResource('register');
 
-    this.caRegistrator = new CaRegistrator(this, id, {
-      deviceActivatorRole: this.activator.deviceActivatorQueuePushingRole,
-      deviceActivatorQueueUrl: this.activator.receptor.queueUrl,
-      upload: props.upload,
+    this.caRegistrator = new CaRegistrationFunction(this, id, {
+      deviceActivatorQueue: this.activator.deviceActivatorQueue,
+      vault: props.vault,
       verifiers: props.verifiers,
     });
 
