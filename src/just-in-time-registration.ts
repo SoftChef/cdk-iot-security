@@ -66,7 +66,7 @@ export class JustInTimeRegistration extends Construct {
   }
 }
 
-export namespace JustInTimeRegistration {
+export module JustInTimeRegistration {
   export class LackOfAuthorizerError extends Error {
     constructor() {
       let message = 'You specify authorization type is COGNITO, but not specify authorizer.';

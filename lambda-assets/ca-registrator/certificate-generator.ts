@@ -1,7 +1,40 @@
 import * as forge from 'node-forge';
-import { pki } from 'node-forge'
+import { pki } from 'node-forge';
 
 export class CertificateGenerator {
+
+  /**
+     * Get the cetificates for registering a CA.
+     * The returned object contains the public key of the CA,
+     * the private key of the CA,
+     * the certificate of the CA,
+     * the public key of the verification,
+     * the private key of the verification,
+     * and the certificate of the verification.
+     * @param csrSubjects The object defining the content of CSR subjects.
+     * @returns
+     */
+  public static getCaRegistrationCertificates(csrSubjects: CertificateGenerator.CsrSubjects = {}) {
+    const caKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
+    const caCertificate: pki.Certificate = this.generateCACertificate(
+      caKeys.publicKey, caKeys.privateKey, csrSubjects);
+    const verificationKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
+    const verificationCertificate: pki.Certificate = this.generateVerificationCertificate(
+      caKeys.privateKey, caCertificate, verificationKeys);
+    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = {
+      ca: {
+        publicKey: forge.pki.publicKeyToPem(caKeys.publicKey),
+        privateKey: forge.pki.privateKeyToPem(caKeys.privateKey),
+        certificate: forge.pki.certificateToPem(caCertificate),
+      },
+      verification: {
+        publicKey: forge.pki.publicKeyToPem(verificationKeys.publicKey),
+        privateKey: forge.pki.privateKeyToPem(verificationKeys.privateKey),
+        certificate: forge.pki.certificateToPem(verificationCertificate),
+      },
+    };
+    return certificates;
+  }
   /**
      * Generate a certificate template which can be further
      * used to generate a CA or a verification certificate.
@@ -27,7 +60,12 @@ export class CertificateGenerator {
      * @param years The valid time interval of the generated certificate. The default value is 1.
      * @returns A CA certificate.
      */
-   private static generateCACertificate(publicKey: pki.PublicKey, privateKey: pki.PrivateKey, certificateSubjects: CertificateGenerator.CsrSubjects, years: number = 1) {
+  private static generateCACertificate(
+    publicKey: pki.PublicKey,
+    privateKey: pki.PrivateKey,
+    certificateSubjects: CertificateGenerator.CsrSubjects,
+    years: number = 1,
+  ) {
     let attrs: pki.CertificateField[] = this.formattedSubjects(certificateSubjects);
     let caCertificate: pki.Certificate = this.generateCertificateTemplate(attrs, years);
     caCertificate.publicKey = publicKey;
@@ -53,7 +91,12 @@ export class CertificateGenerator {
      * @param years The valid time interval of the generated certificate. The default value is 1.
      * @returns A verification certificate.
      */
-   private static generateVerificationCertificate(caPrivateKey: pki.PrivateKey, caCertificate: pki.Certificate, verificationKeys: pki.KeyPair, years: number = 1) {
+  private static generateVerificationCertificate(
+    caPrivateKey: pki.PrivateKey,
+    caCertificate: pki.Certificate,
+    verificationKeys: pki.KeyPair,
+    years: number = 1,
+  ) {
     let attrs: pki.CertificateField[] = caCertificate.subject.attributes;
     let certificate: pki.Certificate = this.generateCertificateTemplate(attrs, years);
     certificate.publicKey = verificationKeys.publicKey;
@@ -66,7 +109,7 @@ export class CertificateGenerator {
      * @param props The property object defining the content of CSR subjects.
      * @returns An array with formatted subjects.
      */
-   private static formattedSubjects(props: CertificateGenerator.CsrSubjects): pki.CertificateField[] {
+  private static formattedSubjects(props: CertificateGenerator.CsrSubjects): pki.CertificateField[] {
     return [{
       name: 'commonName',
       value: props.commonName || '',
@@ -87,59 +130,26 @@ export class CertificateGenerator {
       value: props.organizationUnitName || '',
     }];
   }
-
-  /**
-     * Get the cetificates for registering a CA.
-     * The returned object contains the public key of the CA,
-     * the private key of the CA,
-     * the certificate of the CA,
-     * the public key of the verification,
-     * the private key of the verification,
-     * and the certificate of the verification.
-     * @param csrSubjects The object defining the content of CSR subjects.
-     * @returns
-     */
-   public static getCaRegistrationCertificates(csrSubjects: CertificateGenerator.CsrSubjects = {}) {
-    const caKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
-    const caCertificate: pki.Certificate = this.generateCACertificate(
-      caKeys.publicKey, caKeys.privateKey, csrSubjects);
-    const verificationKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
-    const verificationCertificate: pki.Certificate = this.generateVerificationCertificate(
-      caKeys.privateKey, caCertificate, verificationKeys);
-    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = {
-      ca: {
-        publicKey: forge.pki.publicKeyToPem(caKeys.publicKey),
-        privateKey: forge.pki.privateKeyToPem(caKeys.privateKey),
-        certificate: forge.pki.certificateToPem(caCertificate),
-      },
-      verification: {
-        publicKey: forge.pki.publicKeyToPem(verificationKeys.publicKey),
-        privateKey: forge.pki.privateKeyToPem(verificationKeys.privateKey),
-        certificate: forge.pki.certificateToPem(verificationCertificate),
-      },
-    };
-    return certificates;
-  }
 }
 
 export namespace CertificateGenerator {
-    export interface CsrSubjects {
-        commonName?: string;
-        countryName?: string;
-        stateName?: string;
-        localityName?: string;
-        organizationName?: string;
-        organizationUnitName?: string;
-    }
+  export interface CsrSubjects {
+    commonName?: string;
+    countryName?: string;
+    stateName?: string;
+    localityName?: string;
+    organizationName?: string;
+    organizationUnitName?: string;
+  }
 
-    export interface CaRegistrationRequiredCertificates {
-        ca: CertificateSet;
-        verification: CertificateSet;
-    }
+  export interface CaRegistrationRequiredCertificates {
+    ca: CertificateSet;
+    verification: CertificateSet;
+  }
 
-    export interface CertificateSet {
-        publicKey: string;
-        privateKey: string;
-        certificate: string;
-    }
+  export interface CertificateSet {
+    publicKey: string;
+    privateKey: string;
+    certificate: string;
+  }
 }

@@ -57,8 +57,11 @@ afterEach(() => {
 
 test('Sucessfully execute the handler', async () => {
   var response = await handler(event);
-  console.log('response: ');
-  console.log(response);
+  expect(response.statusCode).toBe(200);
+});
+
+test('Sucessfully execute the handler with empty event', async () => {
+  var response = await handler();
   expect(response.statusCode).toBe(200);
 });
 
@@ -66,8 +69,6 @@ test('Sucessfully execute the handler without providing a verifier', async () =>
   let eventWithoutVerifier: any = Object.assign({}, event);
   delete eventWithoutVerifier.body.verifierName;
   var response = await handler(eventWithoutVerifier);
-  console.log('response: ');
-  console.log(response);
   expect(response.statusCode).toBe(200);
 });
 

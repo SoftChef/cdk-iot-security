@@ -49,7 +49,7 @@ export class CaRegistrationFunction extends lambda.Function {
   }
 }
 
-export namespace CaRegistrationFunction {
+export module CaRegistrationFunction {
   export interface CaRegistrationFunctionProps {
     /**
      * The AWS SQS Queue collecting the MQTT messages sending

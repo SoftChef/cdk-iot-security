@@ -37,7 +37,6 @@
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
     "aws-sdk-client-mock": "^0.5.2",
-    "aws-sdk-mock": "^5.2.0",
     "esbuild": "^0.12.9",
     "eslint": "^7.28.0",
     "eslint-import-resolver-node": "^0.3.4",
@@ -89,10 +88,8 @@
     "@types/node": "15.12.4",
     "@types/node-forge": "^0.10.0",
     "aws-cdk": "^1.109.0",
-    "aws-sdk": "^2.923.0",
     "node-forge": "^0.10.0",
-    "path": "^0.12.7",
-    "softchef-utility": "^1.0.11"
+    "path": "^0.12.7"
   },
   "bundledDependencies": [
     "@aws-sdk/client-iot",
@@ -101,10 +98,8 @@
     "@softchef/lambda-events",
     "@types/node-forge",
     "@types/node",
-    "aws-sdk",
     "node-forge",
-    "path",
-    "softchef-utility"
+    "path"
   ],
   "keywords": [
     "cdk"

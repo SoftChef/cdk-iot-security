@@ -27,10 +27,6 @@
       "type": "build"
     },
     {
-      "name": "aws-sdk-mock",
-      "type": "build"
-    },
-    {
       "name": "esbuild",
       "type": "build"
     },
@@ -127,19 +123,11 @@
       "type": "bundled"
     },
     {
-      "name": "aws-sdk",
-      "type": "bundled"
-    },
-    {
       "name": "node-forge",
       "type": "bundled"
     },
     {
       "name": "path",
-      "type": "bundled"
-    },
-    {
-      "name": "softchef-utility",
       "type": "bundled"
     },
     {

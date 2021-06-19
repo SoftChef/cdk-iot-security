@@ -47,7 +47,7 @@ export class DeviceActivator extends Construct {
   }
 }
 
-export namespace DeviceActivator {
+export module DeviceActivator {
   export class Function extends lambda.Function {
     /**
      * Inistialize the Device Activator Function.
@@ -92,7 +92,7 @@ export namespace DeviceActivator {
       this.pushingRole = new Queue.PushingRole(this, 'iot.amazonaws.com');
     }
   }
-  export namespace Queue {
+  export module Queue {
     /**
      * The Role allowing pushing messages into a specific Device Activator Queue.
      */

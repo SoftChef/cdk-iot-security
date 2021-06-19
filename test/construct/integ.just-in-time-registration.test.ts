@@ -13,7 +13,9 @@ import {
 } from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { App, Stack } from '@aws-cdk/core';
-import { JustInTimeRegistration } from '../../src/just-in-time-registration';
+import {
+  JustInTimeRegistration,
+} from '../../src/just-in-time-registration';
 
 test('CaRegisterApi integration test', () => {
   process.env.BASE_PATH = __dirname;

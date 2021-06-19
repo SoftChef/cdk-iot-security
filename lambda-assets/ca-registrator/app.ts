@@ -1,16 +1,16 @@
-import { Request, Response }  from '@softchef/lambda-events';
-import { UnknownVerifierError } from './errors'
 import {
-    IoTClient,
-    GetRegistrationCodeCommand,
-    RegisterCACertificateCommand,
-    CreateTopicRuleCommand,
-} from '@aws-sdk/client-iot'
+  IoTClient,
+  GetRegistrationCodeCommand,
+  RegisterCACertificateCommand,
+  CreateTopicRuleCommand,
+} from '@aws-sdk/client-iot';
 import {
-    S3Client,
-    PutObjectCommand,
-} from '@aws-sdk/client-s3'
+  S3Client,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
+import { Request, Response } from '@softchef/lambda-events';
 import { CertificateGenerator } from './certificate-generator';
+import { UnknownVerifierError } from './errors';
 
 /**
  * event example
@@ -34,7 +34,7 @@ import { CertificateGenerator } from './certificate-generator';
  * @param event The HTTP request from the API gateway.
  * @returns The HTTP response containing the registration result.
  */
- export const handler = async (event: any = {}) : Promise <any> => {
+export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
 
@@ -56,7 +56,7 @@ import { CertificateGenerator } from './certificate-generator';
     if (verifierName && !process.env[verifierName]) {
       throw new UnknownVerifierError();
     }
-    const verifierArn: string = process.env[verifierName] || "";
+    const verifierArn: string = process.env[verifierName] || '';
 
     const { registrationCode } = await iotClient.send(new GetRegistrationCodeCommand({}));
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
@@ -66,38 +66,38 @@ import { CertificateGenerator } from './certificate-generator';
       certificateId,
       certificateArn,
     } = await iotClient.send(new RegisterCACertificateCommand({
-        caCertificate: certificates.ca.certificate,
-        verificationCertificate: certificates.verification.certificate,
-        allowAutoRegistration: true,
-        registrationConfig: {},
-        setAsActive: true,
+      caCertificate: certificates.ca.certificate,
+      verificationCertificate: certificates.verification.certificate,
+      allowAutoRegistration: true,
+      registrationConfig: {},
+      setAsActive: true,
     }));
 
     await iotClient.send(new CreateTopicRuleCommand({
-        ruleName: `ActivationRule_${certificateId}`,
-        topicRulePayload: {
-            actions: [
-                {
-                sqs: {
-                    queueUrl: queueUrl,
-                    roleArn: deviceActivatorRoleArn,
-                },
-                },
-            ],
-            sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
-        },
+      ruleName: `ActivationRule_${certificateId}`,
+      topicRulePayload: {
+        actions: [
+          {
+            sqs: {
+              queueUrl: queueUrl,
+              roleArn: deviceActivatorRoleArn,
+            },
+          },
+        ],
+        sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
+      },
     }));
 
     await s3Client.send(new PutObjectCommand({
-        Bucket: bucketName,
-        Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
-        Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-          certificateId: certificateId,
-          certificateArn: certificateArn
-        }))),
+      Bucket: bucketName,
+      Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
+      Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
+        certificateId: certificateId,
+        certificateArn: certificateArn,
+      }))),
     }));
 
-    return response.json({certificateId: certificateId});
+    return response.json({ certificateId: certificateId });
   } catch (error) {
     console.log(error);
     return response.error(error, error.code);

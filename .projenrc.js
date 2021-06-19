@@ -20,10 +20,8 @@ const project = new AwsCdkConstructLibrary({
     'aws-cdk',
   ],
   bundledDeps: [
-    'aws-sdk',
     'path',
     'node-forge',
-    'softchef-utility',
     '@types/node-forge',
     '@types/node@15.12.4',
     '@aws-sdk/client-iot',
@@ -36,11 +34,11 @@ const project = new AwsCdkConstructLibrary({
   ],
   devDeps: [
     'esbuild',
-    'aws-sdk-mock',
     'aws-sdk-client-mock',
   ],
   tsconfig: {
     compilerOptions: {
+      target: 'ES2020',
       allowJs: true,
       lib: [
         'DOM',
@@ -49,8 +47,7 @@ const project = new AwsCdkConstructLibrary({
     },
   },
   eslintOptions: {
-    dirs: ['src', 'src/lambda-assets'],
-    fileExtensions: ['.ts', '.js'],
+    dirs: ['src', 'lambda-assets'],
   },
 });
 project.synth();
