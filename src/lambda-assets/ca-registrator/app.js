@@ -15,12 +15,8 @@ const { CertificateGenerator } = require('./certificate-generator');
  *    "organizationName": "Soft Chef",
  *    "organizationUnitName": "web"
  *  },
- *  "verifier": {
- *   "name": "verifier_name",
- *   "arn": "verifier_arn"
+ *  "verifierName": "verifier_name"
  *  }
- *  "bucket": "bucketName",
- *  "key": "objectKey"
  * }
  */
 
@@ -67,10 +63,8 @@ exports.handler = async (event) => {
     if (verifierName && !process.env[verifierName]) {
       throw new UnknownVerifierError();
     }
-
     const registrationCode = await iot.getRegistrationCode({}).promise();
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
-
     certificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
     const caRegistration = await iot.registerCACertificate({
       caCertificate: certificates.ca.certificate,

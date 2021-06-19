@@ -7,7 +7,7 @@ import {
   UpdateCertificateRequest,
 } from 'aws-sdk/clients/iot';
 import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
-import { handler } from '../../../src/lambda-assets/deviceActivator/index';
+import { handler } from '../../../src/lambda-assets/device-activator/app';
 import {
   ParsingVerifyingResultError,
   MissingClientCertificateIdError,
