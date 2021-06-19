@@ -40,7 +40,7 @@ test('CaRegisterApi integration test', () => {
   expect(stack).toCountResources('AWS::Lambda::Function', 2);
   expect(stack).toCountResources('AWS::IAM::Role', 3);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'DeviceActivatorQueuePushingRoleName-' + name,
+    RoleName: 'ReviewAcceptionRoleName-' + name,
   });
   expect(stack).toCountResources('AWS::SQS::Queue', 1);
 });

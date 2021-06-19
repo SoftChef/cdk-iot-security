@@ -5,27 +5,27 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
-import { DeviceActivator } from './device-activator';
+import { JustInTimeRegistration } from './just-in-time-registration';
+import { ReviewReceptor } from './review-receptor';
 
-export class CaRegistrationFunction extends lambda.Function {
+export class CaRegistrator extends lambda.Function {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: CaRegistrationFunction.CaRegistrationFunctionProps) {
+  constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     let environment: {[key: string]: string} = {
-      DEIVCE_ACTIVATOR_ROLE_ARN: props.deviceActivatorQueue.pushingRole.roleArn,
-      DEIVCE_ACTIVATOR_QUEUE_URL: props.deviceActivatorQueue.queueUrl,
+      DEIVCE_ACTIVATOR_ROLE_ARN: props.reviewReceptor.acceptionRole.roleArn,
+      DEIVCE_ACTIVATOR_QUEUE_URL: props.reviewReceptor.queueUrl,
       BUCKET_NAME: props.vault.bucket.bucketName,
       BUCKET_PREFIX: props.vault.prefix,
     };
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
 
-    super(scope, `CaRegistrationFunction-${id}`, {
+    super(scope, `CaRegistrator-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
@@ -33,7 +33,7 @@ export class CaRegistrationFunction extends lambda.Function {
       memorySize: 256,
       environment: environment,
     });
-    this.role?.attachInlinePolicy(new Policy(this, `CaRegistrationFunction-${id}`, {
+    this.role?.attachInlinePolicy(new Policy(this, `CaRegistrator-${id}`, {
       statements: [new PolicyStatement({
         effect: Effect.ALLOW,
         actions: [
@@ -45,49 +45,25 @@ export class CaRegistrationFunction extends lambda.Function {
         resources: ['*'],
       })],
     }));
-    props.vault.bucket.grantWrite(this);
   }
 }
 
-export module CaRegistrationFunction {
-  export interface CaRegistrationFunctionProps {
+export module CaRegistrator {
+  export interface Props {
     /**
      * The AWS SQS Queue collecting the MQTT messages sending
      * from the CA-associated Iot Rule, which sends a message
      * every time a client register its certificate.
      */
-    deviceActivatorQueue: DeviceActivator.Queue;
+    reviewReceptor: ReviewReceptor;
     /**
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    vault: VaultProps;
+    vault: JustInTimeRegistration.VaultProps;
     /**
      * The verifiers to verify the client certificates.
      */
-    verifiers?: [VerifierProps];
-  }
-
-
-  export interface VaultProps {
-    /**
-     * The S3 bucket
-     */
-    bucket: Bucket;
-    /**
-     * The specified prefix to save the file.
-     */
-    prefix: string;
-  }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    lambdaFunction: lambda.Function;
+    verifiers?: [JustInTimeRegistration.VerifierProps];
   }
 }
