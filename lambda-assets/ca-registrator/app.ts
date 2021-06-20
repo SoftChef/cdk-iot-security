@@ -9,8 +9,9 @@ import {
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { Request, Response } from '@softchef/lambda-events';
+import * as Joi from 'joi';
 import { CertificateGenerator } from './certificate-generator';
-import { UnknownVerifierError } from './errors';
+import { VerifierError } from './errors';
 
 /**
  * event example
@@ -38,29 +39,48 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
 
-  let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {});
-  const verifierName: string = request.input('verifierName');
-
-  const region: string | undefined = process.env.AWS_REGION;
-  const iotClient: IoTClient = new IoTClient({ region: region });
-  const s3Client: S3Client = new S3Client({ region: region });
-
   const bucketName: string | undefined = process.env.BUCKET_NAME;
   const bucketPrefix: string | undefined = process.env.BUCKET_PREFIX;
   const queueUrl: string | undefined = process.env.DEIVCE_ACTIVATOR_QUEUE_URL;
   const deviceActivatorRoleArn: string | undefined = process.env.DEIVCE_ACTIVATOR_ROLE_ARN;
+  const region: string | undefined = process.env.AWS_REGION;
 
-  let certificates: CertificateGenerator.CaRegistrationRequiredCertificates;
+  const iotClient: IoTClient = new IoTClient({ region: region });
+  const s3Client: S3Client = new S3Client({ region: region });
+
+  const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
+    commonName: Joi.string().empty(''),
+    stateName: Joi.string().empty(''),
+    localityName: Joi.string().empty(''),
+    organizationName: Joi.string().empty(''),
+    organizationUnitName: Joi.string().empty(''),
+  }).unknown(true);
+
+  const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
+    Joi.object({
+      verifierName: Joi.string().invalid('').required(),
+      verifierArn: Joi.string().regex(/^arn:/).required(),
+    }),
+    Joi.object({
+      verifierName: Joi.allow('', null).only(),
+      verifierArn: '',
+    }),
+  );
 
   try {
-    if (verifierName && !process.env[verifierName]) {
-      throw new UnknownVerifierError();
-    }
-    const verifierArn: string = process.env[verifierName] || '';
+    let csrSubjects: CertificateGenerator.CsrSubjects = Joi.attempt(request.input('csrSubjects', {}), csrSubjectsSchema);
+
+    const { verifierArn } = await verifierSchema.validateAsync({
+      verifierName: request.input('verifierName'),
+      verifierArn: process.env[request.input('verifierName')] || '',
+    }).catch((error: Error) => {
+      throw new VerifierError(error.message);
+    });
 
     const { registrationCode } = await iotClient.send(new GetRegistrationCodeCommand({}));
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
-    certificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+
+    let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const {
       certificateId,

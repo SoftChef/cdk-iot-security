@@ -10,7 +10,7 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/device-activator/app';
 import {
-  ParsingVerifyingResultError,
+  VerificationError,
   InputError,
 } from '../../../lambda-assets/device-activator/errors';
 
@@ -76,8 +76,7 @@ test('Successfully execute the handler but fail to be verified', async () => {
       JSON.stringify({ body: { verified: false } }),
     ),
   });
-  var response = await handler({ Records: [record] });
-  expect(response.statusCode).toBe(200);
+  await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
 });
 
 test('Fail to execute the handler with an empty event', async () => {
@@ -96,7 +95,7 @@ test('Fail to parse the verifier response', async () => {
       JSON.stringify({ body: {} }),
     ),
   });
-  await expect(handler({ Records: [record] })).rejects.toThrowError(ParsingVerifyingResultError);
+  await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
 });
 
 test('Fail to invoke the verifier', async () => {
@@ -118,7 +117,7 @@ test('Missing the client certificate ID', async () => {
 });
 
 test('Get Error Codes successfully', () => {
-  expect(new ParsingVerifyingResultError().code)
-    .toBe(ParsingVerifyingResultError.code);
+  expect(new VerificationError().code)
+    .toBe(VerificationError.code);
   expect(new InputError().code).toBe(InputError.code);
 });

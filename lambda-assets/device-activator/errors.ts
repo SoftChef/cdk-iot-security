@@ -1,10 +1,10 @@
-export class ParsingVerifyingResultError extends Error {
+export class VerificationError extends Error {
   static code: number = 500;
   constructor(message?: string) {
     super(message);
   }
   get code() {
-    return ParsingVerifyingResultError.code;
+    return VerificationError.code;
   }
 }
 

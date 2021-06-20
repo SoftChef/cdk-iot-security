@@ -11,7 +11,7 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
-  UnknownVerifierError,
+  VerifierError,
 } from '../../../lambda-assets/ca-registrator/errors';
 
 const event = {
@@ -44,7 +44,7 @@ beforeEach(() => {
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'local';
-  process.env.test_verifier = 'arn_of_test_verifier';
+  process.env.test_verifier = 'arn:arn_of_test_verifier';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
@@ -101,5 +101,5 @@ test('Provide the wrong verifier', async () => {
     body: { verifierName: 'wrong' },
   });
   var response = await handler(eventWithWrongVerifier);
-  expect(response.statusCode).toBe(UnknownVerifierError.code);
+  expect(response.statusCode).toBe(VerifierError.code);
 });

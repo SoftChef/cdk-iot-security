@@ -12,7 +12,7 @@ import {
 import { Response } from '@softchef/lambda-events';
 import * as Joi from 'joi';
 import {
-  ParsingVerifyingResultError,
+  VerificationError,
   InputError,
 } from './errors';
 
@@ -24,15 +24,14 @@ import {
 export const handler = async (event: any = {}) : Promise <any> => {
   let response: Response = new Response();
 
-  let [record] = event.Records;
-  record = JSON.parse(record.body);
-
-  const schema: Joi.ObjectSchema = Joi.object().keys({
+  const recordSchema: Joi.ObjectSchema = Joi.object({
     certificateId: Joi.string().required(),
-    verifierArn: Joi.string().regex(/^arn:/),
+    verifierArn: Joi.string().regex(/^arn:/).allow(''),
   }).unknown(true);
-  
-  const { certificateId, verifierArn } = await schema.validateAsync(record).catch((error: Error) => {
+
+  let [record] = event.Records;
+
+  const { certificateId, verifierArn } = await recordSchema.validateAsync(JSON.parse(record.body)).catch((error: Error) => {
     throw new InputError(error.message);
   });
 
@@ -43,32 +42,28 @@ export const handler = async (event: any = {}) : Promise <any> => {
     certificateId: certificateId,
   }));
 
-  let verified: boolean;
-  if (verifierArn) {
+  if (verifierArn) {    
     let result: InvokeCommandOutput = await lambdaClient.send(new InvokeCommand({
       FunctionName: decodeURIComponent(verifierArn),
       Payload: Buffer.from(JSON.stringify(clientCertificateInfo)),
     }));
 
     const payload: any = JSON.parse(new TextDecoder().decode(result.Payload));
-    verified = await Joi.boolean().required().validateAsync(payload.body.verified).catch((error: Error) => {
-      throw new ParsingVerifyingResultError(error.message);
-    });
-  } else {
-    verified = true;
+    await Joi.object({ verified: Joi.boolean().required().allow(true).only() })
+      .unknown(true)
+      .validateAsync(payload.body).catch((error: Error) => {
+        throw new VerificationError(error.message);
+      });
   }
 
-  if (verified) {
-    await iotClient.send(new UpdateCertificateCommand({
-      certificateId: certificateId,
-      newStatus: 'ACTIVE',
-    }));
-  }
+  await iotClient.send(new UpdateCertificateCommand({
+    certificateId: certificateId,
+    newStatus: 'ACTIVE',
+  }));
 
   const message: any = response.json({
     certificateId: certificateId,
     verifierArn: verifierArn,
-    verified: verified,
   });
   console.log(message);
   return message;

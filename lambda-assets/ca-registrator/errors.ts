@@ -1,9 +1,9 @@
-export class UnknownVerifierError extends Error {
+export class VerifierError extends Error {
   static code: number = 422;
-  constructor() {
-    super('Received unknown verifier');
+  constructor(message?: string) {
+    super(message);
   }
   get code(): number {
-    return UnknownVerifierError.code;
+    return VerifierError.code;
   }
 }
