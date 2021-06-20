@@ -21,7 +21,7 @@
     "@aws-cdk/cx-api" "1.109.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-apigateway@1.109.0", "@aws-cdk/aws-apigateway@^1.109.0":
+"@aws-cdk/aws-apigateway@1.109.0", "@aws-cdk/aws-apigateway@^1.108.1", "@aws-cdk/aws-apigateway@^1.109.0":
   version "1.109.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-apigateway/-/aws-apigateway-1.109.0.tgz#c5f33a9e773840c8c37ceeac9fae9ab749418ce0"
   integrity sha512-njvUcUZtkteTK3j5uQup7LBs/0VNm7A0A5NY2QcO3yJDlcREW6i72n1w5NG1GPsY22csY7gR9G9Pbll70hAyLg==
@@ -110,7 +110,7 @@
     "@aws-cdk/core" "1.109.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-cognito@1.109.0":
+"@aws-cdk/aws-cognito@1.109.0", "@aws-cdk/aws-cognito@^1.108.1":
   version "1.109.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-cognito/-/aws-cognito-1.109.0.tgz#2fed48fcb0291465390f19ea84f076bda563b65f"
   integrity sha512-WJJH8J9exXnsqnocbhmm/0wojJ5wDUbPhiVcjD7aQ5Ot8Zdg6U+24XakXzZxsshodWHg7lvzvf9Na0q0Suweuw==
@@ -277,7 +277,7 @@
     "@aws-cdk/core" "1.109.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-lambda-nodejs@^1.109.0":
+"@aws-cdk/aws-lambda-nodejs@^1.108.1", "@aws-cdk/aws-lambda-nodejs@^1.109.0":
   version "1.109.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-lambda-nodejs/-/aws-lambda-nodejs-1.109.0.tgz#ed707cc1907a5c6217fe29f1d03a21793fb08868"
   integrity sha512-VIKHohGzsw+V9GDN+0vUoKgLfMhkaFw4mOZ7TrfvjyDLfKC0PWWss4A1ipEgDDTOII91FJmmUgdViozJeMKWkw==
@@ -286,7 +286,7 @@
     "@aws-cdk/core" "1.109.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-lambda@1.109.0", "@aws-cdk/aws-lambda@^1.109.0":
+"@aws-cdk/aws-lambda@1.109.0", "@aws-cdk/aws-lambda@^1.108.1", "@aws-cdk/aws-lambda@^1.109.0":
   version "1.109.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-lambda/-/aws-lambda-1.109.0.tgz#82bb401440c302486b9c6f3a8b221a7bead4fa51"
   integrity sha512-9IG2uJu1FUdjS5LuDBo4EdmhsZV63U5p42JTPabKSzbOdWRmCDzXtSmFuh2tbdHzwazpAhIFIRDphpsWK3h6RA==
@@ -479,7 +479,7 @@
     string-width "^4.2.2"
     table "^6.7.1"
 
-"@aws-cdk/core@1.109.0", "@aws-cdk/core@^1.109.0":
+"@aws-cdk/core@1.109.0", "@aws-cdk/core@^1.108.1", "@aws-cdk/core@^1.109.0":
   version "1.109.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/core/-/core-1.109.0.tgz#484d753aab35f307b94f9d3c07eed496061d4944"
   integrity sha512-HDVkKB50Zd1fvHE1Qet4biclldI1ZGsfu8Ipko/8XEkHna//m1wW/rl3HAK2B6+z+hdGB0/sg/paklDegyKarA==
@@ -2084,6 +2084,17 @@
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
+
+"@softchef/cdk-restapi@^0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@softchef/cdk-restapi/-/cdk-restapi-0.0.24.tgz#480cef78d088d13e7eeccb32c9416734d99672e8"
+  integrity sha512-HtM2Q+YNOA82iYJuB27SzUiopfmbvBG3X8cF7FAzjSN734g8aDQOL9xd8OPfz+uOzEUPU2srRmSkFoMuECYTiw==
+  dependencies:
+    "@aws-cdk/aws-apigateway" "^1.108.1"
+    "@aws-cdk/aws-cognito" "^1.108.1"
+    "@aws-cdk/aws-lambda" "^1.108.1"
+    "@aws-cdk/aws-lambda-nodejs" "^1.108.1"
+    "@aws-cdk/core" "^1.108.1"
 
 "@softchef/lambda-events@^0.0.5":
   version "0.0.5"

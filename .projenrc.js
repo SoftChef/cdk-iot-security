@@ -29,6 +29,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
+    '@softchef/cdk-restapi',
   ],
   peerDeps: [
     '@aws-cdk/assert',
@@ -47,8 +48,13 @@ const project = new AwsCdkConstructLibrary({
       ],
     },
   },
-  eslintOptions: {
-    dirs: ['src', 'lambda-assets'],
+  eslintOptions: {    
+    dirs: [
+      'src',
+      'lambda-assets',
+      'lambda-assets/**/**/',
+      'lambda-assets/**/**/**/',
+    ],
   },
 });
 project.synth();

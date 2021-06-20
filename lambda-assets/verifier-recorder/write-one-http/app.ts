@@ -2,6 +2,7 @@ import {
     InvokeCommand,
     InvokeCommandOutput,
     LambdaClient,
+    UpdateFunctionConfigurationCommand
 } from '@aws-sdk/client-lambda';
 import {
     Request,
@@ -14,19 +15,29 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const response: Response = new Response();
     const getAllVerifierFunctionArn = process.env.GET_ALL_VERIFIER_FUNCTION_ARN;
     
-    try {        
-        const verifierName: string = await Joi.string().required().validateAsync(request.input('verifierName'));
-        
+    try {
+        const { verifierName, verifierArn } = await Joi.object({
+            verifierName: Joi.string().required(),
+            verifierArn: Joi.string().required()
+        }).validateAsync(request.inputs(['verifierName', 'verifierArn']));
+
         let output: InvokeCommandOutput = await new LambdaClient({}).send(new InvokeCommand({
             FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
             Payload: Buffer.from(""),
         }));
         const payload: any = JSON.parse(new TextDecoder().decode(output.Payload));
         const verifiers: any = payload.body;
-        
-        const verifierArn: string = await Joi.string().regex(/^arn:/).validateAsync(verifiers[verifierName])
-        return response.json({ verifierArn: verifierArn });
+
+        verifiers[verifierName] = verifierArn;
+
+        await new LambdaClient({}).send(new UpdateFunctionConfigurationCommand({
+            FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
+            Environment: {
+                Variables: { verifiers: verifiers }
+            }
+        }));
+        return response.json(verifiers);
     } catch (error) {
-        return response.json({});
+        return response.error(error);
     }
 }

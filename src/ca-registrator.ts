@@ -8,6 +8,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 import { DeviceActivator } from './device-activator';
+import { VerifierRecorder } from './verifier-recorder';
 
 export class CaRegistrationFunction extends lambda.Function {
   /**
@@ -65,7 +66,7 @@ export module CaRegistrationFunction {
     /**
      * The verifiers to verify the client certificates.
      */
-    verifiers?: [VerifierProps];
+    verifiers?: [VerifierRecorder.VerifierProps];
   }
 
 
@@ -78,16 +79,5 @@ export module CaRegistrationFunction {
      * The specified prefix to save the file.
      */
     prefix: string;
-  }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    lambdaFunction: lambda.Function;
   }
 }
