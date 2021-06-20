@@ -12,6 +12,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
   VerifierError,
+  InputError,
 } from '../../../lambda-assets/ca-registrator/errors';
 
 const event = {
@@ -96,10 +97,18 @@ test('Fail to get CA registration code', async () => {
   expect(response.statusCode).toBe(500);
 });
 
-test('Provide the wrong verifier', async () => {
+test('Fail when provide the wrong verifier', async () => {
   let eventWithWrongVerifier: any = Object.assign({}, event, {
     body: { verifierName: 'wrong' },
   });
   var response = await handler(eventWithWrongVerifier);
   expect(response.statusCode).toBe(VerifierError.code);
+});
+
+test('Fail when provide the wrong format of CSR subjects', async () => {
+  let eventWithWrongFormatCsrSubject = Object.assign({}, event, {
+    body: { csrSubjects: { commonName: {} } },
+  });
+  var response = await handler(eventWithWrongFormatCsrSubject);
+  expect(response.statusCode).toBe(InputError.code);
 });

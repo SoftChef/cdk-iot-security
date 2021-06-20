@@ -42,15 +42,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
     certificateId: certificateId,
   }));
 
-  if (verifierArn) {    
-    let result: InvokeCommandOutput = await lambdaClient.send(new InvokeCommand({
+  if (verifierArn) {
+    let output: InvokeCommandOutput = await lambdaClient.send(new InvokeCommand({
       FunctionName: decodeURIComponent(verifierArn),
       Payload: Buffer.from(JSON.stringify(clientCertificateInfo)),
     }));
 
-    const payload: any = JSON.parse(new TextDecoder().decode(result.Payload));
-    await Joi.object({ verified: Joi.boolean().required().allow(true).only() })
-      .unknown(true)
+    const payload: any = JSON.parse(new TextDecoder().decode(output.Payload));
+    await Joi.object({ verified: Joi.boolean().required().allow(true).only() }).unknown(true)
       .validateAsync(payload.body).catch((error: Error) => {
         throw new VerificationError(error.message);
       });

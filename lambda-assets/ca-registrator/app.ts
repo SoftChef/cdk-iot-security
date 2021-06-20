@@ -8,10 +8,16 @@ import {
   S3Client,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
-import { Request, Response } from '@softchef/lambda-events';
+import {
+  Request,
+  Response
+} from '@softchef/lambda-events';
 import * as Joi from 'joi';
 import { CertificateGenerator } from './certificate-generator';
-import { VerifierError } from './errors';
+import {
+  VerifierError,
+  InputError,
+} from './errors';
 
 /**
  * event example
@@ -49,11 +55,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const s3Client: S3Client = new S3Client({ region: region });
 
   const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
-    commonName: Joi.string().empty(''),
-    stateName: Joi.string().empty(''),
-    localityName: Joi.string().empty(''),
-    organizationName: Joi.string().empty(''),
-    organizationUnitName: Joi.string().empty(''),
+    commonName: Joi.string().allow(''),
+    stateName: Joi.string().allow(''),
+    localityName: Joi.string().allow(''),
+    organizationName: Joi.string().allow(''),
+    organizationUnitName: Joi.string().allow(''),
   }).unknown(true);
 
   const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
@@ -68,7 +74,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
   );
 
   try {
-    let csrSubjects: CertificateGenerator.CsrSubjects = Joi.attempt(request.input('csrSubjects', {}), csrSubjectsSchema);
+    let csrSubjects: CertificateGenerator.CsrSubjects = await csrSubjectsSchema
+      .validateAsync(request.input('csrSubjects', {})).catch((error: Error) => {
+        throw new InputError(error.message);
+      });
 
     const { verifierArn } = await verifierSchema.validateAsync({
       verifierName: request.input('verifierName'),
@@ -116,7 +125,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
         certificateArn: certificateArn,
       }))),
     }));
-
     return response.json({ certificateId: certificateId });
   } catch (error) {
     console.log(error);
