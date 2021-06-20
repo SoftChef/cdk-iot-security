@@ -11,7 +11,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/device-activator/app';
 import {
   ParsingVerifyingResultError,
-  MissingClientCertificateIdError,
+  InputError,
 } from '../../../lambda-assets/device-activator/errors';
 
 const record = {
@@ -114,12 +114,11 @@ test('Missing the client certificate ID', async () => {
   delete recordContent.certificateId;
   var recordWithoutCertificateId = Object.assign({}, { body: JSON.stringify(recordContent) });
   expect(JSON.parse(record.body).certificateId);
-  await expect(handler({ Records: [recordWithoutCertificateId] })).rejects.toThrowError(MissingClientCertificateIdError);
+  await expect(handler({ Records: [recordWithoutCertificateId] })).rejects.toThrowError(InputError);
 });
 
 test('Get Error Codes successfully', () => {
-  expect(new MissingClientCertificateIdError().code)
-    .toBe(MissingClientCertificateIdError.code);
   expect(new ParsingVerifyingResultError().code)
     .toBe(ParsingVerifyingResultError.code);
+  expect(new InputError().code).toBe(InputError.code);
 });

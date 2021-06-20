@@ -10,9 +10,10 @@ import {
   LambdaClient,
 } from '@aws-sdk/client-lambda';
 import { Response } from '@softchef/lambda-events';
+import * as Joi from 'joi';
 import {
   ParsingVerifyingResultError,
-  MissingClientCertificateIdError,
+  InputError,
 } from './errors';
 
 /**
@@ -26,10 +27,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
   let [record] = event.Records;
   record = JSON.parse(record.body);
 
-  const certificateId: string = record.certificateId;
-  if (!certificateId) {
-    throw new MissingClientCertificateIdError();
-  }
+  const schema: Joi.ObjectSchema = Joi.object().keys({
+    certificateId: Joi.string().required(),
+    verifierArn: Joi.string().regex(/^arn:/),
+  }).unknown(true);
+  
+  const { certificateId, verifierArn } = await schema.validateAsync(record).catch((error: Error) => {
+    throw new InputError(error.message);
+  });
 
   const iotClient: IoTClient = new IoTClient({});
   const lambdaClient: LambdaClient = new LambdaClient({});
@@ -38,7 +43,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     certificateId: certificateId,
   }));
 
-  const verifierArn: string = record.verifierArn;
   let verified: boolean;
   if (verifierArn) {
     let result: InvokeCommandOutput = await lambdaClient.send(new InvokeCommand({
@@ -47,10 +51,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }));
 
     const payload: any = JSON.parse(new TextDecoder().decode(result.Payload));
-    if (payload.body.verified !== true && payload.body.verified !== false) {
-      throw new ParsingVerifyingResultError();
-    }
-    verified = payload.body.verified;
+    verified = await Joi.boolean().required().validateAsync(payload.body.verified).catch((error: Error) => {
+      throw new ParsingVerifyingResultError(error.message);
+    });
   } else {
     verified = true;
   }

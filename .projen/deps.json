@@ -123,6 +123,10 @@
       "type": "bundled"
     },
     {
+      "name": "joi",
+      "type": "bundled"
+    },
+    {
       "name": "node-forge",
       "type": "bundled"
     },

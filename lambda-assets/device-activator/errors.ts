@@ -1,19 +1,19 @@
 export class ParsingVerifyingResultError extends Error {
   static code: number = 500;
-  constructor() {
-    super('Fail to parse the response return by the verifier lambda function.');
+  constructor(message?: string) {
+    super(message);
   }
   get code() {
     return ParsingVerifyingResultError.code;
   }
 }
 
-export class MissingClientCertificateIdError extends Error {
-  static code: number = 415;
-  constructor() {
-    super('The message is lack of the client certificate ID.');
+export class InputError extends Error {
+  static code: number = 422;
+  constructor(message?: string) {
+    super(message);
   }
   get code() {
-    return MissingClientCertificateIdError.code;
+    return InputError.code;
   }
 }

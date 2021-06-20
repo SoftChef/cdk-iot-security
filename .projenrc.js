@@ -21,6 +21,7 @@ const project = new AwsCdkConstructLibrary({
   ],
   bundledDeps: [
     'path',
+    'joi',
     'node-forge',
     '@types/node-forge',
     '@types/node@15.12.4',
