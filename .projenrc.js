@@ -48,7 +48,7 @@ const project = new AwsCdkConstructLibrary({
       ],
     },
   },
-  eslintOptions: {    
+  eslintOptions: {
     dirs: [
       'src',
       'lambda-assets',
