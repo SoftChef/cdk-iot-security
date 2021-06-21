@@ -1,6 +1,8 @@
 import {
   DescribeCertificateCommand,
   UpdateCertificateCommand,
+  DescribeCACertificateCommand,
+  ListTagsForResourceCommand,
   IoTClient,
 } from '@aws-sdk/client-iot';
 import {
@@ -40,6 +42,11 @@ beforeEach(() => {
       certificateId: 'test_certificate_id',
     },
   });
+  iotMock.on(DescribeCACertificateCommand).resolves({
+    certificateDescription: {
+      certificateArn: 'test_certificate_arn',
+    }
+  })
   lambdaMock.on(InvokeCommand).resolves({
     StatusCode: 200,
     Payload: new TextEncoder().encode(

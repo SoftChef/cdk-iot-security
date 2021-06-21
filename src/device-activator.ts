@@ -8,8 +8,13 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
+import {
+  SqsEventSource,
+} from '@aws-cdk/aws-lambda-event-sources';
 import * as sqs from '@aws-cdk/aws-sqs';
+import {
+  CfnTopicRule
+} from '@aws-cdk/aws-iot'
 import { Construct } from '@aws-cdk/core';
 
 // export module DeviceActivator {
@@ -24,6 +29,7 @@ export class DeviceActivator extends Construct {
    * The AWS SQS Queue collecting the messages received from the IoT rules.
    */
   public queue: DeviceActivator.Queue;
+  public rule: CfnTopicRule;
 
   /**
    * Initialize the Device Activator.
@@ -44,8 +50,21 @@ export class DeviceActivator extends Construct {
     this.function = new DeviceActivator.Function(this, id);
     this.queue.grantConsumeMessages(this.function);
     this.function.addEventSource(
-      new SqsEventSource(this.queue, { batchSize: 1 }),
-    );
+      new SqsEventSource(this.queue, { batchSize: 1 }),      
+    );    
+    this.rule = new CfnTopicRule(this, `TopicRule-${id}`, {
+      topicRulePayload: {
+        actions: [
+            {
+              sqs: {
+                queueUrl: this.queue.queueUrl,
+                roleArn: this.queue.pushingRole.roleArn,
+              },
+            },
+          ],
+          sql: "SELECT * FROM '$aws/events/certificates/registered/#'",
+      }
+    });
   }
 }
 
@@ -71,6 +90,8 @@ export module DeviceActivator {
               actions: [
                 'iot:UpdateCertificate',
                 'iot:DescribeCertificate',
+                'iot:DescribeCACertificate',
+                'iot:ListTagsForResource',
                 'lambda:InvokeFunction',
                 'lambda:InvokeAsync',
               ],

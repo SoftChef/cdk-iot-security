@@ -3,28 +3,28 @@
 exports[`CaRegisterApi integration test 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74ArtifactHash412218B9": Object {
-      "Description": "Artifact hash for asset \\"7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74\\"",
+    "AssetParameters4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7ArtifactHashC52BA978": Object {
+      "Description": "Artifact hash for asset \\"4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7\\"",
       "Type": "String",
     },
-    "AssetParameters7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74S3BucketBDF9618C": Object {
-      "Description": "S3 bucket for asset \\"7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74\\"",
+    "AssetParameters4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7S3Bucket7DA2CED8": Object {
+      "Description": "S3 bucket for asset \\"4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7\\"",
       "Type": "String",
     },
-    "AssetParameters7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74S3VersionKeyDCDCE1F8": Object {
-      "Description": "S3 key for asset version \\"7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74\\"",
+    "AssetParameters4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7S3VersionKey90F426A0": Object {
+      "Description": "S3 key for asset version \\"4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7\\"",
       "Type": "String",
     },
-    "AssetParameters8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8cArtifactHashA21EED84": Object {
-      "Description": "Artifact hash for asset \\"8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8c\\"",
+    "AssetParametersc4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386ArtifactHashBD868252": Object {
+      "Description": "Artifact hash for asset \\"c4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386\\"",
       "Type": "String",
     },
-    "AssetParameters8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8cS3Bucket3A240F96": Object {
-      "Description": "S3 bucket for asset \\"8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8c\\"",
+    "AssetParametersc4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386S3Bucket3C124B84": Object {
+      "Description": "S3 bucket for asset \\"c4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386\\"",
       "Type": "String",
     },
-    "AssetParameters8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8cS3VersionKey62BB917D": Object {
-      "Description": "S3 key for asset version \\"8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8c\\"",
+    "AssetParametersc4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386S3VersionKey6B1BCF8C": Object {
+      "Description": "S3 key for asset version \\"c4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386\\"",
       "Type": "String",
     },
   },
@@ -37,7 +37,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74S3BucketBDF9618C",
+            "Ref": "AssetParameters4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7S3Bucket7DA2CED8",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -50,7 +50,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74S3VersionKeyDCDCE1F8",
+                          "Ref": "AssetParameters4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7S3VersionKey90F426A0",
                         },
                       ],
                     },
@@ -63,7 +63,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters7c2ad7fecac95d7971186f65893f6f7cd203bee4ba23d3324208da85a4a25e74S3VersionKeyDCDCE1F8",
+                          "Ref": "AssetParameters4600e78e132f98044772f6078a68ef48b0d4a1afdddc84086617af5c0ff793b7S3VersionKey90F426A0",
                         },
                       ],
                     },
@@ -116,6 +116,7 @@ Object {
                 "iot:RegisterCACertificate",
                 "iot:GetRegistrationCode",
                 "iot:CreateTopicRule",
+                "iot:TagResource",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -211,7 +212,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8cS3Bucket3A240F96",
+            "Ref": "AssetParametersc4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386S3Bucket3C124B84",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -224,7 +225,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8cS3VersionKey62BB917D",
+                          "Ref": "AssetParametersc4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386S3VersionKey6B1BCF8C",
                         },
                       ],
                     },
@@ -237,7 +238,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters8f1441b95b2f19b08a279bc361a2fd4a3de5eaf939626d2eaaa7ee283d91dc8cS3VersionKey62BB917D",
+                          "Ref": "AssetParametersc4021d4450f38827f6adc0c7aef0288973d5b10c3ba0c63de0e9b4e645ef0386S3VersionKey6B1BCF8C",
                         },
                       ],
                     },
@@ -266,6 +267,8 @@ Object {
               "Action": Array [
                 "iot:UpdateCertificate",
                 "iot:DescribeCertificate",
+                "iot:DescribeCACertificate",
+                "iot:ListTagsForResource",
                 "lambda:InvokeFunction",
                 "lambda:InvokeAsync",
               ],
@@ -407,6 +410,29 @@ Object {
         "RoleName": "DeviceActivatorQueuePushingRoleName-test-case",
       },
       "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseTopicRuletestcase10DC5ED5": Object {
+      "Properties": Object {
+        "TopicRulePayload": Object {
+          "Actions": Array [
+            Object {
+              "Sqs": Object {
+                "QueueUrl": Object {
+                  "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+                },
+                "RoleArn": Object {
+                  "Fn::GetAtt": Array [
+                    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcaseDeviceActivatorQueuePushingRoletestcaseD04102E0",
+                    "Arn",
+                  ],
+                },
+              },
+            },
+          ],
+          "Sql": "SELECT * FROM '$aws/events/certificates/registered/#'",
+        },
+      },
+      "Type": "AWS::IoT::TopicRule",
     },
   },
 }

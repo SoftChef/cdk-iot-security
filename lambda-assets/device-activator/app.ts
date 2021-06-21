@@ -3,6 +3,8 @@ import {
   UpdateCertificateCommand,
   IoTClient,
   DescribeCertificateCommandOutput,
+  DescribeCACertificateCommand,
+  ListTagsForResourceCommand,
 } from '@aws-sdk/client-iot';
 import {
   InvokeCommand,
@@ -25,24 +27,34 @@ export const handler = async (event: any = {}) : Promise <any> => {
   let response: Response = new Response();
 
   const recordSchema: Joi.ObjectSchema = Joi.object({
+    caCertificateId: Joi.string().required(),
     certificateId: Joi.string().required(),
-    verifierArn: Joi.string().regex(/^arn:/).allow(''),
   }).unknown(true);
 
   let [record] = event.Records;
 
-  const { certificateId, verifierArn } = await recordSchema.validateAsync(JSON.parse(record.body)).catch((error: Error) => {
+  const {
+    caCertificateId,
+    certificateId,
+  } = await recordSchema.validateAsync(JSON.parse(record.body)).catch((error: Error) => {
     throw new InputError(error.message);
   });
 
   const iotClient: IoTClient = new IoTClient({});
   const lambdaClient: LambdaClient = new LambdaClient({});
 
-  const clientCertificateInfo: DescribeCertificateCommandOutput = await iotClient.send(new DescribeCertificateCommand({
-    certificateId: certificateId,
-  }));
+  const  {
+    certificateDescription = { certificateArn: '' }
+  } = await iotClient.send(new DescribeCACertificateCommand({ certificateId: caCertificateId }));
+
+  const { tags = [] } = await iotClient.send(new ListTagsForResourceCommand({ resourceArn: certificateDescription.certificateArn}));  
+  const { Value: verifierArn } = tags.find(tag => tag.Key === 'verifierArn') || { Value: '' };
 
   if (verifierArn) {
+    const clientCertificateInfo: DescribeCertificateCommandOutput = await iotClient.send(new DescribeCertificateCommand({
+      certificateId: certificateId,
+    }));
+
     let output: InvokeCommandOutput = await lambdaClient.send(new InvokeCommand({
       FunctionName: decodeURIComponent(verifierArn),
       Payload: Buffer.from(JSON.stringify(clientCertificateInfo)),

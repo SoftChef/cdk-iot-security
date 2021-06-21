@@ -2,7 +2,6 @@ import {
   IoTClient,
   GetRegistrationCodeCommand,
   RegisterCACertificateCommand,
-  CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -18,9 +17,12 @@ import {
   VerifierError,
   InputError,
 } from './errors';
+import * as path from 'path'
 
 /**
- * event example
+ * event examples
+ * 
+ * event = {}
  *
  * event = {
  *  "csrSubjects": {
@@ -46,9 +48,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const response: Response = new Response();
 
   const bucketName: string | undefined = process.env.BUCKET_NAME;
-  const bucketPrefix: string | undefined = process.env.BUCKET_PREFIX;
-  const queueUrl: string | undefined = process.env.DEIVCE_ACTIVATOR_QUEUE_URL;
-  const deviceActivatorRoleArn: string | undefined = process.env.DEIVCE_ACTIVATOR_ROLE_ARN;
+  const bucketPrefix: string = process.env.BUCKET_PREFIX || '';
   const region: string | undefined = process.env.AWS_REGION;
 
   const iotClient: IoTClient = new IoTClient({ region: region });
@@ -92,34 +92,20 @@ export const handler = async (event: any = {}) : Promise <any> => {
     let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const {
-      certificateId,
-      certificateArn,
+      certificateId = '',
+      certificateArn = '',
     } = await iotClient.send(new RegisterCACertificateCommand({
       caCertificate: certificates.ca.certificate,
       verificationCertificate: certificates.verification.certificate,
       allowAutoRegistration: true,
       registrationConfig: {},
       setAsActive: true,
-    }));
-
-    await iotClient.send(new CreateTopicRuleCommand({
-      ruleName: `ActivationRule_${certificateId}`,
-      topicRulePayload: {
-        actions: [
-          {
-            sqs: {
-              queueUrl: queueUrl,
-              roleArn: deviceActivatorRoleArn,
-            },
-          },
-        ],
-        sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
-      },
+      tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
     }));
 
     await s3Client.send(new PutObjectCommand({
       Bucket: bucketName,
-      Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
+      Key: path.join(bucketPrefix, certificateId, 'ca-certificate.json'),
       Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
         certificateId: certificateId,
         certificateArn: certificateArn,

@@ -41,6 +41,7 @@ export class CaRegistrationFunction extends lambda.Function {
           'iot:RegisterCACertificate',
           'iot:GetRegistrationCode',
           'iot:CreateTopicRule',
+          'iot:TagResource'
         ],
         resources: ['*'],
       })],
