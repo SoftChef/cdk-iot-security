@@ -48,7 +48,8 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const { certificateArn } = await Joi.object({
     certificateArn: Joi.string().required(),
-  }).validateAsync(certificateDescription).catch((error: Error) => {
+  }).unknown(true)
+  .validateAsync(certificateDescription).catch((error: Error) => {
     throw new InformationNotFoundError(error.message);
   });
 
