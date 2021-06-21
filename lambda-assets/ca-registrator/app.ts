@@ -112,7 +112,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const { certificateId, certificateArn } = await Joi.object({
       certificateId: Joi.string().required(),
       certificateArn: Joi.string().required(),
-    }).validateAsync(CaRegistration).catch((error: Error) => {
+    })
+    .unknown(true)
+    .validateAsync(CaRegistration).catch((error: Error) => {
       throw new InformationNotFoundError(error.message);
     });
 
