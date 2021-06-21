@@ -27,12 +27,12 @@ export class CaRegistrationFunction extends lambda.Function {
     });    
     const jitp: boolean = props.jitp || false;
     const vault: CaRegistrationFunction.VaultProps = props.vault;
-    const deviceActivatorQueue: DeviceActivator.Queue | undefined = props.deviceActivatorQueue;
-    const verifiers: CaRegistrationFunction.VerifierProps[] = props.verifiers || [];
     this.addEnvironment('JITP', jitp? 'true' : 'false');
     this.addEnvironment('BUCKET_NAME', vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', vault.prefix);
     if (!jitp) {
+      const deviceActivatorQueue: DeviceActivator.Queue | undefined = props.deviceActivatorQueue;
+      const verifiers: CaRegistrationFunction.VerifierProps[] = props.verifiers || [];
       assert(deviceActivatorQueue instanceof DeviceActivator.Queue);
       this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', deviceActivatorQueue.pushingRole.roleArn);
       this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', deviceActivatorQueue.queueUrl);
@@ -76,7 +76,6 @@ export module CaRegistrationFunction {
     verifiers?: [VerifierProps];
     jitp?: boolean;
   }
-
 
   export interface VaultProps {
     /**
