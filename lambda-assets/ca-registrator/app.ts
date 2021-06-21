@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {
   IoTClient,
   GetRegistrationCodeCommand,
@@ -9,19 +10,19 @@ import {
 } from '@aws-sdk/client-s3';
 import {
   Request,
-  Response
+  Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
 import { CertificateGenerator } from './certificate-generator';
 import {
   VerifierError,
   InputError,
+  InformationNotFoundError,
 } from './errors';
-import * as path from 'path'
 
 /**
  * event examples
- * 
+ *
  * event = {}
  *
  * event = {
@@ -91,10 +92,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
-    const {
-      certificateId = '',
-      certificateArn = '',
-    } = await iotClient.send(new RegisterCACertificateCommand({
+    const CaRegistration = await iotClient.send(new RegisterCACertificateCommand({
       caCertificate: certificates.ca.certificate,
       verificationCertificate: certificates.verification.certificate,
       allowAutoRegistration: true,
@@ -102,6 +100,13 @@ export const handler = async (event: any = {}) : Promise <any> => {
       setAsActive: true,
       tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
     }));
+
+    const { certificateId, certificateArn } = await Joi.object({
+      certificateId: Joi.string().required(),
+      certificateArn: Joi.string().required(),
+    }).validateAsync(CaRegistration).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
 
     await s3Client.send(new PutObjectCommand({
       Bucket: bucketName,

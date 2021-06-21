@@ -2,7 +2,7 @@ import {
   IoTClient,
   GetRegistrationCodeCommand,
   RegisterCACertificateCommand,
-  CreateTopicRuleCommand,
+  // CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -13,6 +13,7 @@ import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
   VerifierError,
   InputError,
+  InformationNotFoundError,
 } from '../../../lambda-assets/ca-registrator/errors';
 
 const event = {
@@ -40,7 +41,6 @@ beforeEach(() => {
     certificateId: 'ca_certificate_id',
     certificateArn: 'ca_certificate_arn',
   });
-  iotMock.on(CreateTopicRuleCommand).resolves({});
   s3Mock.on(PutObjectCommand).resolves({});
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
@@ -66,6 +66,12 @@ test('Sucessfully execute the handler with empty event', async () => {
   expect(response.statusCode).toBe(200);
 });
 
+test('Sucessfully execute the handler without providing a bucket prefix', async () => {
+  delete process.env.BUCKET_PREFIX;
+  var response = await handler();
+  expect(response.statusCode).toBe(200);
+});
+
 test('Sucessfully execute the handler without providing a verifier', async () => {
   let eventWithoutVerifier: any = Object.assign({}, event);
   delete eventWithoutVerifier.body.verifierName;
@@ -79,11 +85,11 @@ test('Fail to upload the results', async () => {
   expect(response.statusCode).toBe(500);
 });
 
-test('Fail to create Rule', async () => {
-  iotMock.on(CreateTopicRuleCommand).rejects(new Error());
-  var response = await handler(event);
-  expect(response.statusCode).toBe(500);
-});
+// test('Fail to create Rule', async () => {
+//   iotMock.on(CreateTopicRuleCommand).rejects(new Error());
+//   var response = await handler(event);
+//   expect(response.statusCode).toBe(500);
+// });
 
 test('Fail to register CA', async () => {
   iotMock.on(RegisterCACertificateCommand).rejects(new Error());
@@ -111,4 +117,21 @@ test('Fail when provide the wrong format of CSR subjects', async () => {
   });
   var response = await handler(eventWithWrongFormatCsrSubject);
   expect(response.statusCode).toBe(InputError.code);
+});
+
+test('No bucket prefix is provided', async () => {
+  var response = await handler(event);
+  expect(response.statusCode).toBe(200);
+});
+
+// test('Get Error Codes successfully', () => {
+//   expect(new VerifierError().code).toBe(VerifierError.code);
+//   expect(new InputError().code).toBe(InputError.code);
+//   expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
+// });
+
+test('SDK return no certificationId and certificationArn when register CA', async () => {
+  iotMock.on(RegisterCACertificateCommand).resolves({});
+  var response = await handler(event);
+  expect(response.statusCode).toBe(InformationNotFoundError.code);
 });

@@ -16,6 +16,7 @@ import * as Joi from 'joi';
 import {
   VerificationError,
   InputError,
+  InformationNotFoundError,
 } from './errors';
 
 /**
@@ -43,11 +44,15 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const iotClient: IoTClient = new IoTClient({});
   const lambdaClient: LambdaClient = new LambdaClient({});
 
-  const  {
-    certificateDescription = { certificateArn: '' }
-  } = await iotClient.send(new DescribeCACertificateCommand({ certificateId: caCertificateId }));
+  const { certificateDescription } = await iotClient.send(new DescribeCACertificateCommand({ certificateId: caCertificateId }));
 
-  const { tags = [] } = await iotClient.send(new ListTagsForResourceCommand({ resourceArn: certificateDescription.certificateArn}));  
+  const { certificateArn } = await Joi.object({
+    certificateArn: Joi.string().required(),
+  }).validateAsync(certificateDescription).catch((error: Error) => {
+    throw new InformationNotFoundError(error.message);
+  });
+
+  const { tags = [] } = await iotClient.send(new ListTagsForResourceCommand({ resourceArn: certificateArn }));
   const { Value: verifierArn } = tags.find(tag => tag.Key === 'verifierArn') || { Value: '' };
 
   if (verifierArn) {

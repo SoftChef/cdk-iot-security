@@ -14,6 +14,7 @@ import { handler } from '../../../lambda-assets/device-activator/app';
 import {
   VerificationError,
   InputError,
+  InformationNotFoundError,
 } from '../../../lambda-assets/device-activator/errors';
 
 const record = {
@@ -45,8 +46,11 @@ beforeEach(() => {
   iotMock.on(DescribeCACertificateCommand).resolves({
     certificateDescription: {
       certificateArn: 'test_certificate_arn',
-    }
-  })
+    },
+  });
+  iotMock.on(ListTagsForResourceCommand).resolves({
+    tags: [{ Key: 'verifierArn', Value: 'test_verifier_arn' }],
+  });
   lambdaMock.on(InvokeCommand).resolves({
     StatusCode: 200,
     Payload: new TextEncoder().encode(
@@ -58,7 +62,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // AWSMock.restore();
   iotMock.reset();
   lambdaMock.reset();
 });
@@ -124,7 +127,25 @@ test('Missing the client certificate ID', async () => {
 });
 
 test('Get Error Codes successfully', () => {
-  expect(new VerificationError().code)
-    .toBe(VerificationError.code);
+  expect(new VerificationError().code).toBe(VerificationError.code);
   expect(new InputError().code).toBe(InputError.code);
+  expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
 });
+
+test('SDK return no CA certificate ID', async () => {
+  iotMock.on(DescribeCACertificateCommand).resolves({
+    certificateDescription: {},
+  });
+  await expect(handler({ Records: [record] })).rejects.toThrowError(InformationNotFoundError);
+});
+
+test('Situation that SDK returns no verifier tag', async () => {
+  iotMock.on(ListTagsForResourceCommand).resolves({});
+  var response = await handler({ Records: [record] });
+  expect(response.statusCode).toBe(200);
+});
+
+// test('Fail to list tags for CA', async () => {
+//   iotMock.on(ListTagsForResourceCommand).rejects(new Error());
+//   await expect(handler({ Records: [record] })).rejects.toThrow();
+// });

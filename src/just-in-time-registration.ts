@@ -30,7 +30,7 @@ export class JustInTimeRegistration extends Construct {
       deviceActivatorQueue: this.activator.queue,
       vault: props.vault,
       verifiers: props.verifiers,
-    });    
+    });
   }
 }
 

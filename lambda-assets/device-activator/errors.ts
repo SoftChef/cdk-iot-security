@@ -17,3 +17,13 @@ export class InputError extends Error {
     return InputError.code;
   }
 }
+
+export class InformationNotFoundError extends Error {
+  static code: number = 404;
+  constructor(message?: string) {
+    super(message);
+  }
+  get code() {
+    return InformationNotFoundError.code;
+  }
+}
