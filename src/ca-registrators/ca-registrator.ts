@@ -18,40 +18,28 @@ export class CaRegistrationFunction extends lambda.Function {
    * @param props
    */
   constructor(scope: Construct, id: string, props: CaRegistrationFunction.Props) {
-    const {
-      deviceActivatorQueue,
-      verifiers,
-      vault,
-      jitp,
-    } = Object.assign({
-      deviceActivatorQueue: null,
-      verifiers: [],
-      jitp: false
-    }, props);
-    let environment: {[key: string]: string} = {
-      BUCKET_NAME: vault.bucket.bucketName,
-      BUCKET_PREFIX: vault.prefix,
-      JITP: jitp? 'true' : 'false',
-    };
-    if (!jitp) {
-      assert(deviceActivatorQueue instanceof DeviceActivator.Queue);
-      Object.assign(environment, {
-        DEIVCE_ACTIVATOR_ROLE_ARN: deviceActivatorQueue.pushingRole.roleArn,
-        DEIVCE_ACTIVATOR_QUEUE_URL: deviceActivatorQueue.queueUrl,
-      });
-      if (verifiers) {
-        verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
-      }
-    }
-
     super(scope, `CaRegistrationFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
-      environment: environment,
-    });
+    });    
+    const jitp: boolean = props.jitp || false;
+    const vault: CaRegistrationFunction.VaultProps = props.vault;
+    const deviceActivatorQueue: DeviceActivator.Queue | undefined = props.deviceActivatorQueue;
+    const verifiers: CaRegistrationFunction.VerifierProps[] = props.verifiers || [];
+    this.addEnvironment('JITP', jitp? 'true' : 'false');
+    this.addEnvironment('BUCKET_NAME', vault.bucket.bucketName);
+    this.addEnvironment('BUCKET_PREFIX', vault.prefix);
+    if (!jitp) {
+      assert(deviceActivatorQueue instanceof DeviceActivator.Queue);
+      this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', deviceActivatorQueue.pushingRole.roleArn);
+      this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', deviceActivatorQueue.queueUrl);
+      verifiers?.forEach(verifier => {
+        this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
+      });
+    }
     this.role?.attachInlinePolicy(new Policy(this, `CaRegistrationFunction-${id}`, {
       statements: [new PolicyStatement({
         effect: Effect.ALLOW,
