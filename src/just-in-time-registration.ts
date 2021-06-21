@@ -1,10 +1,13 @@
 import { Construct } from '@aws-cdk/core';
-import { CaRegistrationFunction } from './ca-registrator';
+import {
+  CaRegistrationFunction,
+  JitrCaRegistrationFunction,
+} from './ca-registrators/index';
 import { DeviceActivator } from './device-activator';
 
 export class JustInTimeRegistration extends Construct {
   public activator: DeviceActivator;
-  public caRegistrationFunction: CaRegistrationFunction;
+  public jitrCaRegistrationFunction: JitrCaRegistrationFunction;
 
   /**
    * Initialize a Just-In-Time Registration API.
@@ -26,7 +29,7 @@ export class JustInTimeRegistration extends Construct {
   constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
     super(scope, `CaRegisterApi-${id}`);
     this.activator = new DeviceActivator(this, id);
-    this.caRegistrationFunction = new CaRegistrationFunction(this, id, {
+    this.jitrCaRegistrationFunction = new JitrCaRegistrationFunction(this, id, {
       deviceActivatorQueue: this.activator.queue,
       vault: props.vault,
       verifiers: props.verifiers,
