@@ -10,7 +10,7 @@ import {
 } from '@aws-sdk/client-s3';
 import {
   Request,
-  Response
+  Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
 import { CertificateGenerator } from './certificate-generator';

@@ -2,18 +2,23 @@ import {
   DescribeCertificateCommand,
   UpdateCertificateCommand,
   IoTClient,
-  DescribeCertificateCommandOutput,
+  CreateThingCommand,
+  CreatePolicyCommand,
+  AttachPolicyCommand,
+  AttachThingPrincipalCommand,
 } from '@aws-sdk/client-iot';
 import {
   InvokeCommand,
-  InvokeCommandOutput,
   LambdaClient,
 } from '@aws-sdk/client-lambda';
 import { Response } from '@softchef/lambda-events';
 import * as Joi from 'joi';
+import * as forge from 'node-forge';
 import {
   VerificationError,
   InputError,
+  PemParsingError,
+  CertificateNotFounderror,
 } from './errors';
 
 /**
@@ -24,6 +29,9 @@ import {
 export const handler = async (event: any = {}) : Promise <any> => {
   let response: Response = new Response();
 
+  const iotClient: IoTClient = new IoTClient({});
+  const lambdaClient: LambdaClient = new LambdaClient({});
+
   const recordSchema: Joi.ObjectSchema = Joi.object({
     certificateId: Joi.string().required(),
     verifierArn: Joi.string().regex(/^arn:/).allow(''),
@@ -31,29 +39,82 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   let [record] = event.Records;
 
-  const { certificateId, verifierArn } = await recordSchema.validateAsync(JSON.parse(record.body)).catch((error: Error) => {
+  const { certificateId, verifierArn } = await recordSchema
+  .validateAsync(JSON.parse(record.body)).catch((error: Error) => {
     throw new InputError(error.message);
   });
 
-  const iotClient: IoTClient = new IoTClient({});
-  const lambdaClient: LambdaClient = new LambdaClient({});
-
-  const clientCertificateInfo: DescribeCertificateCommandOutput = await iotClient.send(new DescribeCertificateCommand({
+  const { certificateDescription = {} } = await iotClient.send(new DescribeCertificateCommand({
     certificateId: certificateId,
   }));
 
+  const { certificateArn } = await Joi.string().required()
+  .validateAsync(certificateDescription.certificateArn).catch((error: Error) => {
+    throw new CertificateNotFounderror(error.message);
+  });
+
   if (verifierArn) {
-    let output: InvokeCommandOutput = await lambdaClient.send(new InvokeCommand({
+    const { Payload } = await lambdaClient.send(new InvokeCommand({
       FunctionName: decodeURIComponent(verifierArn),
-      Payload: Buffer.from(JSON.stringify(clientCertificateInfo)),
+      Payload: Buffer.from(JSON.stringify(certificateDescription)),
     }));
 
-    const payload: any = JSON.parse(new TextDecoder().decode(output.Payload));
-    await Joi.object({ verified: Joi.boolean().required().allow(true).only() }).unknown(true)
-      .validateAsync(payload.body).catch((error: Error) => {
+    const { body } = JSON.parse(new TextDecoder().decode(Payload));
+    await Joi.object({
+      verified: Joi.boolean().required().allow(true).only()
+    }).unknown(true)
+      .validateAsync(body).catch((error: Error) => {
         throw new VerificationError(error.message);
       });
   }
+  
+  let countryName: string;  
+  try {
+    const { certificatePem = '' } = certificateDescription;
+    const clientCertificate = forge.pki.certificateFromPem(certificatePem);
+    countryName = await Joi.string().required().validateAsync(
+      clientCertificate.subject.attributes.find(attr => attr.shortName === 'C')
+    );    
+  } catch (error) {
+    throw new PemParsingError(error.message);
+  }
+
+  const { thingName } = await iotClient.send(new CreateThingCommand({
+    thingName: certificateId,
+    attributePayload: {
+      attributes: {
+        'version': 'v1',
+        'country': countryName
+      }
+    },
+  }));
+
+  const { policyName } = await iotClient.send(new CreatePolicyCommand({
+    policyDocument: JSON.stringify({
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "iot:Connect",
+                    "iot:Publish",
+                ],
+                "Resource": '*'
+            },
+        ]
+    }),
+    policyName: `Policy-${certificateId}`,
+  }));
+
+  await iotClient.send(new AttachPolicyCommand({
+    policyName: policyName,
+    target: certificateArn
+  }));
+
+  await iotClient.send(new AttachThingPrincipalCommand({
+    principal: certificateArn,
+    thingName: thingName,
+  }))
 
   await iotClient.send(new UpdateCertificateCommand({
     certificateId: certificateId,
