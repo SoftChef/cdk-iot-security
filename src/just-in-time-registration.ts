@@ -1,10 +1,3 @@
-// import {
-//   RestApi,
-//   AuthorizationType,
-//   Resource,
-//   IAuthorizer,
-//   LambdaIntegration,
-// } from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrationFunction } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
@@ -17,7 +10,6 @@ export module JustInTimeRegistration {
 }
 
 export class JustInTimeRegistration extends Construct {
-  // public restApi: RestApi;
   public activator: DeviceActivator;
   public caRegistrationFunction: CaRegistrationFunction;
 
