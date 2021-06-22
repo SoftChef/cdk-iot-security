@@ -28,7 +28,7 @@ Name|Description
 
 
 __Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Extends__: [Function](#aws-cdk-aws-lambda-function)
 
 ### Initializer
 
@@ -42,8 +42,8 @@ new CaRegistrationFunction(scope: Construct, id: string, props: CaRegistrationFu
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrationFunction.CaRegistrationFunctionProps](#cdk-iot-security-caregistrationfunction-caregistrationfunctionprops)</code>)  *No description*
-  * **deviceActivatorQueue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
-  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **deviceActivatorQueue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
+  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
   * **verifiers** (<code>Array<[CaRegistrationFunction.VerifierProps](#cdk-iot-security-caregistrationfunction-verifierprops)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
@@ -94,7 +94,7 @@ Name | Type | Description
 __Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
 __Submodule__: DeviceActivator
 
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Extends__: [Function](#aws-cdk-aws-lambda-function)
 
 ### Initializer
 
@@ -221,8 +221,8 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**deviceActivatorQueue** | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
-**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**deviceActivatorQueue** | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
+**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **verifiers**? | <code>Array<[CaRegistrationFunction.VerifierProps](#cdk-iot-security-caregistrationfunction-verifierprops)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
