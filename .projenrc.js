@@ -17,10 +17,8 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-sqs',
     '@aws-cdk/aws-lambda-event-sources',
     '@aws-cdk/aws-s3',
-    'aws-cdk',
   ],
   bundledDeps: [
-    'path',
     'node-forge',
     '@types/node-forge',
     '@types/node@15.12.4',
@@ -29,11 +27,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
   ],
-  peerDeps: [
-    '@aws-cdk/assert',
-  ],
   devDeps: [
-    'esbuild',
     'aws-sdk-client-mock',
   ],
   tsconfig: {

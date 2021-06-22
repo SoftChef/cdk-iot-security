@@ -6,6 +6,35 @@ import { CaRegistrator } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 import { ReviewReceptor } from './review-receptor';
 
+export module JustInTimeRegistration {
+  export interface Props {
+    readonly vault: VaultProps;
+    readonly verifiers?: [VerifierProps];
+  }
+
+  export interface VaultProps {
+    /**
+     * The S3 bucket
+     */
+    readonly bucket: Bucket;
+    /**
+     * The specified prefix to save the file.
+     */
+    readonly prefix: string;
+  }
+
+  export interface VerifierProps {
+    /**
+     * The verifier name.
+     */
+    readonly name: string;
+    /**
+     * The verifier Lambda Function
+     */
+    readonly lambdaFunction: Function;
+  }
+}
+
 export class JustInTimeRegistration extends Construct {
   public readonly deviceActivator: DeviceActivator;
   public readonly caRegistrator: CaRegistrator;
@@ -44,34 +73,5 @@ export class JustInTimeRegistration extends Construct {
     });
     this.vault = props.vault;
     this.vault.bucket.grantWrite(this.caRegistrator);
-  }
-}
-
-export module JustInTimeRegistration {
-  export interface Props {
-    vault: VaultProps;
-    verifiers?: [VerifierProps];
-  }
-
-  export interface VaultProps {
-    /**
-     * The S3 bucket
-     */
-    bucket: Bucket;
-    /**
-     * The specified prefix to save the file.
-     */
-    prefix: string;
-  }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    lambdaFunction: Function;
   }
 }

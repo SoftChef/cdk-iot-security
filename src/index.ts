@@ -1,1 +1,4 @@
-export * from './just-in-time-registration';
+export { JustInTimeRegistration } from './just-in-time-registration';
+export { CaRegistrator } from './ca-registrator';
+export { DeviceActivator } from './device-activator';
+export { ReviewReceptor, ReviewAcceptionRole } from './review-receptor';

@@ -9,6 +9,26 @@ import { Construct, Duration } from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
 
+
+export module CaRegistrator {
+  export interface Props {
+    /**
+     * The AWS SQS Queue collecting the MQTT messages sending
+     * from the CA-associated Iot Rule, which sends a message
+     * every time a client register its certificate.
+     */
+    readonly reviewReceptor: ReviewReceptor;
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
+    readonly vault: JustInTimeRegistration.VaultProps;
+    /**
+     * The verifiers to verify the client certificates.
+     */
+    readonly verifiers?: [JustInTimeRegistration.VerifierProps];
+  }
+}
 export class CaRegistrator extends lambda.Function {
   /**
    * Initialize the CA Registrator Function.
@@ -45,25 +65,5 @@ export class CaRegistrator extends lambda.Function {
         resources: ['*'],
       })],
     }));
-  }
-}
-
-export module CaRegistrator {
-  export interface Props {
-    /**
-     * The AWS SQS Queue collecting the MQTT messages sending
-     * from the CA-associated Iot Rule, which sends a message
-     * every time a client register its certificate.
-     */
-    reviewReceptor: ReviewReceptor;
-    /**
-     * The secure AWS S3 Bucket recepting the CA registration
-     * information returned from the CA Registration Function.
-     */
-    vault: JustInTimeRegistration.VaultProps;
-    /**
-     * The verifiers to verify the client certificates.
-     */
-    verifiers?: [JustInTimeRegistration.VerifierProps];
   }
 }
