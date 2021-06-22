@@ -28,7 +28,6 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
-    // '@aws-cdk/assert',
   ],
   devDeps: [
     'aws-sdk-client-mock',
@@ -36,7 +35,6 @@ const project = new AwsCdkConstructLibrary({
   tsconfig: {
     compilerOptions: {
       target: 'ES6',
-      // allowJs: true,
       lib: [
         'DOM',
         'ES2020',
