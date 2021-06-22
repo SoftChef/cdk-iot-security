@@ -6,8 +6,6 @@ Name|Description
 ----|-----------
 [CaRegistrator](#cdk-iot-security-caregistrator)|*No description*
 [DeviceActivator](#cdk-iot-security-deviceactivator)|*No description*
-[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)|*No description*
-[DeviceActivator.Queue.PushingRole](#cdk-iot-security-deviceactivator-queue-pushingrole)|The Role allowing pushing messages into a specific Device Activator Queue.
 [JustInTimeRegistration](#cdk-iot-security-justintimeregistration)|*No description*
 [ReviewAcceptionRole](#cdk-iot-security-reviewacceptionrole)|*No description*
 [ReviewReceptor](#cdk-iot-security-reviewreceptor)|*No description*
@@ -43,8 +41,8 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrator.Props](#cdk-iot-security-caregistrator-props)</code>)  *No description*
-  * **reviewReceptor** (<code>[ReviewReceptor](#cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
-  * **vault** (<code>[JustInTimeRegistration.VaultProps](#cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **reviewReceptor** (<code>[ReviewReceptor](#cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
+  * **vault** (<code>[JustInTimeRegistration.VaultProps](#cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
   * **verifiers** (<code>json</code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
@@ -68,62 +66,6 @@ new DeviceActivator(scope: Construct, id: string)
 
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
-
-
-
-
-## class Queue  <a id="cdk-iot-security-deviceactivator-queue"></a>
-
-
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IQueue](#aws-cdk-aws-sqs-iqueue), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource)
-__Submodule__: DeviceActivator
-
-__Extends__: [Queue](#aws-cdk-aws-sqs-queue)
-
-### Initializer
-
-
-Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
-
-```ts
-new DeviceActivator.Queue(scope: Construct, id: string)
-```
-
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-
-
-
-### Properties
-
-
-Name | Type | Description 
------|------|-------------
-**pushingRole** | <code>[DeviceActivator.Queue.PushingRole](#cdk-iot-security-deviceactivator-queue-pushingrole)</code> | <span></span>
-
-
-
-## class PushingRole  <a id="cdk-iot-security-deviceactivator-queue-pushingrole"></a>
-
-The Role allowing pushing messages into a specific Device Activator Queue.
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
-__Submodule__: DeviceActivator.Queue
-
-__Extends__: [Role](#aws-cdk-aws-iam-role)
-
-### Initializer
-
-
-
-
-```ts
-new DeviceActivator.Queue.PushingRole(queue: Queue, principalName: string)
-```
-
-* **queue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  *No description*
-* **principalName** (<code>string</code>)  *No description*
 
 
 
@@ -236,8 +178,8 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**reviewReceptor** | <code>[ReviewReceptor](#cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
-**vault** | <code>[JustInTimeRegistration.VaultProps](#cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**reviewReceptor** | <code>[ReviewReceptor](#cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
+**vault** | <code>[JustInTimeRegistration.VaultProps](#cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **verifiers**? | <code>json</code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
