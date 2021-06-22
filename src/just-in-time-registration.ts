@@ -41,7 +41,7 @@ export class JustInTimeRegistration extends Construct {
       verifiers: props.verifiers,
     });
     this.verifierRecorder = new VerifierRecorder(this, id, {
-      verifiers: props.verifiers
+      verifiers: props.verifiers,
     });
   }
 }
