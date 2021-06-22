@@ -107,15 +107,17 @@ export module DeviceActivator {
           assumedBy: new ServicePrincipal(principalName),
           inlinePolicies: {
             SqsPushPolicy: new PolicyDocument({
-              statements: [new PolicyStatement({
-                actions: [
-                  'sqs:SendMessageBatch',
-                  'sqs:SendMessage',
-                ],
-                resources: [
-                  queue.queueArn,
-                ],
-              })],
+              statements: [
+                new PolicyStatement({
+                  actions: [
+                    'sqs:SendMessageBatch',
+                    'sqs:SendMessage',
+                  ],
+                  resources: [
+                    queue.queueArn,
+                  ],
+                })
+              ],
             }),
           },
         });

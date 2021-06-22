@@ -131,10 +131,6 @@
       "type": "bundled"
     },
     {
-      "name": "path",
-      "type": "bundled"
-    },
-    {
       "name": "@aws-cdk/assert",
       "type": "peer"
     },
