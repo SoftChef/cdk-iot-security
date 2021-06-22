@@ -49,8 +49,10 @@ beforeEach(() => {
   });
   lambdaMock.on(InvokeCommand).resolves({
     StatusCode: 200,
-    Payload: new TextEncoder().encode(
-      JSON.stringify({ body: { verified: true } }),
+    Payload: new Uint8Array(
+      Buffer.from(
+        JSON.stringify({ body: { verified: true } }),
+      ),
     ),
   });
   iotMock.on(CreateThingCommand).resolves({
@@ -106,8 +108,10 @@ test('Fail to set the client certificate active', async () => {
 test('Fail to parse the verifier response', async () => {
   lambdaMock.on(InvokeCommand).resolves({
     StatusCode: 200,
-    Payload: new TextEncoder().encode(
-      JSON.stringify({ body: {} }),
+    Payload: new Uint8Array(
+      Buffer.from(
+        JSON.stringify({ body: { } }),
+      ),
     ),
   });
   await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
