@@ -85,6 +85,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new InputError(JSON.stringify(validated.details));
     }
 
+    // let csrSubjects: CertificateGenerator.CsrSubjects = await csrSubjectsSchema
+    // .validateAsync(request.input('csrSubjects')).catch((error: Error) => {
+    //   throw new VerifierError(error.message);
+    // });
+
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
       commonName: '',
       countryName: '',
@@ -151,7 +156,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    console.log(error);
     return response.error(error, error.code);
   }
 };

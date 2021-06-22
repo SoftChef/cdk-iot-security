@@ -45,16 +45,27 @@ export const handler = async (event: any = {}) : Promise <any> => {
     });
 
   if (verifierArn) {
-    const { Payload } = await lambdaClient.send(
+    const { Payload: payload = [] } = await lambdaClient.send(
       new InvokeCommand({
         FunctionName: decodeURIComponent(verifierArn),
-        Payload: Buffer.from(JSON.stringify(certificateDescription)),
+        Payload: Buffer.from(
+          JSON.stringify(certificateDescription),
+        ),
       }),
     );
+    let payloadString: string = '';
+    payload.forEach(num => {
+      payloadString += String.fromCharCode(num);
+    });
 
+    console.log('Payload: ' + payload);
+    console.log('Payload to string: ' + payload.toString());
     const { body } = JSON.parse(
-      new TextDecoder().decode(Payload),
+      // new Uint8Array(Payload)
+      // new TextDecoder().decode(payload),
+      payloadString,
     );
+
     await Joi.object({
       verified: Joi.boolean().required().allow(true).only(),
     }).unknown(true)
