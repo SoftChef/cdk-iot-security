@@ -85,8 +85,10 @@ test('Successfully execute the handler without specifying a verifier', async () 
 test('Successfully execute the handler but fail to be verified', async () => {
   lambdaMock.on(InvokeCommand).resolves({
     StatusCode: 200,
-    Payload: new TextEncoder().encode(
-      JSON.stringify({ body: { verified: false } }),
+    Payload: new Uint8Array(
+      Buffer.from(
+        JSON.stringify({ body: { verified: false } }),
+      ),
     ),
   });
   await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
