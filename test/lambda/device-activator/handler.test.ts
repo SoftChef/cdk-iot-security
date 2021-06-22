@@ -122,6 +122,11 @@ test('Fail to invoke the verifier', async () => {
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
+test('Get empty return from the verifier', async () => {
+  lambdaMock.on(InvokeCommand).resolves({});
+  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
+});
+
 test('Fail to query the client certificate information', async () => {
   iotMock.on(DescribeCertificateCommand).rejects(new Error());
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
