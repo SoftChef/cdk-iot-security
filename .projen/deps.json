@@ -27,10 +27,6 @@
       "type": "build"
     },
     {
-      "name": "esbuild",
-      "type": "build"
-    },
-    {
       "name": "eslint",
       "type": "build"
     },
@@ -135,14 +131,6 @@
       "type": "bundled"
     },
     {
-      "name": "path",
-      "type": "bundled"
-    },
-    {
-      "name": "@aws-cdk/assert",
-      "type": "peer"
-    },
-    {
       "name": "@aws-cdk/aws-apigateway",
       "version": "^1.109.0",
       "type": "peer"
@@ -189,11 +177,6 @@
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.109.0",
-      "type": "peer"
-    },
-    {
-      "name": "aws-cdk",
       "version": "^1.109.0",
       "type": "peer"
     },
@@ -249,11 +232,6 @@
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.109.0",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-cdk",
       "version": "^1.109.0",
       "type": "runtime"
     }

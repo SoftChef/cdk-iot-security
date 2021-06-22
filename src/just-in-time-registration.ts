@@ -3,6 +3,13 @@ import { CaRegistrationFunction } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 import { VerifierRecorder } from './verifier-recorder';
 
+export module JustInTimeRegistration {
+  export interface Props {
+    readonly vault: CaRegistrationFunction.VaultProps;
+    readonly verifiers?: [VerifierRecorder.VerifierProps];
+  }
+}
+
 export class JustInTimeRegistration extends Construct {
   public activator: DeviceActivator;
   public caRegistrationFunction: CaRegistrationFunction;
@@ -28,18 +35,13 @@ export class JustInTimeRegistration extends Construct {
   constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
     super(scope, `JustInTimeRegistration-${id}`);
     this.activator = new DeviceActivator(this, id);
-    this.verifierRecorder = new VerifierRecorder(this, id);
     this.caRegistrationFunction = new CaRegistrationFunction(this, id, {
       deviceActivatorQueue: this.activator.queue,
       vault: props.vault,
       verifiers: props.verifiers,
     });
-  }
-}
-
-export module JustInTimeRegistration {
-  export interface Props {
-    vault: CaRegistrationFunction.VaultProps;
-    verifiers?: [VerifierRecorder.VerifierProps];
+    this.verifierRecorder = new VerifierRecorder(this, id, {
+      verifiers: props.verifiers
+    });
   }
 }

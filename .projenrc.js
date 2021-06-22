@@ -2,6 +2,7 @@ const { AwsCdkConstructLibrary } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'YehTarnSu',
   authorAddress: 'yehtarnsu@softchef.com',
+  // jsiiVersion: Semver.caret('1.7.0'),
   cdkVersion: '1.109.0',
   defaultReleaseBranch: 'main',
   name: 'cdk-iot-security',
@@ -17,10 +18,8 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-sqs',
     '@aws-cdk/aws-lambda-event-sources',
     '@aws-cdk/aws-s3',
-    'aws-cdk',
   ],
   bundledDeps: [
-    'path',
     'joi',
     'node-forge',
     '@types/node-forge',
@@ -31,17 +30,12 @@ const project = new AwsCdkConstructLibrary({
     '@softchef/lambda-events',
     '@softchef/cdk-restapi',
   ],
-  peerDeps: [
-    '@aws-cdk/assert',
-  ],
   devDeps: [
-    'esbuild',
     'aws-sdk-client-mock',
   ],
   tsconfig: {
     compilerOptions: {
-      target: 'ES2020',
-      allowJs: true,
+      target: 'ES6',
       lib: [
         'DOM',
         'ES2020',

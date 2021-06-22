@@ -31,7 +31,7 @@ import {
  *    "organizationName": "Soft Chef",
  *    "organizationUnitName": "web"
  *  },
- *  "verifierName": "verifier_name"
+ *  "verifierName": "verifier_name",
  *  }
  * }
  */
@@ -56,11 +56,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
     commonName: Joi.string().allow(''),
+    countryName: Joi.string().allow(''),
     stateName: Joi.string().allow(''),
     localityName: Joi.string().allow(''),
     organizationName: Joi.string().allow(''),
     organizationUnitName: Joi.string().allow(''),
-  }).unknown(true);
+  }).unknown(true).allow({}, null);
 
   const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
     Joi.object({
@@ -74,19 +75,36 @@ export const handler = async (event: any = {}) : Promise <any> => {
   );
 
   try {
-    let csrSubjects: CertificateGenerator.CsrSubjects = await csrSubjectsSchema
-      .validateAsync(request.input('csrSubjects', {})).catch((error: Error) => {
-        throw new InputError(error.message);
-      });
+    const validated = request.validate(joi => {
+      return {
+        csrSubjects: csrSubjectsSchema,
+        verifierName: joi.string().allow('', null),
+      };
+    });
+    if (validated.error) {
+      throw new InputError(JSON.stringify(validated.details));
+    }
+
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
+      commonName: '',
+      countryName: '',
+      stateName: '',
+      localityName: '',
+      organizationName: '',
+      organizationUnitName: '',
+    };
+    let verifierName: string = request.input('verifierName');
 
     const { verifierArn } = await verifierSchema.validateAsync({
-      verifierName: request.input('verifierName'),
-      verifierArn: process.env[request.input('verifierName')] || '',
-    }).catch((error: Error) => {
-      throw new VerifierError(error.message);
+      verifierName: verifierName,
+      verifierArn: process.env[request.input('verifierName')],
+    }).catch((_error: Error) => {
+      throw new VerifierError();
     });
 
-    const { registrationCode } = await iotClient.send(new GetRegistrationCodeCommand({}));
+    const { registrationCode } = await iotClient.send(
+      new GetRegistrationCodeCommand({}),
+    );
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
 
     let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
@@ -94,40 +112,45 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const {
       certificateId,
       certificateArn,
-    } = await iotClient.send(new RegisterCACertificateCommand({
-      caCertificate: certificates.ca.certificate,
-      verificationCertificate: certificates.verification.certificate,
-      allowAutoRegistration: true,
-      registrationConfig: {},
-      setAsActive: true,
-    }));
+    } = await iotClient.send(
+      new RegisterCACertificateCommand({
+        caCertificate: certificates.ca.certificate,
+        verificationCertificate: certificates.verification.certificate,
+        allowAutoRegistration: true,
+        registrationConfig: {},
+        setAsActive: true,
+      }),
+    );
 
-    await iotClient.send(new CreateTopicRuleCommand({
-      ruleName: `ActivationRule_${certificateId}`,
-      topicRulePayload: {
-        actions: [
-          {
-            sqs: {
-              queueUrl: queueUrl,
-              roleArn: deviceActivatorRoleArn,
+    await iotClient.send(
+      new CreateTopicRuleCommand({
+        ruleName: `ActivationRule_${certificateId}`,
+        topicRulePayload: {
+          actions: [
+            {
+              sqs: {
+                queueUrl: queueUrl,
+                roleArn: deviceActivatorRoleArn,
+              },
             },
-          },
-        ],
-        sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
-      },
-    }));
+          ],
+          sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
+        },
+      }),
+    );
 
-    await s3Client.send(new PutObjectCommand({
-      Bucket: bucketName,
-      Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
-      Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-        certificateId: certificateId,
-        certificateArn: certificateArn,
-      }))),
-    }));
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
+        Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
+          certificateId: certificateId,
+          certificateArn: certificateArn,
+        }))),
+      }),
+    );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    console.log(error);
     return response.error(error, error.code);
   }
 };
