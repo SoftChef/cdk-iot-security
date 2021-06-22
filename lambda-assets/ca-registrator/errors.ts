@@ -1,9 +1,19 @@
-export class UnknownVerifierError extends Error {
-  static code: number = 422;
-  constructor() {
-    super('Received unknown verifier');
+export class VerifierError extends Error {
+  static code: number = 423;
+  constructor(message?: string) {
+    super(message);
   }
   get code(): number {
-    return UnknownVerifierError.code;
+    return VerifierError.code;
+  }
+}
+
+export class InputError extends Error {
+  static code: number = 422;
+  constructor(message?: string) {
+    super(message);
+  }
+  get code(): number {
+    return InputError.code;
   }
 }

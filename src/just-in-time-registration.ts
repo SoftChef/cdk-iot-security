@@ -35,6 +35,13 @@ export module JustInTimeRegistration {
   }
 }
 
+export module JustInTimeRegistration {
+  export interface Props {
+    readonly vault: VaultProps;
+    readonly verifiers?: [VerifierProps];
+  }
+}
+
 export class JustInTimeRegistration extends Construct {
   public readonly deviceActivator: DeviceActivator;
   public readonly caRegistrator: CaRegistrator;

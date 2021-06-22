@@ -11,7 +11,8 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
-  UnknownVerifierError,
+  VerifierError,
+  InputError,
 } from '../../../lambda-assets/ca-registrator/errors';
 
 const event = {
@@ -44,7 +45,7 @@ beforeEach(() => {
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'local';
-  process.env.test_verifier = 'arn_of_test_verifier';
+  process.env.test_verifier = 'arn:arn_of_test_verifier';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
@@ -60,7 +61,7 @@ test('Sucessfully execute the handler', async () => {
   expect(response.statusCode).toBe(200);
 });
 
-test('Sucessfully execute the handler with empty event', async () => {
+test('Sucessfully execute the handler with an empty event', async () => {
   var response = await handler();
   expect(response.statusCode).toBe(200);
 });
@@ -96,10 +97,33 @@ test('Fail to get CA registration code', async () => {
   expect(response.statusCode).toBe(500);
 });
 
-test('Provide the wrong verifier', async () => {
+test('Fail when provide the wrong verifier', async () => {
   let eventWithWrongVerifier: any = Object.assign({}, event, {
-    body: { verifierName: 'wrong' },
+    body: {
+      verifierName: 'wrong',
+      csrSubjects: {
+        commonName: '',
+        countryName: 'TW',
+        stateName: 'TP',
+        localityName: 'TW',
+        organizationName: 'Soft Chef',
+        organizationUnitName: 'web',
+      },
+    },
   });
   var response = await handler(eventWithWrongVerifier);
-  expect(response.statusCode).toBe(UnknownVerifierError.code);
+  expect(response.statusCode).toBe(VerifierError.code);
+});
+
+test('Fail when provide the wrong format of CSR subjects', async () => {
+  let eventWithWrongFormatCsrSubject = Object.assign({}, event, {
+    body: { csrSubjects: { commonName: {} } },
+  });
+  var response = await handler(eventWithWrongFormatCsrSubject);
+  expect(response.statusCode).toBe(InputError.code);
+});
+
+test('Get Error Codes successfully', () => {
+  expect(new VerifierError().code).toBe(VerifierError.code);
+  expect(new InputError().code).toBe(InputError.code);
 });

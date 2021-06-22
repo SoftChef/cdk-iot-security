@@ -9,7 +9,6 @@ import { Construct, Duration } from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
 
-
 export module CaRegistrator {
   export interface Props {
     /**
@@ -44,7 +43,6 @@ export class CaRegistrator extends lambda.Function {
       BUCKET_PREFIX: props.vault.prefix,
     };
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
-
     super(scope, `CaRegistrator-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
@@ -53,17 +51,21 @@ export class CaRegistrator extends lambda.Function {
       memorySize: 256,
       environment: environment,
     });
-    this.role?.attachInlinePolicy(new Policy(this, `CaRegistrator-${id}`, {
-      statements: [new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          'iam:PassRole',
-          'iot:RegisterCACertificate',
-          'iot:GetRegistrationCode',
-          'iot:CreateTopicRule',
+    this.role?.attachInlinePolicy(
+      new Policy(this, `CaRegistrator-${id}`, {
+        statements: [
+          new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+              'iam:PassRole',
+              'iot:RegisterCACertificate',
+              'iot:GetRegistrationCode',
+              'iot:CreateTopicRule',
+            ],
+            resources: ['*'],
+          })
         ],
-        resources: ['*'],
-      })],
-    }));
+      })
+    );
   }
 }
