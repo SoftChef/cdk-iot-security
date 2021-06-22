@@ -9,12 +9,9 @@ import {
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
-// import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import * as sqs from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
 
-// export module DeviceActivator {
-// export class DeviceActivator extends Construct {
 export class DeviceActivator extends Construct {
   /**
    * The Device Activation Function.
@@ -61,7 +58,6 @@ export module DeviceActivator {
     constructor(scope: Construct, id: string) {
       super(scope, `DeviceActivatorFunction-${id}`, {
         code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/device-activator')),
-        // entry: path.resolve(__dirname, '../lambda-assets/device-activator/app.ts'),
         handler: 'app.handler',
         runtime: lambda.Runtime.NODEJS_14_X,
       });

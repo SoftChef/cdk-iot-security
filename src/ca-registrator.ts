@@ -5,7 +5,6 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-// import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 import { DeviceActivator } from './device-activator';
@@ -67,13 +66,6 @@ export class CaRegistrationFunction extends lambda.Function {
       BUCKET_PREFIX: props.vault.prefix,
     };
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
-
-    // super(scope, `CaRegistrationFunction-${id}`, {
-    //   entry: path.resolve(__dirname, '../lambda-assets/ca-registrator/app.ts'),
-    //   timeout: Duration.seconds(10),
-    //   memorySize: 256,
-    //   environment: environment,
-    // });
     super(scope, `CaRegistrationFunction-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
