@@ -3,15 +3,13 @@ import {
   PolicyStatement,
   Effect,
   Policy,
+  Role,
+  ServicePrincipal,
+  PolicyDocument
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as sqs from '@aws-cdk/aws-sqs';
 import { Construct } from '@aws-cdk/core';
-import * as sqs from '@aws-cdk/aws-sqs'
-import {
-  ServicePrincipal,
-  Role,
-  PolicyDocument
-} from '@aws-cdk/aws-iam'
 
 export class DeviceActivator extends lambda.Function {
   /**

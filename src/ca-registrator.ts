@@ -63,9 +63,9 @@ export class CaRegistrator extends lambda.Function {
               'iot:CreateTopicRule',
             ],
             resources: ['*'],
-          })
+          }),
         ],
-      })
+      }),
     );
   }
 }
