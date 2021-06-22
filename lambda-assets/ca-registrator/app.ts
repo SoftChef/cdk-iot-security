@@ -31,7 +31,7 @@ import {
  *    "organizationName": "Soft Chef",
  *    "organizationUnitName": "web"
  *  },
- *  "verifierName": "verifier_name"
+ *  "verifierName": "verifier_name",
  *  }
  * }
  */
@@ -56,11 +56,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
     commonName: Joi.string().allow(''),
+    countryName: Joi.string().allow(''),
     stateName: Joi.string().allow(''),
     localityName: Joi.string().allow(''),
     organizationName: Joi.string().allow(''),
     organizationUnitName: Joi.string().allow(''),
-  }).unknown(true);
+  }).unknown(true).allow({}, null);
 
   const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
     Joi.object({
@@ -74,31 +75,36 @@ export const handler = async (event: any = {}) : Promise <any> => {
   );
 
   try {
-    const { details, error } = request.validate(joi => {
+    const validated = request.validate(joi => {
       return {
         csrSubjects: csrSubjectsSchema,
         verifierName: joi.string().allow('', null),
       };
     });
-    if (error) {
-      throw new InputError(JSON.stringify(details));
+    if (validated.error) {
+      throw new InputError(JSON.stringify(validated.details));
     }
-    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {});
+
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
+      commonName: '',
+      countryName: '',
+      stateName: '',
+      localityName: '',
+      organizationName: '',
+      organizationUnitName: '',
+    };
     let verifierName: string = request.input('verifierName');
-    
-    // let csrSubjects: CertificateGenerator.CsrSubjects = await csrSubjectsSchema
-    //   .validateAsync(request.input('csrSubjects', {})).catch((error: Error) => {
-    //     throw new InputError(error.message);
-    //   });
 
     const { verifierArn } = await verifierSchema.validateAsync({
       verifierName: verifierName,
-      verifierArn: process.env[request.input('verifierName')] || '',
-    }).catch((error: Error) => {
-      throw new VerifierError(error.message);
+      verifierArn: process.env[request.input('verifierName')],
+    }).catch((_error: Error) => {
+      throw new VerifierError();
     });
 
-    const { registrationCode } = await iotClient.send(new GetRegistrationCodeCommand({}));
+    const { registrationCode } = await iotClient.send(
+      new GetRegistrationCodeCommand({}),
+    );
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
 
     let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
@@ -113,7 +119,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
         allowAutoRegistration: true,
         registrationConfig: {},
         setAsActive: true,
-      })
+      }),
     );
 
     await iotClient.send(
@@ -130,7 +136,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
           ],
           sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
         },
-      })
+      }),
     );
 
     await s3Client.send(
@@ -141,10 +147,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
           certificateId: certificateId,
           certificateArn: certificateArn,
         }))),
-      })
+      }),
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
+    console.log(error);
     return response.error(error, error.code);
   }
 };

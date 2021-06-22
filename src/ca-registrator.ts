@@ -28,7 +28,6 @@ export module CaRegistrationFunction {
     verifiers?: [VerifierProps];
   }
 
-
   export interface VaultProps {
     /**
      * The S3 bucket
@@ -76,20 +75,22 @@ export class CaRegistrationFunction extends lambda.Function {
       memorySize: 256,
       environment: environment,
     });
-    this.role?.attachInlinePolicy(new Policy(this, `CaRegistrationFunction-${id}`, {
-      statements: [
-        new PolicyStatement({
-          effect: Effect.ALLOW,
-          actions: [
-            'iam:PassRole',
-            'iot:RegisterCACertificate',
-            'iot:GetRegistrationCode',
-            'iot:CreateTopicRule',
-          ],
-          resources: ['*'],
-        })
-      ],
-    }));
+    this.role?.attachInlinePolicy(
+      new Policy(this, `CaRegistrationFunction-${id}`, {
+        statements: [
+          new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+              'iam:PassRole',
+              'iot:RegisterCACertificate',
+              'iot:GetRegistrationCode',
+              'iot:CreateTopicRule',
+            ],
+            resources: ['*'],
+          }),
+        ],
+      }),
+    );
     props.vault.bucket.grantWrite(this);
   }
 }

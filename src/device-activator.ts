@@ -116,7 +116,7 @@ export module DeviceActivator {
                   resources: [
                     queue.queueArn,
                   ],
-                })
+                }),
               ],
             }),
           },

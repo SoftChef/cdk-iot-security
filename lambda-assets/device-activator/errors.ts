@@ -28,12 +28,12 @@ export class PemParsingError extends Error {
   }
 }
 
-export class CertificateNotFounderror extends Error {
+export class CertificateNotFoundError extends Error {
   static code: number = 404;
   constructor(message?: string) {
     super(message);
   }
   get code() {
-    return CertificateNotFounderror.code;
+    return CertificateNotFoundError.code;
   }
 }
