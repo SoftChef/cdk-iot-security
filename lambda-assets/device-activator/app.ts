@@ -29,19 +29,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const iotClient: IoTClient = new IoTClient({});
   const lambdaClient: LambdaClient = new LambdaClient({});
 
-  // const recordSchema: Joi.ObjectSchema = Joi.object({
-  //   certificateId: Joi.string().required(),
-  //   verifierArn: Joi.string().regex(/^arn:/).allow(''),
-  // }).unknown(true);
-
   let [record] = event.Records;
 
   const { certificateId, verifierArn } = JSON.parse(record.body);
-
-  // await recordSchema
-  // .validateAsync(JSON.parse(record.body)).catch((error: Error) => {
-  //   throw new InputError(error.message);
-  // });
 
   const { certificateDescription = {} } = await iotClient.send(
     new DescribeCertificateCommand({
