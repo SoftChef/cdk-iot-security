@@ -1,7 +1,8 @@
 const { AwsCdkConstructLibrary } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'YehTarnSu',
-  authorAddress: 'yehtarnsu@softchef.com',
+  authorAddress: 'yehtarnsu@softchef.com',  
+  // jsiiVersion: Semver.caret('1.7.0'),
   cdkVersion: '1.109.0',
   defaultReleaseBranch: 'main',
   name: 'cdk-iot-security',
@@ -27,6 +28,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
+    // '@aws-cdk/assert',
   ],
   devDeps: [
     'aws-sdk-client-mock',
@@ -34,7 +36,7 @@ const project = new AwsCdkConstructLibrary({
   tsconfig: {
     compilerOptions: {
       target: 'ES6',
-      allowJs: true,
+      // allowJs: true,
       lib: [
         'DOM',
         'ES2020',

@@ -22,8 +22,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES6",
-    "allowJs": true
+    "target": "ES6"
   },
   "include": [
     ".projenrc.js",

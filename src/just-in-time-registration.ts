@@ -4,8 +4,8 @@ import { DeviceActivator } from './device-activator';
 
 export module JustInTimeRegistration {
   export interface Props {
-    vault: CaRegistrationFunction.VaultProps;
-    verifiers?: [CaRegistrationFunction.VerifierProps];
+    readonly vault: CaRegistrationFunction.VaultProps;
+    readonly verifiers?: [CaRegistrationFunction.VerifierProps];
   }
 }
 

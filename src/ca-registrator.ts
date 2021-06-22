@@ -5,6 +5,7 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
+import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 import { DeviceActivator } from './device-activator';
@@ -16,42 +17,42 @@ export module CaRegistrationFunction {
      * from the CA-associated Iot Rule, which sends a message
      * every time a client register its certificate.
      */
-    deviceActivatorQueue: DeviceActivator.Queue;
+    readonly deviceActivatorQueue: DeviceActivator.Queue;
     /**
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    vault: VaultProps;
+     readonly vault: VaultProps;
     /**
      * The verifiers to verify the client certificates.
      */
-    verifiers?: [VerifierProps];
+     readonly verifiers?: VerifierProps[];
   }
 
   export interface VaultProps {
     /**
      * The S3 bucket
      */
-    bucket: Bucket;
+     readonly bucket: Bucket;
     /**
      * The specified prefix to save the file.
      */
-    prefix: string;
+     readonly prefix: string;
   }
 
   export interface VerifierProps {
     /**
      * The verifier name.
      */
-    name: string;
+     readonly name: string;
     /**
      * The verifier Lambda Function
      */
-    lambdaFunction: lambda.Function;
+     readonly lambdaFunction: lambda.Function;
   }
 }
 
-export class CaRegistrationFunction extends lambda.Function {
+export class CaRegistrationFunction extends NodejsFunction {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
@@ -68,13 +69,22 @@ export class CaRegistrationFunction extends lambda.Function {
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
 
     super(scope, `CaRegistrationFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'app.handler',
+      // code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
+      entry: path.resolve(__dirname, '../lambda-assets/ca-registrator/app.ts'),
+      // runtime: lambda.Runtime.NODEJS_14_X,
+      // handler: 'app.handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
       environment: environment,
     });
+    // super(scope, `CaRegistrationFunction-${id}`, {
+    //   code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
+    //   runtime: lambda.Runtime.NODEJS_14_X,
+    //   handler: 'app.handler',
+    //   timeout: Duration.seconds(10),
+    //   memorySize: 256,
+    //   environment: environment,
+    // });
     this.role?.attachInlinePolicy(
       new Policy(this, `CaRegistrationFunction-${id}`, {
         statements: [
