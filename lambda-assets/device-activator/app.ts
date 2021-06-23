@@ -1,5 +1,6 @@
 import {
   DescribeCertificateCommand,
+  DescribeCACertificateCommand,
   UpdateCertificateCommand,
   IoTClient,
   CreateThingCommand,
@@ -26,50 +27,56 @@ import {
  */
 export const handler = async (event: any = {}) : Promise <any> => {
   let response: Response = new Response();
-
-  // const recordSchema: Joi.ObjectSchema = Joi.object({
-  //   caCertificateId: Joi.string().required(),
-  //   certificateId: Joi.string().required(),
-  // }).unknown(true);
-
   let [record] = event.Records;
-
-  // const {
-  //   caCertificateId,
-  //   certificateId,
-  // } = await recordSchema.validateAsync(JSON.parse(record.body)).catch((error: Error) => {
-  //   throw new InputError(error.message);
-  // });
   const iotClient: IoTClient = new IoTClient({});
   const lambdaClient: LambdaClient = new LambdaClient({});
 
-  const {
-    caCertificateId,
-    certificateId,
-  } = JSON.parse(record.body);
+  const { certificateId } = JSON.parse(record.body);
 
   const { certificateDescription = {} } = await iotClient.send(
     new DescribeCertificateCommand({
+      certificateId: certificateId,
+    }),
+  );
+
+  const { caCertificateId, certificateArn } = await Joi.object({
+    caCertificateId: Joi.string().required(),
+    certificateArn: Joi.string().regex(/^arn/).required(),
+  }).unknown(true)
+    .validateAsync(certificateDescription).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
+
+  const { certificateDescription: caCertificateDescription } = await iotClient.send(
+    new DescribeCACertificateCommand({
       certificateId: caCertificateId,
     }),
   );
 
-  const { certificateArn } = await Joi.object({
-    certificateArn: Joi.string().required(),
+  const { caCertificateArn } = await Joi.object({
+    certificateArn: Joi.string().regex(/^arn/).required(),
   }).unknown(true)
-  .validateAsync(certificateDescription).catch((error: Error) => {
-    throw new InformationNotFoundError(error.message);
-  });
+    .validateAsync(caCertificateDescription).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
 
   const { tags = [] } = await iotClient.send(
     new ListTagsForResourceCommand({
-      resourceArn: certificateArn
-    })
+      resourceArn: caCertificateArn,
+    }),
   );
   const { Value: verifierArn } = tags.find(tag => tag.Key === 'verifierArn') || { Value: '' };
 
   if (verifierArn) {
-    const { Payload: payload = [] } = await lambdaClient.send(
+    let {
+      Payload: payload = new Uint8Array(
+        Buffer.from(
+          JSON.stringify({
+            verified: false,
+          }),
+        ),
+      ),
+    } = await lambdaClient.send(
       new InvokeCommand({
         FunctionName: decodeURIComponent(verifierArn),
         Payload: Buffer.from(
@@ -77,18 +84,22 @@ export const handler = async (event: any = {}) : Promise <any> => {
         ),
       }),
     );
+
+    // payload.reduce((acc: string = '', num: number) => acc + String.fromCharCode(num));
     let payloadString: string = '';
     payload.forEach(num => {
       payloadString += String.fromCharCode(num);
     });
     const { body } = JSON.parse(payloadString);
 
+
     await Joi.object({
-      verified: Joi.boolean().required().allow(true).only(),
-    }).unknown(true)
+      verified: Joi.boolean().allow(true).only().required(),
+    }).required().unknown(true)
       .validateAsync(body).catch((error: Error) => {
         throw new VerificationError(error.message);
       });
+    // console.log(body, verified);
   }
 
   const { thingName } = await iotClient.send(

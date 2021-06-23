@@ -2,21 +2,6 @@ import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
 import { Construct } from '@aws-cdk/core';
 
-export class VerifierRecorder extends Construct {
-  public readonly fetchAllVerifierFunction: lambda.Function;
-  public readonly fetchAllVerifierHttpFunction: lambda.Function;
-  public readonly fetchOneVerifierHttpFunction: lambda.Function;
-  public readonly writeOneVerifierHttpFunction: lambda.Function;
-  public readonly deleteOneVerifierHttpFunction: lambda.Function;
-  constructor(scope: Construct, id: string, props?: VerifierRecorder.Props) {
-    super(scope, `VerifierRecorder-${id}`);
-    this.fetchAllVerifierFunction = new GetAllVerifierFunction(this, id, props?.verifiers);
-    this.fetchAllVerifierHttpFunction = new GetAllVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
-    this.fetchOneVerifierHttpFunction = new GetOneVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
-    this.writeOneVerifierHttpFunction = new WriteOneVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
-    this.deleteOneVerifierHttpFunction = new DeleteOneVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
-  }
-}
 
 export module VerifierRecorder {
   export interface Props {
@@ -34,6 +19,22 @@ export module VerifierRecorder {
   }
 }
 
+export class VerifierRecorder extends Construct {
+  public readonly fetchAllVerifierFunction: lambda.Function;
+  public readonly fetchAllVerifierHttpFunction: lambda.Function;
+  public readonly fetchOneVerifierHttpFunction: lambda.Function;
+  public readonly writeOneVerifierHttpFunction: lambda.Function;
+  public readonly deleteOneVerifierHttpFunction: lambda.Function;
+  constructor(scope: Construct, id: string, props: VerifierRecorder.Props) {
+    super(scope, `VerifierRecorder-${id}`);
+    this.fetchAllVerifierFunction = new GetAllVerifierFunction(this, id, props.verifiers);
+    this.fetchAllVerifierHttpFunction = new GetAllVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
+    this.fetchOneVerifierHttpFunction = new GetOneVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
+    this.writeOneVerifierHttpFunction = new WriteOneVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
+    this.deleteOneVerifierHttpFunction = new DeleteOneVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
+  }
+}
+
 class GetAllVerifierFunction extends lambda.Function {
   /**
    * The Lambda Function returning all the verifier name and ARNs.
@@ -42,12 +43,10 @@ class GetAllVerifierFunction extends lambda.Function {
    * @param verifiers The user specified verifiers
    */
   constructor(scope: Construct, id: string, verifiers?: [VerifierRecorder.VerifierProps]) {
-    // const environment: {[key: string]: string} = verifiers? { verifiers: JSON.stringify(verifiers) } : {};
     super(scope, `GetAllVerifierFunction-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifier-recorder/get-all')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
-      // environment: environment,
     });
     verifiers?.forEach(verifier => {
       this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);

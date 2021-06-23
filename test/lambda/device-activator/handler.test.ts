@@ -45,12 +45,13 @@ beforeEach(() => {
     certificateDescription: {
       certificateId: 'test_certificate_id',
       certificateArn: 'arn:test_certificate_arn',
+      caCertificateId: 'test_ca_certificate_id',
       certificatePem: '-----BEGIN CERTIFICATE-----MIID0TCCArmgAwIBAgIBATANBgkqhkiG9w0BAQUFADCBgjFJMEcGA1UEAxNANWM1Yjk3ZTRkYjEwNTRjOTBkOGU3Mzg2ZDI3MTU0ZmFjYmY3NzAwZTBiN2FiZDMzMWQ4MzliYWM4OGUxZjZhYzEJMAcGA1UEBhMAMQkwBwYDVQQIEwAxCTAHBgNVBAcTADEJMAcGA1UEChMAMQkwBwYDVQQLEwAwHhcNMjEwNjIxMTYwNzI5WhcNMjIwNjIxMTYwNzI5WjCBgjFJMEcGA1UEAxNANWM1Yjk3ZTRkYjEwNTRjOTBkOGU3Mzg2ZDI3MTU0ZmFjYmY3NzAwZTBiN2FiZDMzMWQ4MzliYWM4OGUxZjZhYzEJMAcGA1UEBhMAMQkwBwYDVQQIEwAxCTAHBgNVBAcTADEJMAcGA1UEChMAMQkwBwYDVQQLEwAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDUtmSOWM8s0Htuqrxt/fXc17WBo5Ayc+sYi5w7X5OBYLXUooKWnErFaApt6htqZekjS0CLlpoksfZ2YqBMq2nqSiNG1h3LPp0GT/Vw130ABzt0pVZKNcxC4yThRcGCGyWg3mSLCO7B1pp+p3YXJINXb32JjJV0txrF9q4CGPi8ha51C0P21fddFe0+9mWJt0voIQY+MIi5JMixuoRwuDIjC+Lgy+4vakzPzlFcOF/YsCVKfLoy8EbjevAVQW3E/CGN5ah9l5bTd1FeKhR0iAzHorul4uYzzbGztrgavCvgTY/bL/XWUUFrClBPXGPgh76VhT0l0I4Im7PgzdQ/c2fhAgMBAAGjUDBOMAwGA1UdEwQFMAMBAf8wHQYDVR0OBBYEFD2MDQBJHdAacc3tztFxxakdXPFeMB8GA1UdIwQYMBaAFD2MDQBJHdAacc3tztFxxakdXPFeMA0GCSqGSIb3DQEBBQUAA4IBAQA4Ekvz8LOty05mcZXapgltzXXyVic1UVH01IO0Lesrch1YgiXcEZUQuoSN/5e/1I4iCFSA8hrcDF/CbST3uCbh48Hx9MjPYCzFdeoMChG57gqwLGY1Fsz3rApQPGl40I+7rFh6s2pEkdu7WXxgRTHXnA65iIyFG8BsYn04J+gSn9DVBZ0DKwVXDmTyxjKLtTTXCr30WZGVa+eQzUCik3Pmrkon/fyOGUwE/p3E1iSbgSMqqHxfGjUiy2GX9I+na+TpBTRHl2WxkwVvTYYOhmuygkpJDIHIn5XJw6R5Yhj3fM/2ntgPN26EyXCYwVt732qDti6p8ZsucackcYENT4ak-----END CERTIFICATE-----',
     },
   });
   iotMock.on(DescribeCACertificateCommand).resolves({
     certificateDescription: {
-      certificateArn: 'test_certificate_arn',
+      certificateArn: 'arn:test_ca_certificate_arn',
     },
   });
   iotMock.on(ListTagsForResourceCommand).resolves({
@@ -131,6 +132,11 @@ test('Fail to invoke the verifier', async () => {
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
 });
 
+test('Verifier returns empty payload', async () => {
+  lambdaMock.on(InvokeCommand).resolves({});
+  await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
+});
+
 test('Fail to query the client certificate information', async () => {
   iotMock.on(DescribeCertificateCommand).rejects(new Error());
   await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
@@ -142,25 +148,25 @@ test('Get Error Codes successfully', () => {
   expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
 });
 
-test('SDK return no CA certificate ID', async () => {
+test('SDK returns no CA certificate ID', async () => {
   iotMock.on(DescribeCACertificateCommand).resolves({
     certificateDescription: {},
   });
   await expect(handler({ Records: [record] })).rejects.toThrowError(InformationNotFoundError);
 });
 
-test('Situation that SDK returns no verifier tag', async () => {
+test('SDK returns no verifier tag', async () => {
   iotMock.on(ListTagsForResourceCommand).resolves({});
   var response = await handler({ Records: [record] });
   expect(response.statusCode).toBe(200);
+});
+
+test('SDK returns no certificateId for device certificate', async () => {
+  iotMock.on(DescribeCertificateCommand).resolves({});
+  await expect(handler({ Records: [record] })).rejects.toThrowError(InformationNotFoundError);
 });
 
 test('SDK found no such certificate exists', async () => {
   iotMock.on(DescribeCertificateCommand).resolves({});
   await expect(handler({ Records: [record] })).rejects.toThrow();
 });
-
-// test('Fail to list tags for CA', async () => {
-//   iotMock.on(ListTagsForResourceCommand).rejects(new Error());
-//   await expect(handler({ Records: [record] })).rejects.toThrow();
-// });

@@ -2,7 +2,6 @@ import {
   IoTClient,
   GetRegistrationCodeCommand,
   RegisterCACertificateCommand,
-  // CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -84,12 +83,6 @@ test('Fail to upload the results', async () => {
   var response = await handler(event);
   expect(response.statusCode).toBe(500);
 });
-
-// test('Fail to create Rule', async () => {
-//   iotMock.on(CreateTopicRuleCommand).rejects(new Error());
-//   var response = await handler(event);
-//   expect(response.statusCode).toBe(500);
-// });
 
 test('Fail to register CA', async () => {
   iotMock.on(RegisterCACertificateCommand).rejects(new Error());
