@@ -7,17 +7,10 @@ import {
 import * as lambda from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
-import { DeviceActivator } from './device-activator';
 import { VerifierRecorder } from './verifier-recorder';
 
 export module CaRegistrationFunction {
   export interface CaRegistrationFunctionProps {
-    /**
-     * The AWS SQS Queue collecting the MQTT messages sending
-     * from the CA-associated Iot Rule, which sends a message
-     * every time a client register its certificate.
-     */
-    readonly deviceActivatorQueue: DeviceActivator.Queue;
     /**
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
@@ -56,8 +49,6 @@ export class CaRegistrationFunction extends lambda.Function {
       timeout: Duration.seconds(10),
       memorySize: 256,
     });
-    this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', props.deviceActivatorQueue.pushingRole.roleArn);
-    this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.deviceActivatorQueue.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
     props.verifiers?.forEach(verifier => {

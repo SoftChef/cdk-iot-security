@@ -27,7 +27,6 @@ export class DeviceActivator extends Construct {
    * The AWS SQS Queue collecting the messages received from the IoT rules.
    */
   public queue: DeviceActivator.Queue;
-  public rule: CfnTopicRule;
 
   /**
    * Initialize the Device Activator.
@@ -50,19 +49,6 @@ export class DeviceActivator extends Construct {
     this.function.addEventSource(
       new SqsEventSource(this.queue, { batchSize: 1 }),
     );
-    this.rule = new CfnTopicRule(this, `TopicRule-${id}`, {
-      topicRulePayload: {
-        actions: [
-          {
-            sqs: {
-              queueUrl: this.queue.queueUrl,
-              roleArn: this.queue.pushingRole.roleArn,
-            },
-          },
-        ],
-        sql: "SELECT * FROM '$aws/events/certificates/registered/#'",
-      },
-    });
   }
 }
 
@@ -103,6 +89,7 @@ export module DeviceActivator {
 
   export class Queue extends sqs.Queue {
     public readonly pushingRole: Queue.PushingRole;
+    public readonly antenna: Queue.Antenna;
     /**
      * Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
      * @param scope
@@ -111,6 +98,7 @@ export module DeviceActivator {
     constructor(scope: Construct, id: string) {
       super(scope, `DeviceActivatorQueue-${id}`, {});
       this.pushingRole = new Queue.PushingRole(this, 'iot.amazonaws.com');
+      this.antenna = new Queue.Antenna(this, id);
     }
   }
   export module Queue {
@@ -142,5 +130,24 @@ export module DeviceActivator {
         });
       }
     }
+    export class Antenna extends CfnTopicRule {
+      constructor(queue: DeviceActivator.Queue, id: string) {
+        super(queue, `TopicRule-${id}`, {
+          topicRulePayload: {
+            actions: [
+              {
+                sqs: {
+                  queueUrl: queue.queueUrl,
+                  roleArn: queue.pushingRole.roleArn,
+                },
+              },
+            ],
+            sql: "SELECT * FROM '$aws/events/certificates/registered/#'",
+          },
+        });
+      }
+    }
   }
+
+
 }

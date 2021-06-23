@@ -36,7 +36,6 @@ export class JustInTimeRegistration extends Construct {
     super(scope, `JustInTimeRegistration-${id}`);
     this.activator = new DeviceActivator(this, id);
     this.caRegistrationFunction = new CaRegistrationFunction(this, id, {
-      deviceActivatorQueue: this.activator.queue,
       vault: props.vault,
       verifiers: props.verifiers,
     });
