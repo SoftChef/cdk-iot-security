@@ -1,10 +1,19 @@
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrationFunction } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
+import { VerifierRecorder } from './verifier-recorder';
+
+export module JustInTimeRegistration {
+  export interface Props {
+    readonly vault: CaRegistrationFunction.VaultProps;
+    readonly verifiers?: [VerifierRecorder.VerifierProps];
+  }
+}
 
 export class JustInTimeRegistration extends Construct {
   public activator: DeviceActivator;
   public caRegistrationFunction: CaRegistrationFunction;
+  public verifierRecorder: VerifierRecorder;
 
   /**
    * Initialize a Just-In-Time Registration API.
@@ -24,19 +33,15 @@ export class JustInTimeRegistration extends Construct {
    * @param props
    */
   constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
-    super(scope, `CaRegisterApi-${id}`);
+    super(scope, `JustInTimeRegistration-${id}`);
     this.activator = new DeviceActivator(this, id);
     this.caRegistrationFunction = new CaRegistrationFunction(this, id, {
       deviceActivatorQueue: this.activator.queue,
       vault: props.vault,
       verifiers: props.verifiers,
     });
-  }
-}
-
-export module JustInTimeRegistration {
-  export interface Props {
-    vault: CaRegistrationFunction.VaultProps;
-    verifiers?: [CaRegistrationFunction.VerifierProps];
+    this.verifierRecorder = new VerifierRecorder(this, id, {
+      verifiers: props.verifiers,
+    });
   }
 }

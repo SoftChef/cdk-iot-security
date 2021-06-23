@@ -1,5 +1,5 @@
 export class VerifierError extends Error {
-  static code: number = 422;
+  static code: number = 423;
   constructor(message?: string) {
     super(message);
   }

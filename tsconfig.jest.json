@@ -22,13 +22,13 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2020",
-    "allowJs": true
+    "target": "ES6"
   },
   "include": [
     ".projenrc.js",
     "src/**/*.ts",
-    "test/**/*.ts"
+    "test/**/*.ts",
+    "lambda-assets"
   ],
   "exclude": [
     "node_modules"

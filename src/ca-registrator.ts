@@ -8,6 +8,38 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 import { DeviceActivator } from './device-activator';
+import { VerifierRecorder } from './verifier-recorder';
+
+export module CaRegistrationFunction {
+  export interface CaRegistrationFunctionProps {
+    /**
+     * The AWS SQS Queue collecting the MQTT messages sending
+     * from the CA-associated Iot Rule, which sends a message
+     * every time a client register its certificate.
+     */
+    readonly deviceActivatorQueue: DeviceActivator.Queue;
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
+    readonly vault: VaultProps;
+    /**
+     * The verifiers to verify the client certificates.
+     */
+    readonly verifiers?: VerifierRecorder.VerifierProps[];
+  }
+
+  export interface VaultProps {
+    /**
+     * The S3 bucket
+     */
+    readonly bucket: Bucket;
+    /**
+     * The specified prefix to save the file.
+     */
+    readonly prefix: string;
+  }
+}
 
 export class CaRegistrationFunction extends lambda.Function {
   /**
@@ -24,7 +56,6 @@ export class CaRegistrationFunction extends lambda.Function {
       BUCKET_PREFIX: props.vault.prefix,
     };
     props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
-
     super(scope, `CaRegistrationFunction-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
@@ -33,62 +64,25 @@ export class CaRegistrationFunction extends lambda.Function {
       memorySize: 256,
       environment: environment,
     });
-    this.role?.attachInlinePolicy(new Policy(this, `CaRegistrationFunction-${id}`, {
-      statements: [new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          'iam:PassRole',
-          'iot:RegisterCACertificate',
-          'iot:GetRegistrationCode',
-          'iot:CreateTopicRule',
-          'iot:TagResource',
+    props.verifiers?.forEach(verifier => {
+      this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
+    });
+    this.role?.attachInlinePolicy(
+      new Policy(this, `CaRegistrationFunction-${id}`, {
+        statements: [
+          new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+              'iam:PassRole',
+              'iot:RegisterCACertificate',
+              'iot:GetRegistrationCode',
+              'iot:CreateTopicRule',
+            ],
+            resources: ['*'],
+          }),
         ],
-        resources: ['*'],
-      })],
-    }));
+      }),
+    );
     props.vault.bucket.grantWrite(this);
-  }
-}
-
-export module CaRegistrationFunction {
-  export interface CaRegistrationFunctionProps {
-    /**
-     * The AWS SQS Queue collecting the MQTT messages sending
-     * from the CA-associated Iot Rule, which sends a message
-     * every time a client register its certificate.
-     */
-    deviceActivatorQueue: DeviceActivator.Queue;
-    /**
-     * The secure AWS S3 Bucket recepting the CA registration
-     * information returned from the CA Registration Function.
-     */
-    vault: VaultProps;
-    /**
-     * The verifiers to verify the client certificates.
-     */
-    verifiers?: [VerifierProps];
-  }
-
-
-  export interface VaultProps {
-    /**
-     * The S3 bucket
-     */
-    bucket: Bucket;
-    /**
-     * The specified prefix to save the file.
-     */
-    prefix: string;
-  }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    lambdaFunction: lambda.Function;
   }
 }

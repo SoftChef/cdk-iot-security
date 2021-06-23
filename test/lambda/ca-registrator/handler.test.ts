@@ -61,7 +61,7 @@ test('Sucessfully execute the handler', async () => {
   expect(response.statusCode).toBe(200);
 });
 
-test('Sucessfully execute the handler with empty event', async () => {
+test('Sucessfully execute the handler with an empty event', async () => {
   var response = await handler();
   expect(response.statusCode).toBe(200);
 });
@@ -105,7 +105,17 @@ test('Fail to get CA registration code', async () => {
 
 test('Fail when provide the wrong verifier', async () => {
   let eventWithWrongVerifier: any = Object.assign({}, event, {
-    body: { verifierName: 'wrong' },
+    body: {
+      verifierName: 'wrong',
+      csrSubjects: {
+        commonName: '',
+        countryName: 'TW',
+        stateName: 'TP',
+        localityName: 'TW',
+        organizationName: 'Soft Chef',
+        organizationUnitName: 'web',
+      },
+    },
   });
   var response = await handler(eventWithWrongVerifier);
   expect(response.statusCode).toBe(VerifierError.code);
@@ -124,11 +134,11 @@ test('No bucket prefix is provided', async () => {
   expect(response.statusCode).toBe(200);
 });
 
-// test('Get Error Codes successfully', () => {
-//   expect(new VerifierError().code).toBe(VerifierError.code);
-//   expect(new InputError().code).toBe(InputError.code);
-//   expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
-// });
+test('Get Error Codes successfully', () => {
+  expect(new VerifierError().code).toBe(VerifierError.code);
+  expect(new InputError().code).toBe(InputError.code);
+  expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
+});
 
 test('SDK return no certificationId and certificationArn when register CA', async () => {
   iotMock.on(RegisterCACertificateCommand).resolves({});
