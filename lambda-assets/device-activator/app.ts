@@ -16,7 +16,6 @@ import { Response } from '@softchef/lambda-events';
 import * as Joi from 'joi';
 import {
   VerificationError,
-  InputError,
   InformationNotFoundError,
 } from './errors';
 
@@ -28,10 +27,10 @@ import {
 export const handler = async (event: any = {}) : Promise <any> => {
   let response: Response = new Response();
 
-  const recordSchema: Joi.ObjectSchema = Joi.object({
-    caCertificateId: Joi.string().required(),
-    certificateId: Joi.string().required(),
-  }).unknown(true);
+  // const recordSchema: Joi.ObjectSchema = Joi.object({
+  //   caCertificateId: Joi.string().required(),
+  //   certificateId: Joi.string().required(),
+  // }).unknown(true);
 
   let [record] = event.Records;
 
@@ -47,12 +46,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const {
     caCertificateId,
     certificateId,
-    // verifierArn
   } = JSON.parse(record.body);
 
   const { certificateDescription = {} } = await iotClient.send(
     new DescribeCertificateCommand({
-      certificateId: certificateId,
+      certificateId: caCertificateId,
     }),
   );
 
