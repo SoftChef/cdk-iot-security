@@ -1,43 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CaRegisterApi integration test 1`] = `
+exports[`Test JustInTimeProvision Integration test 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845ArtifactHashA01CC2FC": Object {
-      "Description": "Artifact hash for asset \\"54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845\\"",
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51ArtifactHash26C71F72": Object {
+      "Description": "Artifact hash for asset \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
       "Type": "String",
     },
-    "AssetParameters54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845S3BucketD9E46304": Object {
-      "Description": "S3 bucket for asset \\"54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845\\"",
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3Bucket63BB38DC": Object {
+      "Description": "S3 bucket for asset \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
       "Type": "String",
     },
-    "AssetParameters54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845S3VersionKey1E4ADC03": Object {
-      "Description": "S3 key for asset version \\"54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845\\"",
-      "Type": "String",
-    },
-    "AssetParametersadcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2ArtifactHash447D0D74": Object {
-      "Description": "Artifact hash for asset \\"adcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2\\"",
-      "Type": "String",
-    },
-    "AssetParametersadcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2S3BucketB6602A3F": Object {
-      "Description": "S3 bucket for asset \\"adcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2\\"",
-      "Type": "String",
-    },
-    "AssetParametersadcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2S3VersionKey4F43BABC": Object {
-      "Description": "S3 key for asset version \\"adcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2\\"",
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636": Object {
+      "Description": "S3 key for asset version \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
       "Type": "String",
     },
   },
   "Resources": Object {
-    "CaRegisterApitestcaseCaRegistrationFunctiontestcase2E1CEFE5": Object {
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase1E8A6173": Object {
       "DependsOn": Array [
-        "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy19C0B7B6",
-        "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRole26C522A1",
+        "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861",
+        "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
       ],
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845S3BucketD9E46304",
+            "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3Bucket63BB38DC",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -50,7 +38,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845S3VersionKey1E4ADC03",
+                          "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636",
                         },
                       ],
                     },
@@ -63,7 +51,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters54ade38b9233e686dfbf95a5abb9bd13b0668eed9cc0b7eb95bef3c80dec7845S3VersionKey1E4ADC03",
+                          "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636",
                         },
                       ],
                     },
@@ -79,17 +67,12 @@ Object {
               "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
             },
             "BUCKET_PREFIX": "test",
-            "DEIVCE_ACTIVATOR_QUEUE_URL": Object {
-              "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
-            },
-            "DEIVCE_ACTIVATOR_ROLE_ARN": Object {
+            "JITP": "true",
+            "JITP_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcaseDeviceActivatorQueuePushingRoletestcaseD04102E0",
+                "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseJitpRoletestcase815ADDC8",
                 "Arn",
               ],
-            },
-            "test_verifier": Object {
-              "Fn::ImportValue": "verifier-stack:ExportsOutputFnGetAtttestcase9BC7DE4DArn30A02383",
             },
           },
         },
@@ -97,7 +80,7 @@ Object {
         "MemorySize": 256,
         "Role": Object {
           "Fn::GetAtt": Array [
-            "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRole26C522A1",
+            "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
             "Arn",
           ],
         },
@@ -106,7 +89,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CaRegisterApitestcaseCaRegistrationFunctiontestcase372EACDE": Object {
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase5A7F69DD": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -124,16 +107,48 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctiontestcase372EACDE",
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase5A7F69DD",
         "Roles": Array [
           Object {
-            "Ref": "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRole26C522A1",
+            "Ref": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRole26C522A1": Object {
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseJitpRoletestcase815ADDC8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSIoTThingsRegistration",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "JitpRoleName-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -164,7 +179,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy19C0B7B6": Object {
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -195,10 +210,219 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy19C0B7B6",
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861",
         "Roles": Array [
           Object {
-            "Ref": "CaRegisterApitestcaseCaRegistrationFunctiontestcaseServiceRole26C522A1",
+            "Ref": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;
+
+exports[`Test JustInTimeRegistration integration test 1`] = `
+Object {
+  "Parameters": Object {
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51ArtifactHash26C71F72": Object {
+      "Description": "Artifact hash for asset \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
+      "Type": "String",
+    },
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3Bucket63BB38DC": Object {
+      "Description": "S3 bucket for asset \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
+      "Type": "String",
+    },
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636": Object {
+      "Description": "S3 key for asset version \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
+      "Type": "String",
+    },
+    "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0ArtifactHashDFA2E5A6": Object {
+      "Description": "Artifact hash for asset \\"826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0\\"",
+      "Type": "String",
+    },
+    "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3BucketB3BC26E0": Object {
+      "Description": "S3 bucket for asset \\"826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0\\"",
+      "Type": "String",
+    },
+    "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3VersionKey4CE36455": Object {
+      "Description": "S3 key for asset version \\"826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase1E8A6173": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861",
+        "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3Bucket63BB38DC",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "BUCKET_NAME": Object {
+              "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
+            },
+            "BUCKET_PREFIX": "test",
+            "DEIVCE_ACTIVATOR_QUEUE_URL": Object {
+              "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+            },
+            "DEIVCE_ACTIVATOR_ROLE_ARN": Object {
+              "Fn::GetAtt": Array [
+                "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcaseDeviceActivatorQueuePushingRoletestcaseD04102E0",
+                "Arn",
+              ],
+            },
+            "JITP": "false",
+            "test_verifier": Object {
+              "Fn::ImportValue": "verifier-stack:ExportsOutputFnGetAtttestcase9BC7DE4DArn30A02383",
+            },
+          },
+        },
+        "Handler": "app.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase5A7F69DD": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "iam:PassRole",
+                "iot:RegisterCACertificate",
+                "iot:GetRegistrationCode",
+                "iot:CreateTopicRule",
+                "iot:TagResource",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase5A7F69DD",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
           },
         ],
       },
@@ -212,7 +436,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParametersadcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2S3BucketB6602A3F",
+            "Ref": "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3BucketB3BC26E0",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -225,7 +449,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParametersadcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2S3VersionKey4F43BABC",
+                          "Ref": "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3VersionKey4CE36455",
                         },
                       ],
                     },
@@ -238,7 +462,443 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParametersadcd1c315b600d3f17d28c3d333eb18e88bb86d34d6ed5dbd83a037836cc47b2S3VersionKey4F43BABC",
+                          "Ref": "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3VersionKey4CE36455",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Handler": "app.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRole78132BE2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseDeviceActivationFunctionPolicytestcase71060DAE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "iot:UpdateCertificate",
+                "iot:DescribeCertificate",
+                "iot:DescribeCACertificate",
+                "iot:ListTagsForResource",
+                "lambda:InvokeFunction",
+                "lambda:InvokeAsync",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseDeviceActivationFunctionPolicytestcase71060DAE",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRole78132BE2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRole78132BE2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRoleDefaultPolicyC32FC9D0": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "sqs:ReceiveMessage",
+                "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRoleDefaultPolicyC32FC9D0",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRole78132BE2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseSqsEventSourceteststackCaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase67AD1AB0EC898E70": Object {
+      "Properties": Object {
+        "BatchSize": 1,
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+            "Arn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcase5FE1F333",
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF": Object {
+      "DeletionPolicy": "Delete",
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcaseDeviceActivatorQueuePushingRoletestcaseD04102E0": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "sqs:SendMessageBatch",
+                    "sqs:SendMessage",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::GetAtt": Array [
+                      "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "SqsPushPolicy",
+          },
+        ],
+        "RoleName": "DeviceActivatorQueuePushingRoleName-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseTopicRuletestcase10DC5ED5": Object {
+      "Properties": Object {
+        "TopicRulePayload": Object {
+          "Actions": Array [
+            Object {
+              "Sqs": Object {
+                "QueueUrl": Object {
+                  "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+                },
+                "RoleArn": Object {
+                  "Fn::GetAtt": Array [
+                    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcaseDeviceActivatorQueuePushingRoletestcaseD04102E0",
+                    "Arn",
+                  ],
+                },
+              },
+            },
+          ],
+          "Sql": "SELECT * FROM '$aws/events/certificates/registered/#'",
+        },
+      },
+      "Type": "AWS::IoT::TopicRule",
+    },
+  },
+}
+`;
+
+exports[`Test JustInTimeRegistration integration test without providing verifier 1`] = `
+Object {
+  "Parameters": Object {
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51ArtifactHash26C71F72": Object {
+      "Description": "Artifact hash for asset \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
+      "Type": "String",
+    },
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3Bucket63BB38DC": Object {
+      "Description": "S3 bucket for asset \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
+      "Type": "String",
+    },
+    "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636": Object {
+      "Description": "S3 key for asset version \\"232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51\\"",
+      "Type": "String",
+    },
+    "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0ArtifactHashDFA2E5A6": Object {
+      "Description": "Artifact hash for asset \\"826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0\\"",
+      "Type": "String",
+    },
+    "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3BucketB3BC26E0": Object {
+      "Description": "S3 bucket for asset \\"826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0\\"",
+      "Type": "String",
+    },
+    "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3VersionKey4CE36455": Object {
+      "Description": "S3 key for asset version \\"826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase1E8A6173": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861",
+        "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3Bucket63BB38DC",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters232e91b88ca67ce601dc34911d38c6612c10e608a4dc184472bb66b90121bc51S3VersionKey044C4636",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "BUCKET_NAME": Object {
+              "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
+            },
+            "BUCKET_PREFIX": "test",
+            "DEIVCE_ACTIVATOR_QUEUE_URL": Object {
+              "Ref": "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcase881E94AF",
+            },
+            "DEIVCE_ACTIVATOR_ROLE_ARN": Object {
+              "Fn::GetAtt": Array [
+                "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorQueuetestcaseDeviceActivatorQueuePushingRoletestcaseD04102E0",
+                "Arn",
+              ],
+            },
+            "JITP": "false",
+          },
+        },
+        "Handler": "app.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase5A7F69DD": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "iam:PassRole",
+                "iot:RegisterCACertificate",
+                "iot:GetRegistrationCode",
+                "iot:CreateTopicRule",
+                "iot:TagResource",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcase5A7F69DD",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRoleDefaultPolicy12CE4861",
+        "Roles": Array [
+          Object {
+            "Ref": "CaRegisterApitestcaseCaRegistrationFunctionCaRegistrationFunctiontestcaseServiceRole0C9347E2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcase5FE1F333": Object {
+      "DependsOn": Array [
+        "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRoleDefaultPolicyC32FC9D0",
+        "CaRegisterApitestcaseDeviceActivatortestcaseDeviceActivatorFunctiontestcaseServiceRole78132BE2",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3BucketB3BC26E0",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3VersionKey4CE36455",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters826107f3ce39b414fab03f30898f46091f3b1fd5395509f99ab2143301e2ccb0S3VersionKey4CE36455",
                         },
                       ],
                     },

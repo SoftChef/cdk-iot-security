@@ -49,9 +49,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const { certificateArn } = await Joi.object({
     certificateArn: Joi.string().required(),
   }).unknown(true)
-  .validateAsync(certificateDescription).catch((error: Error) => {
-    throw new InformationNotFoundError(error.message);
-  });
+    .validateAsync(certificateDescription).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
 
   const { tags = [] } = await iotClient.send(new ListTagsForResourceCommand({ resourceArn: certificateArn }));
   const { Value: verifierArn } = tags.find(tag => tag.Key === 'verifierArn') || { Value: '' };

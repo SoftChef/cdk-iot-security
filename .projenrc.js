@@ -17,10 +17,8 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-sqs',
     '@aws-cdk/aws-lambda-event-sources',
     '@aws-cdk/aws-s3',
-    'aws-cdk',
   ],
   bundledDeps: [
-    'path',
     'joi',
     'node-forge',
     '@types/node-forge',
@@ -30,17 +28,12 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
   ],
-  peerDeps: [
-    '@aws-cdk/assert',
-  ],
   devDeps: [
-    'esbuild',
     'aws-sdk-client-mock',
   ],
   tsconfig: {
     compilerOptions: {
       target: 'ES2020',
-      allowJs: true,
       lib: [
         'DOM',
         'ES2020',

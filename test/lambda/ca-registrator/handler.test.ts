@@ -61,6 +61,12 @@ test('Sucessfully execute the handler', async () => {
   expect(response.statusCode).toBe(200);
 });
 
+test('Sucessfully execute the handler in JITP mode', async () => {
+  process.env.JITP = 'true';
+  var response = await handler(event);
+  expect(response.statusCode).toBe(200);
+});
+
 test('Sucessfully execute the handler with empty event', async () => {
   var response = await handler();
   expect(response.statusCode).toBe(200);
@@ -84,12 +90,6 @@ test('Fail to upload the results', async () => {
   var response = await handler(event);
   expect(response.statusCode).toBe(500);
 });
-
-// test('Fail to create Rule', async () => {
-//   iotMock.on(CreateTopicRuleCommand).rejects(new Error());
-//   var response = await handler(event);
-//   expect(response.statusCode).toBe(500);
-// });
 
 test('Fail to register CA', async () => {
   iotMock.on(RegisterCACertificateCommand).rejects(new Error());
@@ -124,14 +124,9 @@ test('No bucket prefix is provided', async () => {
   expect(response.statusCode).toBe(200);
 });
 
-// test('Get Error Codes successfully', () => {
-//   expect(new VerifierError().code).toBe(VerifierError.code);
-//   expect(new InputError().code).toBe(InputError.code);
-//   expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
-// });
-
 test('SDK return no certificationId and certificationArn when register CA', async () => {
   iotMock.on(RegisterCACertificateCommand).resolves({});
   var response = await handler(event);
   expect(response.statusCode).toBe(InformationNotFoundError.code);
 });
+

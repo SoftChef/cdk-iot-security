@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import * as path from 'path';
 import {
   PolicyStatement,
@@ -8,7 +9,49 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct, Duration } from '@aws-cdk/core';
 import { DeviceActivator } from '../device-activator';
-import { strict as assert } from 'assert';
+
+export module CaRegistrationFunction {
+  export interface Props {
+    /**
+     * The AWS SQS Queue collecting the MQTT messages sending
+     * from the CA-associated Iot Rule, which sends a message
+     * every time a client register its certificate.
+     */
+    readonly deviceActivatorQueue?: DeviceActivator.Queue;
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
+    readonly vault: VaultProps;
+    /**
+     * The verifiers to verify the client certificates.
+     */
+    readonly verifiers?: [VerifierProps];
+    readonly jitp?: boolean;
+  }
+
+  export interface VaultProps {
+    /**
+     * The S3 bucket
+     */
+    readonly bucket: Bucket;
+    /**
+     * The specified prefix to save the file.
+     */
+    readonly prefix: string;
+  }
+
+  export interface VerifierProps {
+    /**
+     * The verifier name.
+     */
+    readonly name: string;
+    /**
+     * The verifier Lambda Function
+     */
+    readonly lambdaFunction: lambda.Function;
+  }
+}
 
 export class CaRegistrationFunction extends lambda.Function {
   /**
@@ -24,7 +67,7 @@ export class CaRegistrationFunction extends lambda.Function {
       handler: 'app.handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
-    });    
+    });
     const jitp: boolean = props.jitp || false;
     const vault: CaRegistrationFunction.VaultProps = props.vault;
     this.addEnvironment('JITP', jitp? 'true' : 'false');
@@ -54,48 +97,5 @@ export class CaRegistrationFunction extends lambda.Function {
       })],
     }));
     props.vault.bucket.grantWrite(this);
-  }
-}
-
-export module CaRegistrationFunction {
-  export interface Props {
-    /**
-     * The AWS SQS Queue collecting the MQTT messages sending
-     * from the CA-associated Iot Rule, which sends a message
-     * every time a client register its certificate.
-     */
-    deviceActivatorQueue?: DeviceActivator.Queue;
-    /**
-     * The secure AWS S3 Bucket recepting the CA registration
-     * information returned from the CA Registration Function.
-     */
-    vault: VaultProps;
-    /**
-     * The verifiers to verify the client certificates.
-     */
-    verifiers?: [VerifierProps];
-    jitp?: boolean;
-  }
-
-  export interface VaultProps {
-    /**
-     * The S3 bucket
-     */
-    bucket: Bucket;
-    /**
-     * The specified prefix to save the file.
-     */
-    prefix: string;
-  }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    lambdaFunction: lambda.Function;
   }
 }

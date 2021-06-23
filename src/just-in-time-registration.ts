@@ -5,6 +5,13 @@ import {
 } from './ca-registrators/index';
 import { DeviceActivator } from './device-activator';
 
+export module JustInTimeRegistration {
+  export interface Props {
+    readonly vault: CaRegistrationFunction.VaultProps;
+    readonly verifiers?: [CaRegistrationFunction.VerifierProps];
+  }
+}
+
 export class JustInTimeRegistration extends Construct {
   public activator: DeviceActivator;
   public jitrCaRegistrationFunction: JitrCaRegistrationFunction;
@@ -34,12 +41,5 @@ export class JustInTimeRegistration extends Construct {
       vault: props.vault,
       verifiers: props.verifiers,
     });
-  }
-}
-
-export module JustInTimeRegistration {
-  export interface Props {
-    vault: CaRegistrationFunction.VaultProps;
-    verifiers?: [CaRegistrationFunction.VerifierProps];
   }
 }

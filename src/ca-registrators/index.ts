@@ -1,3 +1,3 @@
-export * from './ca-registrator'
-export * from './jitp-ca-registrator'
-export * from './jitr-ca-registrator'
+export { CaRegistrationFunction } from './ca-registrator';
+export { JitpCaRegistrationFunction } from './jitp-ca-registrator';
+export { JitrCaRegistrationFunction } from './jitr-ca-registrator';

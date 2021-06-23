@@ -1,8 +1,14 @@
 import { Construct } from '@aws-cdk/core';
 import {
-    CaRegistrationFunction,
-    JitpCaRegistrationFunction,
-} from './ca-registrators'
+  CaRegistrationFunction,
+  JitpCaRegistrationFunction,
+} from './ca-registrators';
+
+export module JustInTimeProvision {
+  export interface Props {
+    readonly vault: CaRegistrationFunction.VaultProps;
+  }
+}
 
 export class JustInTimeProvision extends Construct {
   public jitpCaRegistrationFunction: JitpCaRegistrationFunction;
@@ -21,11 +27,5 @@ export class JustInTimeProvision extends Construct {
     this.jitpCaRegistrationFunction = new JitpCaRegistrationFunction(this, id, {
       vault: props.vault,
     });
-  }
-}
-
-export module JustInTimeProvision {
-  export interface Props {
-    vault: CaRegistrationFunction.VaultProps;
   }
 }

@@ -40,7 +40,7 @@ import {
  * }
  */
 
-const deafultTemplateBody: string = "{ \"Parameters\" : { \"AWS::IoT::Certificate::Country\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::Id\" : { \"Type\" : \"String\" } }, \"Resources\" : { \"thing\" : { \"Type\" : \"AWS::IoT::Thing\", \"Properties\" : { \"ThingName\" : {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"AttributePayload\" : { \"version\" : \"v1\", \"country\" : {\"Ref\" : \"AWS::IoT::Certificate::Country\"}} } }, \"certificate\" : { \"Type\" : \"AWS::IoT::Certificate\", \"Properties\" : { \"CertificateId\": {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"Status\" : \"ACTIVE\" } }, \"policy\" : {\"Type\" : \"AWS::IoT::Policy\", \"Properties\" : { \"PolicyDocument\" : \"{\\\"Version\\\": \\\"2012-10-17\\\",\\\"Statement\\\": [{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\": [\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\" : [\\\"*\\\"]}]}\" } } } }";
+const deafultTemplateBody: string = '{ "Parameters" : { "AWS::IoT::Certificate::Country" : { "Type" : "String" }, "AWS::IoT::Certificate::Id" : { "Type" : "String" } }, "Resources" : { "thing" : { "Type" : "AWS::IoT::Thing", "Properties" : { "ThingName" : {"Ref" : "AWS::IoT::Certificate::Id"}, "AttributePayload" : { "version" : "v1", "country" : {"Ref" : "AWS::IoT::Certificate::Country"}} } }, "certificate" : { "Type" : "AWS::IoT::Certificate", "Properties" : { "CertificateId": {"Ref" : "AWS::IoT::Certificate::Id"}, "Status" : "ACTIVE" } }, "policy" : {"Type" : "AWS::IoT::Policy", "Properties" : { "PolicyDocument" : "{\\"Version\\": \\"2012-10-17\\",\\"Statement\\": [{\\"Effect\\":\\"Allow\\",\\"Action\\": [\\"iot:Connect\\",\\"iot:Publish\\"],\\"Resource\\" : [\\"*\\"]}]}" } } } }';
 
 /**
  * The lambda function handler for register CA.
@@ -55,7 +55,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketPrefix: string = process.env.BUCKET_PREFIX || '';
   const region: string | undefined = process.env.AWS_REGION;
   const jitp: boolean = Joi.attempt(process.env.JITP || false, Joi.boolean());
-  
+
   const templateBody: string = jitp? request.input('templateBody', deafultTemplateBody) : undefined;
   // can directly set registrationConfig base on the condition of jitp?
 
@@ -115,10 +115,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
       certificateId: Joi.string().required(),
       certificateArn: Joi.string().required(),
     })
-    .unknown(true)
-    .validateAsync(CaRegistration).catch((error: Error) => {
-      throw new InformationNotFoundError(error.message);
-    });
+      .unknown(true)
+      .validateAsync(CaRegistration).catch((error: Error) => {
+        throw new InformationNotFoundError(error.message);
+      });
 
     await s3Client.send(new PutObjectCommand({
       Bucket: bucketName,

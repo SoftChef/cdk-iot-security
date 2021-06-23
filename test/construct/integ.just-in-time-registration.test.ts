@@ -9,38 +9,123 @@ import {
 import { Bucket } from '@aws-cdk/aws-s3';
 import { App, Stack } from '@aws-cdk/core';
 import {
+  CaRegistrationFunction,
+  DeviceActivator,
+  JitrCaRegistrationFunction,
+  JitpCaRegistrationFunction,
   JustInTimeRegistration,
-} from '../../src/just-in-time-registration';
+  JustInTimeProvision,
+} from '../../src/index';
 
-test('CaRegisterApi integration test', () => {
-  process.env.BASE_PATH = __dirname;
-  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-  const app = new App();
-  const stack = new Stack(app, 'test-stack');
-  const verifierStack = new Stack(app, 'verifier-stack');
-  const name = 'test-case';
-  const anotherStack = new Stack(app, 'another-stack');
-  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
-  new JustInTimeRegistration(stack, name, {
-    verifiers: [{
-      name: 'test_verifier',
-      lambdaFunction: new Function(verifierStack, name, {
-        code: new InlineCode('exports.handler = () => { return true; }'),
-        runtime: Runtime.NODEJS_12_X,
-        handler: 'index.js',
-      }),
-    }],
-    vault: {
-      bucket: bucket,
-      prefix: 'test',
-    },
+describe('Test index.ts importation', () => {
+  test('Create Functions', () => {
+    process.env.BASE_PATH = __dirname;
+    process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+    const app = new App();
+    const stack = new Stack(app, 'test-stack');
+    const anotherStack = new Stack(app, 'another-stack');
+    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+    const deviceActivator = new DeviceActivator(stack, 'testDeviceActivator');
+    new CaRegistrationFunction(stack, 'testCaRegistrationFunction', {
+      deviceActivatorQueue: deviceActivator.queue,
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+    new JitpCaRegistrationFunction(stack, 'testJitpCaRegistrationFunction', {
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+    new JitrCaRegistrationFunction(stack, 'testJitrCaRegistrationFunction', {
+      deviceActivatorQueue: deviceActivator.queue,
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+    expect(stack).toCountResources('AWS::Lambda::Function', 4);
   });
+});
 
-  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-  expect(stack).toCountResources('AWS::Lambda::Function', 2);
-  expect(stack).toCountResources('AWS::IAM::Role', 3);
-  expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'DeviceActivatorQueuePushingRoleName-' + name,
+describe('Test JustInTimeRegistration', () => {
+  test('integration test', () => {
+    process.env.BASE_PATH = __dirname;
+    process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+    const app = new App();
+    const stack = new Stack(app, 'test-stack');
+    const verifierStack = new Stack(app, 'verifier-stack');
+    const name = 'test-case';
+    const anotherStack = new Stack(app, 'another-stack');
+    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+    new JustInTimeRegistration(stack, name, {
+      verifiers: [{
+        name: 'test_verifier',
+        lambdaFunction: new Function(verifierStack, name, {
+          code: new InlineCode('exports.handler = () => { return true; }'),
+          runtime: Runtime.NODEJS_12_X,
+          handler: 'index.js',
+        }),
+      }],
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+
+    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+    expect(stack).toCountResources('AWS::Lambda::Function', 2);
+    expect(stack).toCountResources('AWS::IAM::Role', 3);
+    expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+      RoleName: 'DeviceActivatorQueuePushingRoleName-' + name,
+    });
+    expect(stack).toCountResources('AWS::SQS::Queue', 1);
   });
-  expect(stack).toCountResources('AWS::SQS::Queue', 1);
+  test('integration test without providing verifier', () => {
+    process.env.BASE_PATH = __dirname;
+    process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+    const app = new App();
+    const stack = new Stack(app, 'test-stack');
+    const name = 'test-case';
+    const anotherStack = new Stack(app, 'another-stack');
+    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+    new JustInTimeRegistration(stack, name, {
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+
+    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+    expect(stack).toCountResources('AWS::Lambda::Function', 2);
+    expect(stack).toCountResources('AWS::IAM::Role', 3);
+    expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+      RoleName: 'DeviceActivatorQueuePushingRoleName-' + name,
+    });
+    expect(stack).toCountResources('AWS::SQS::Queue', 1);
+  });
+});
+
+describe('Test JustInTimeProvision', () => {
+  test('Integration test', () => {
+    process.env.BASE_PATH = __dirname;
+    process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+    const app = new App();
+    const stack = new Stack(app, 'test-stack');
+    const name = 'test-case';
+    const anotherStack = new Stack(app, 'another-stack');
+    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+    new JustInTimeProvision(stack, name, {
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+
+    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+    expect(stack).toCountResources('AWS::Lambda::Function', 1);
+    expect(stack).toCountResources('AWS::IAM::Role', 2);
+  });
 });

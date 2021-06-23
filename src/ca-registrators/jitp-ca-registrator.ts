@@ -1,10 +1,20 @@
-import { Construct } from '@aws-cdk/core';
 import {
   Role,
   ServicePrincipal,
   ManagedPolicy,
-} from '@aws-cdk/aws-iam'
+} from '@aws-cdk/aws-iam';
+import { Construct } from '@aws-cdk/core';
 import { CaRegistrationFunction } from './ca-registrator';
+
+export module JitpCaRegistrationFunction {
+  export interface Props {
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
+    readonly vault: CaRegistrationFunction.VaultProps;
+  }
+}
 
 export class JitpCaRegistrationFunction extends CaRegistrationFunction {
   public readonly jitpRole: Role;
@@ -16,8 +26,8 @@ export class JitpCaRegistrationFunction extends CaRegistrationFunction {
    */
   constructor(scope: Construct, id: string, props: JitpCaRegistrationFunction.Props) {
     super(scope, `CaRegistrationFunction-${id}`, {
-        jitp: true,
-        vault: props.vault
+      jitp: true,
+      vault: props.vault,
     });
     this.jitpRole = new JitpRole(this, id);
     this.addEnvironment('JITP_ROLE_ARN', this.jitpRole.roleArn);
@@ -30,18 +40,8 @@ class JitpRole extends Role {
       roleName: `JitpRoleName-${id}`,
       assumedBy: new ServicePrincipal('iot.amazonaws.com'),
       managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSIoTThingsRegistration')
-      ]
+        ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSIoTThingsRegistration'),
+      ],
     });
-  }
-}
-
-export module JitpCaRegistrationFunction {
-  export interface Props {
-    /**
-     * The secure AWS S3 Bucket recepting the CA registration
-     * information returned from the CA Registration Function.
-     */
-    vault: CaRegistrationFunction.VaultProps;
   }
 }
