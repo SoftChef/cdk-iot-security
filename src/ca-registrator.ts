@@ -36,22 +36,21 @@ export class CaRegistrator extends lambda.Function {
    * @param props
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
-    let environment: {[key: string]: string} = {
-      DEIVCE_ACTIVATOR_ROLE_ARN: props.reviewReceptor.acceptionRole.roleArn,
-      DEIVCE_ACTIVATOR_QUEUE_URL: props.reviewReceptor.queueUrl,
-      BUCKET_NAME: props.vault.bucket.bucketName,
-      BUCKET_PREFIX: props.vault.prefix,
-    };
-    props.verifiers?.forEach(verifier => environment[verifier.name] = verifier.lambdaFunction.functionArn);
     super(scope, `CaRegistrator-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
-      environment: environment,
     });
-    this.role?.attachInlinePolicy(
+    this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', props.reviewReceptor.acceptionRole.roleArn);
+    this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
+    this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
+    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
+    props.verifiers?.forEach(verifier => {
+      this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
+    });
+    this.role!.attachInlinePolicy(
       new Policy(this, `CaRegistrator-${id}`, {
         statements: [
           new PolicyStatement({

@@ -20,7 +20,7 @@ export class DeviceActivator extends lambda.Function {
       handler: 'app.handler',
       runtime: lambda.Runtime.NODEJS_14_X,
     });
-    this.role?.attachInlinePolicy(
+    this.role!.attachInlinePolicy(
       new Policy(this, `Policy-${this.node.id}`, {
         statements: [
           new PolicyStatement({
