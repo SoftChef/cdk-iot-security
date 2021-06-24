@@ -54,7 +54,7 @@ export class CaRegistrationFunction extends lambda.Function {
     props.verifiers?.forEach(verifier => {
       this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
     });
-    this.role?.attachInlinePolicy(
+    this.role!.attachInlinePolicy(
       new Policy(this, `CaRegistrationFunction-${id}`, {
         statements: [
           new PolicyStatement({

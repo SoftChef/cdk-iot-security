@@ -66,7 +66,7 @@ export module DeviceActivator {
         handler: 'app.handler',
         runtime: lambda.Runtime.NODEJS_14_X,
       });
-      this.role?.attachInlinePolicy(
+      this.role!.attachInlinePolicy(
         new Policy(this, `DeviceActivationFunctionPolicy-${id}`, {
           statements: [
             new PolicyStatement({
