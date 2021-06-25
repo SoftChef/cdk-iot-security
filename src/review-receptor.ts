@@ -38,15 +38,17 @@ export class ReviewAcceptionRole extends Role {
       assumedBy: new ServicePrincipal(principalName),
       inlinePolicies: {
         SqsPushPolicy: new PolicyDocument({
-          statements: [new PolicyStatement({
-            actions: [
-              'sqs:SendMessageBatch',
-              'sqs:SendMessage',
-            ],
-            resources: [
-              reviewReceptor.queueArn,
-            ],
-          })],
+          statements: [
+              new PolicyStatement({
+              actions: [
+                'sqs:SendMessageBatch',
+                'sqs:SendMessage',
+              ],
+              resources: [
+                reviewReceptor.queueArn,
+              ],
+            })
+          ],
         }),
       },
     });
