@@ -110,14 +110,16 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
-    const CaRegistration = await iotClient.send(new RegisterCACertificateCommand({
-      caCertificate: certificates.ca.certificate,
-      verificationCertificate: certificates.verification.certificate,
-      allowAutoRegistration: true,
-      registrationConfig: {},
-      setAsActive: true,
-      tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
-    }));
+    const CaRegistration = await iotClient.send(
+        new RegisterCACertificateCommand({
+        caCertificate: certificates.ca.certificate,
+        verificationCertificate: certificates.verification.certificate,
+        allowAutoRegistration: true,
+        registrationConfig: {},
+        setAsActive: true,
+        tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
+      })
+    );
 
     const { certificateId, certificateArn } = await Joi.object({
       certificateId: Joi.string().required(),
@@ -126,14 +128,16 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new InformationNotFoundError(error.message);
     });
 
-    await s3Client.send(new PutObjectCommand({
-      Bucket: bucketName,
-      Key: path.join(bucketPrefix, certificateId, 'ca-certificate.json'),
-      Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-        certificateId: certificateId,
-        certificateArn: certificateArn,
-      }))),
-    }));
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix, certificateId, 'ca-certificate.json'),
+        Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
+          certificateId: certificateId,
+          certificateArn: certificateArn,
+        }))),
+      })
+    );
     return response.json({ certificateId: certificateId });
   } catch (error) {
     return response.error(error, error.code);
