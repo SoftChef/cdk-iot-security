@@ -1,6 +1,5 @@
 import {
   InvokeCommand,
-  InvokeCommandOutput,
   LambdaClient,
 } from '@aws-sdk/client-lambda';
 import {
@@ -14,12 +13,19 @@ export const handler = async (_event: any = {}) : Promise <any> => {
     .validateAsync(process.env.GET_ALL_VERIFIER_FUNCTION_ARN);
 
   try {
-    let output: InvokeCommandOutput = await new LambdaClient({}).send(new InvokeCommand({
-      FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
-      Payload: Buffer.from(''),
-    }));
-    const payload: any = JSON.parse(new TextDecoder().decode(output.Payload));
-    const verifiers: any = payload.body;
+    const { Payload: payload = new Uint8Array() } = await new LambdaClient({})
+    .send(
+      new InvokeCommand({
+        FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
+        Payload: Buffer.from(''),
+      })
+    );
+    let payloadString: string = '';
+    payload.forEach(num => {
+      payloadString += String.fromCharCode(num);
+    });
+    const { body } = JSON.parse(payloadString);
+    const verifiers: any = body;
     return response.json(verifiers);
   } catch (error) {
     return response.error(error);

@@ -19,21 +19,31 @@ export const handler = async (event: any = {}) : Promise <any> => {
   try {
     const verifierName: string = await Joi.string().required().validateAsync(request.parameter('verifierName'));
 
-    let output: InvokeCommandOutput = await new LambdaClient({}).send(new InvokeCommand({
-      FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
-      Payload: Buffer.from(''),
-    }));
-    const payload: any = JSON.parse(new TextDecoder().decode(output.Payload));
-    const verifiers: any = payload.body;
+    
+    const { Payload: payload = new Uint8Array() } = await new LambdaClient({})
+    .send(
+      new InvokeCommand({
+        FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
+        Payload: Buffer.from(''),
+      })
+    );
+    let payloadString: string = '';
+    payload.forEach(num => {
+      payloadString += String.fromCharCode(num);
+    });
+    const { body } = JSON.parse(payloadString);
+    const verifiers: any = body;
 
     delete verifiers[verifierName];
 
-    await new LambdaClient({}).send(new UpdateFunctionConfigurationCommand({
-      FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
-      Environment: {
-        Variables: { verifiers: verifiers },
-      },
-    }));
+    await new LambdaClient({}).send(
+      new UpdateFunctionConfigurationCommand({
+        FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
+        Environment: {
+          Variables: { verifiers: verifiers },
+        },
+      })
+    );
     return response.json(verifiers);
   } catch (error) {
     return response.error(error);
