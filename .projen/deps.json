@@ -2,15 +2,11 @@
   "dependencies": [
     {
       "name": "@aws-cdk/assert",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "build"
     },
     {
       "name": "@types/jest",
-      "type": "build"
-    },
-    {
-      "name": "@types/node-forge",
       "type": "build"
     },
     {
@@ -27,7 +23,7 @@
       "type": "build"
     },
     {
-      "name": "esbuild",
+      "name": "aws-sdk-client-mock",
       "type": "build"
     },
     {
@@ -81,13 +77,7 @@
       "type": "build"
     },
     {
-      "name": "npm-check-updates",
-      "version": "^11",
-      "type": "build"
-    },
-    {
       "name": "projen",
-      "version": "^0.18.16",
       "type": "build"
     },
     {
@@ -104,57 +94,86 @@
       "type": "build"
     },
     {
-      "name": "@aws-cdk/assert",
-      "type": "peer"
+      "name": "@aws-sdk/client-iot",
+      "type": "bundled"
+    },
+    {
+      "name": "@aws-sdk/client-lambda",
+      "type": "bundled"
+    },
+    {
+      "name": "@aws-sdk/client-s3",
+      "type": "bundled"
+    },
+    {
+      "name": "@softchef/lambda-events",
+      "type": "bundled"
+    },
+    {
+      "name": "@types/node-forge",
+      "type": "bundled"
+    },
+    {
+      "name": "@types/node",
+      "version": "15.12.4",
+      "type": "bundled"
+    },
+    {
+      "name": "joi",
+      "type": "bundled"
+    },
+    {
+      "name": "node-forge",
+      "type": "bundled"
     },
     {
       "name": "@aws-cdk/aws-apigateway",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-dynamodb",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-iam",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-iot",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda-event-sources",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda-nodejs",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-s3",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-sqs",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.107.0",
-      "type": "peer"
-    },
-    {
-      "name": "aws-cdk",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "peer"
     },
     {
@@ -164,72 +183,52 @@
     },
     {
       "name": "@aws-cdk/aws-apigateway",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-dynamodb",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-iam",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-iot",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-event-sources",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-nodejs",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-s3",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-sqs",
-      "version": "^1.107.0",
+      "version": "^1.109.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.107.0",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-cdk",
-      "version": "^1.107.0",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-sdk",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-sdk-mock",
-      "type": "runtime"
-    },
-    {
-      "name": "node-forge",
-      "type": "runtime"
-    },
-    {
-      "name": "path",
-      "type": "runtime"
-    },
-    {
-      "name": "softchef-utility",
+      "version": "^1.109.0",
       "type": "runtime"
     }
   ],
