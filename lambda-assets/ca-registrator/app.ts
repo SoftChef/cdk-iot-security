@@ -111,14 +111,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
     let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const CaRegistration = await iotClient.send(
-        new RegisterCACertificateCommand({
+      new RegisterCACertificateCommand({
         caCertificate: certificates.ca.certificate,
         verificationCertificate: certificates.verification.certificate,
         allowAutoRegistration: true,
         registrationConfig: {},
         setAsActive: true,
         tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
-      })
+      }),
     );
 
     const { certificateId, certificateArn } = await Joi.object({
@@ -136,7 +136,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
           certificateId: certificateId,
           certificateArn: certificateArn,
         }))),
-      })
+      }),
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
