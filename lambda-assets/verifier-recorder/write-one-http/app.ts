@@ -22,12 +22,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }).validateAsync(request.inputs(['verifierName', 'verifierArn']));
 
     const { Payload: payload = new Uint8Array() } = await new LambdaClient({})
-    .send(
-      new InvokeCommand({
-        FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
-        Payload: Buffer.from(''),
-      })
-    );
+      .send(
+        new InvokeCommand({
+          FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
+          Payload: Buffer.from(''),
+        }),
+      );
     let payloadString: string = '';
     payload.forEach(num => {
       payloadString += String.fromCharCode(num);
@@ -43,7 +43,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
         Environment: {
           Variables: { verifiers: verifiers },
         },
-      })
+      }),
     );
     return response.json(verifiers);
   } catch (error) {
