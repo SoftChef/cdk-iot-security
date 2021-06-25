@@ -5,6 +5,7 @@ const project = new AwsCdkConstructLibrary({
   cdkVersion: '1.109.0',
   defaultReleaseBranch: 'main',
   name: '@softchef/cdk-iot-security',
+  npmAccess: NpmAccess.PUBLIC,
   repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
   cdkDependencies: [
     '@aws-cdk/core',
