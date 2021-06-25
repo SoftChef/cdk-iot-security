@@ -1,5 +1,5 @@
 {
-  "name": "cdk-iot-security",
+  "name": "@softchef/cdk-iot-security",
   "repository": {
     "type": "git",
     "url": "https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git"
@@ -49,7 +49,7 @@
     "jsii-pacmak": "^1.30.0",
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
-    "projen": "^0.24.11",
+    "projen": "^0.24.12",
     "standard-version": "^9",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.2"
@@ -104,6 +104,9 @@
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "jest": {
     "testMatch": [

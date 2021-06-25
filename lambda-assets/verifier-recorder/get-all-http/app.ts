@@ -14,12 +14,12 @@ export const handler = async (_event: any = {}) : Promise <any> => {
 
   try {
     const { Payload: payload = new Uint8Array() } = await new LambdaClient({})
-    .send(
-      new InvokeCommand({
-        FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
-        Payload: Buffer.from(''),
-      })
-    );
+      .send(
+        new InvokeCommand({
+          FunctionName: decodeURIComponent(getAllVerifierFunctionArn),
+          Payload: Buffer.from(''),
+        }),
+      );
     let payloadString: string = '';
     payload.forEach(num => {
       payloadString += String.fromCharCode(num);
