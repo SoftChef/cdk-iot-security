@@ -39,7 +39,7 @@ export class ReviewAcceptionRole extends Role {
       inlinePolicies: {
         SqsPushPolicy: new PolicyDocument({
           statements: [
-              new PolicyStatement({
+            new PolicyStatement({
               actions: [
                 'sqs:SendMessageBatch',
                 'sqs:SendMessage',
@@ -47,7 +47,7 @@ export class ReviewAcceptionRole extends Role {
               resources: [
                 reviewReceptor.queueArn,
               ],
-            })
+            }),
           ],
         }),
       },
