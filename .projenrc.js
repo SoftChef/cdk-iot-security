@@ -1,11 +1,11 @@
 const { AwsCdkConstructLibrary } = require('projen');
 const project = new AwsCdkConstructLibrary({
-  author: 'YehTarnSu',
+  author: 'softchef-iot-lab',
   authorAddress: 'yehtarnsu@softchef.com',
   cdkVersion: '1.109.0',
   defaultReleaseBranch: 'main',
   name: '@softchef/cdk-iot-security',
-  repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
+  repositoryUrl: 'https://github.com/SoftChef/cdk-iot-security',
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-lambda-nodejs',
