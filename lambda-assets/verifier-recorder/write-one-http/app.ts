@@ -1,6 +1,5 @@
 import {
   InvokeCommand,
-  InvokeCommandOutput,
   LambdaClient,
   UpdateFunctionConfigurationCommand,
 } from '@aws-sdk/client-lambda';
