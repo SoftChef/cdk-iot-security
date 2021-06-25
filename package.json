@@ -1,5 +1,5 @@
 {
-  "name": "cdk-iot-security",
+  "name": "@softchef/cdk-iot-security",
   "repository": {
     "type": "git",
     "url": "https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git"
