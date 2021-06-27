@@ -5,20 +5,20 @@ import {
   CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
 import {
-  S3Client,
-  PutObjectCommand,
-} from '@aws-sdk/client-s3';
-import {
   LambdaClient,
   InvokeCommand,
 } from '@aws-sdk/client-lambda';
+import {
+  S3Client,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
   VerifierError,
   InputError,
 } from '../../../lambda-assets/ca-registrator/errors';
-import * as verifiersRecorder from '../../../lambda-assets/verifiers-recorder/app'
+import * as verifiersRecorder from '../../../lambda-assets/verifiers-recorder/app';
 
 const event = {
   body: {
@@ -34,7 +34,7 @@ const event = {
   },
 };
 const verifiers = {
-  'test_verifier': 'arn:test_verifier_arn'
+  test_verifier: 'arn:test_verifier_arn',
 };
 
 const iotMock = mockClient(IoTClient);
@@ -45,7 +45,7 @@ beforeEach(async () => {
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'local';
-  process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN = "arn:test_verifiers_recorder";
+  process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN = 'arn:test_verifiers_recorder';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
@@ -60,7 +60,7 @@ beforeEach(async () => {
   iotMock.on(CreateTopicRuleCommand).resolves({});
   s3Mock.on(PutObjectCommand).resolves({});
   lambdaMock.on(InvokeCommand, {
-    FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN
+    FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN,
   }).resolves({
     Payload: new Uint8Array(
       Buffer.from(
@@ -76,27 +76,27 @@ afterEach(() => {
   lambdaMock.reset();
 });
 
-describe("Sucessfully execute the handler", () => {
+describe('Sucessfully execute the handler', () => {
   test('On a regular event', async () => {
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });
-  
+
   test('On an empty event', async () => {
     var response = await handler();
     expect(response.statusCode).toBe(200);
   });
-  
+
   test('Without specifying a verifier in the event', async () => {
     let eventWithoutVerifier: any = Object.assign({}, event);
     delete eventWithoutVerifier.body.verifierName;
     var response = await handler(eventWithoutVerifier);
     expect(response.statusCode).toBe(200);
   });
-  
+
   test('No recorded verifier ', async () => {
     lambdaMock.on(InvokeCommand, {
-      FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN
+      FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN,
     }).resolves({
       Payload: new Uint8Array(
         Buffer.from(
@@ -109,43 +109,43 @@ describe("Sucessfully execute the handler", () => {
     var response = await handler(eventWithoutVerifier);
     expect(response.statusCode).toBe(200);
   });
-})
+});
 
-describe("Fail on the AWS SDK error returns", () => {
+describe('Fail on the AWS SDK error returns', () => {
   test('Fail to upload the results', async () => {
     s3Mock.on(PutObjectCommand).rejects(new Error());
     var response = await handler(event);
     expect(response.statusCode).toBe(500);
   });
-  
+
   test('Fail to create Rule', async () => {
     iotMock.on(CreateTopicRuleCommand).rejects(new Error());
     var response = await handler(event);
     expect(response.statusCode).toBe(500);
   });
-  
+
   test('Fail to register CA', async () => {
     iotMock.on(RegisterCACertificateCommand).rejects(new Error());
     var response = await handler(event);
     expect(response.statusCode).toBe(500);
   });
-  
+
   test('Fail to get CA registration code', async () => {
     iotMock.on(GetRegistrationCodeCommand).rejects(new Error());
     var response = await handler(event);
     expect(response.statusCode).toBe(500);
   });
-  
+
   test('Fail to get payload returned from the verifier recorder', async () => {
     lambdaMock.on(InvokeCommand, {
-      FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN
-    }).resolves({});    
+      FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN,
+    }).resolves({});
     var response = await handler({});
     expect(response.statusCode).toBe(500);
   });
 });
 
-describe("Fail on the provided wrong input data", () => {
+describe('Fail on the provided wrong input data', () => {
   test('Fail when provide the wrong verifier', async () => {
     let eventWithWrongVerifier: any = Object.assign({}, event, {
       body: {
@@ -163,7 +163,7 @@ describe("Fail on the provided wrong input data", () => {
     var response = await handler(eventWithWrongVerifier);
     expect(response.statusCode).toBe(VerifierError.code);
   });
-  
+
   test('Fail when provide the wrong format of CSR subjects', async () => {
     let eventWithWrongFormatCsrSubject = Object.assign({}, event, {
       body: { csrSubjects: { commonName: {} } },
