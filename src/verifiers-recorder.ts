@@ -21,9 +21,9 @@ export module VerifiersRecorder {
 export class VerifiersRecorder extends Construct {
   public readonly fetchAllVerifierFunction: lambda.Function;
   public readonly fetchAllVerifierHttpFunction: lambda.Function;
-  constructor(scope: Construct, id: string, props?: VerifiersRecorder.Props) {
+  constructor(scope: Construct, id: string, props: VerifiersRecorder.Props) {
     super(scope, `VerifierRecorder-${id}`);
-    this.fetchAllVerifierFunction = new FetchAllVerifierFunction(this, id, props?.verifiers);
+    this.fetchAllVerifierFunction = new FetchAllVerifierFunction(this, id, props.verifiers);
     this.fetchAllVerifierHttpFunction = new FetchAllVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
   }
 }
@@ -37,13 +37,15 @@ class FetchAllVerifierFunction extends lambda.Function {
    */
   constructor(scope: Construct, id: string, verifiers?: [VerifiersRecorder.VerifierProps]) {
     super(scope, `FetchAllVerifierFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifier-recorder')),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-recorder')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
     });
+    let verifiersMap: {[key:string]: string} = {};
     verifiers?.forEach(verifier => {
-      this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
+      verifiersMap[verifier.name] = verifier.lambdaFunction.functionArn;
     });
+    this.addEnvironment('VERIFIERS', JSON.stringify(verifiersMap));
   }
 }
 
@@ -56,7 +58,7 @@ class FetchAllVerifierHttpFunction extends lambda.Function {
    */
   constructor(scope: Construct, id: string, fetchAllVerifierFunction: FetchAllVerifierFunction) {
     super(scope, `FetchAllVerifierHttpFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifier-recorder')),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-recorder')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.httpHandler',
       environment: {

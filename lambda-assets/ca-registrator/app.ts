@@ -4,11 +4,11 @@ import {
   RegisterCACertificateCommand,
   CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import {
   S3Client,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
-import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import {
   Request,
   Response,
@@ -85,19 +85,18 @@ export const handler = async (event: any = {}) : Promise <any> => {
     if (validated.error) {
       throw new InputError(JSON.stringify(validated.details));
     }
-    
+
     const { Payload: payload = [] } = await new LambdaClient({}).send(
       new InvokeCommand({
-        FunctionName: decodeURIComponent(process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN),
+        FunctionName: decodeURIComponent(process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN!),
         Payload: Buffer.from(''),
       }),
     );
     let payloadString: string = '';
-    payload.forEach(num => {
-      payloadString += String.fromCharCode(num);
-    });
+    payload.forEach(num => payloadString += String.fromCharCode(num));
     const { body } = JSON.parse(payloadString);
-    const verifiers = JSON.parse(body);
+    let { verifiers = '{}' } = JSON.parse(body);
+    verifiers = JSON.parse(verifiers);
 
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
       commonName: '',
@@ -107,13 +106,16 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationName: '',
       organizationUnitName: '',
     };
-    let verifierName: string = request.input('verifierName');
 
+    let verifierName: string = request.input('verifierName');
     const { verifierArn } = await verifierSchema.validateAsync({
       verifierName: verifierName,
-      verifierArn: verifiers[request.input('verifierName')],
-    }).catch((_error: Error) => {
-      throw new VerifierError();
+      verifierArn: verifiers[verifierName],
+    }).catch((error: Error) => {
+      console.log(verifiers);
+      console.log(typeof verifiers);
+      console.log({ verifierName, verifierArn: verifiers[verifierName] });
+      throw new VerifierError(error.message);
     });
 
     const { registrationCode } = await iotClient.send(

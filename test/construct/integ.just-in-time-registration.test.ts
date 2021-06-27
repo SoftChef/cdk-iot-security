@@ -37,8 +37,8 @@ test('CaRegisterApi integration test', () => {
   });
 
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-  expect(stack).toCountResources('AWS::Lambda::Function', 2);
-  expect(stack).toCountResources('AWS::IAM::Role', 3);
+  expect(stack).toCountResources('AWS::Lambda::Function', 4);
+  expect(stack).toCountResources('AWS::IAM::Role', 5);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
     RoleName: 'ReviewAcceptionRoleName-' + name,
   });
@@ -60,8 +60,8 @@ test('CaRegisterApi integration test without providing verifiers', () => {
     },
   });
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-  expect(stack).toCountResources('AWS::Lambda::Function', 2);
-  expect(stack).toCountResources('AWS::IAM::Role', 3);
+  expect(stack).toCountResources('AWS::Lambda::Function', 4);
+  expect(stack).toCountResources('AWS::IAM::Role', 5);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
     RoleName: 'ReviewAcceptionRoleName-' + name,
   });

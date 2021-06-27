@@ -40,6 +40,7 @@ const iotMock = mockClient(IoTClient);
 const lambdaMock = mockClient(LambdaClient);
 
 beforeEach(() => {
+  process.env.AWS_REGION = 'local';
   iotMock.on(DescribeCertificateCommand).resolves({
     certificateDescription: {
       certificateId: 'test_certificate_id',
@@ -63,7 +64,6 @@ beforeEach(() => {
   });
   iotMock.on(AttachPolicyCommand).resolves({});
   iotMock.on(UpdateCertificateCommand).resolves({});
-  process.env.AWS_REGION = 'local';
 });
 
 afterEach(() => {
@@ -71,65 +71,74 @@ afterEach(() => {
   lambdaMock.reset();
 });
 
-test('Successfully execute the handler', async () => {
-  var response = await handler({ Records: [record] });
-  expect(response.statusCode).toBe(200);
-});
-
-test('Successfully execute the handler without specifying a verifier', async () => {
-  let recordContent = JSON.parse(record.body);
-  delete recordContent.verifierArn;
-  var recordWithoutVerifier = Object.assign({}, record, { body: JSON.stringify(recordContent) });
-  var response = await handler({ Records: [recordWithoutVerifier] });
-  expect(response.statusCode).toBe(200);
-});
-
-test('Successfully execute the handler but fail to be verified', async () => {
-  lambdaMock.on(InvokeCommand).resolves({
-    StatusCode: 200,
-    Payload: new Uint8Array(
-      Buffer.from(
-        JSON.stringify({ body: { verified: false } }),
-      ),
-    ),
+describe("Sucessfully execute the handler", () => {
+  test('On a regular event', async () => {
+    var response = await handler({ Records: [record] });
+    expect(response.statusCode).toBe(200);
   });
-  await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
-});
-
-test('Fail to execute the handler with an empty event', async () => {
-  await expect(handler()).rejects.toThrow();
-});
-
-test('Fail to set the client certificate active', async () => {
-  iotMock.on(UpdateCertificateCommand).rejects(new Error());
-  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
-});
-
-test('Fail to parse the verifier response', async () => {
-  lambdaMock.on(InvokeCommand).resolves({
-    StatusCode: 200,
-    Payload: new Uint8Array(
-      Buffer.from(
-        JSON.stringify({ body: { } }),
-      ),
-    ),
+  
+  test('Without specifying a verifier', async () => {
+    let recordContent = JSON.parse(record.body);
+    delete recordContent.verifierArn;
+    var recordWithoutVerifier = Object.assign({}, record, { body: JSON.stringify(recordContent) });
+    var response = await handler({ Records: [recordWithoutVerifier] });
+    expect(response.statusCode).toBe(200);
   });
-  await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
+  
+  test('But fail to be verified', async () => {
+    lambdaMock.on(InvokeCommand).resolves({
+      StatusCode: 200,
+      Payload: new Uint8Array(
+        Buffer.from(
+          JSON.stringify({ body: { verified: false } }),
+        ),
+      ),
+    });
+    await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
+  });
 });
 
-test('Fail to invoke the verifier', async () => {
-  lambdaMock.on(InvokeCommand).rejects(new Error());
-  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
-});
+describe("Fail on the AWS SDK error returns", () => {
+  test('Fail to execute the handler with an empty event', async () => {
+    await expect(handler()).rejects.toThrow();
+  });
+  
+  test('Fail to set the client certificate active', async () => {
+    iotMock.on(UpdateCertificateCommand).rejects(new Error());
+    await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
+  });
+  
+  test('Fail to parse the verifier response', async () => {
+    lambdaMock.on(InvokeCommand).resolves({
+      StatusCode: 200,
+      Payload: new Uint8Array(
+        Buffer.from(
+          JSON.stringify({ body: { } }),
+        ),
+      ),
+    });
+    await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
+  });
+  
+  test('Fail to invoke the verifier', async () => {
+    lambdaMock.on(InvokeCommand).rejects(new Error());
+    await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
+  });
+  
+  test('Get empty return from the verifier', async () => {
+    lambdaMock.on(InvokeCommand).resolves({});
+    await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
+  });
+  
+  test('Fail to query the client certificate information', async () => {
+    iotMock.on(DescribeCertificateCommand).rejects(new Error());
+    await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
+  });
 
-test('Get empty return from the verifier', async () => {
-  lambdaMock.on(InvokeCommand).resolves({});
-  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
-});
-
-test('Fail to query the client certificate information', async () => {
-  iotMock.on(DescribeCertificateCommand).rejects(new Error());
-  await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
+  test('SDK found no such certificate exists', async () => {
+    iotMock.on(DescribeCertificateCommand).resolves({});
+    await expect(handler({ Records: [record] })).rejects.toThrowError(CertificateNotFoundError);
+  });
 });
 
 test('Get Error Codes successfully', () => {
@@ -137,9 +146,4 @@ test('Get Error Codes successfully', () => {
   expect(new InputError().code).toBe(InputError.code);
   expect(new PemParsingError().code).toBe(PemParsingError.code);
   expect(new CertificateNotFoundError().code).toBe(CertificateNotFoundError.code);
-});
-
-test('SDK found no such certificate exists', async () => {
-  iotMock.on(DescribeCertificateCommand).resolves({});
-  await expect(handler({ Records: [record] })).rejects.toThrowError(CertificateNotFoundError);
 });
