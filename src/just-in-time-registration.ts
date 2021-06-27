@@ -5,6 +5,7 @@ import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 import { ReviewReceptor } from './review-receptor';
+import { VerifiersRecorder } from './verifiers-recorder';
 
 export module JustInTimeRegistration {
   export interface Props {
@@ -46,6 +47,7 @@ export class JustInTimeRegistration extends Construct {
   public readonly deviceActivator: DeviceActivator;
   public readonly caRegistrator: CaRegistrator;
   public readonly reviewReceptor: ReviewReceptor;
+  public readonly verifierRecorder: VerifiersRecorder;
   public readonly vault: JustInTimeRegistration.VaultProps;
 
   /**
@@ -67,6 +69,9 @@ export class JustInTimeRegistration extends Construct {
    */
   constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
     super(scope, `JustInTimeRegistration-${id}`);
+    this.verifierRecorder = new VerifiersRecorder(this, id, {
+      verifiers: props.verifiers,
+    });
     this.deviceActivator = new DeviceActivator(this, id);
     this.reviewReceptor = new ReviewReceptor(this, id);
     this.reviewReceptor.grantConsumeMessages(this.deviceActivator);
@@ -76,7 +81,7 @@ export class JustInTimeRegistration extends Construct {
     this.caRegistrator = new CaRegistrator(this, id, {
       reviewReceptor: this.reviewReceptor,
       vault: props.vault,
-      verifiers: props.verifiers,
+      verifiersRecorder: this.verifierRecorder,
     });
     this.vault = props.vault;
     this.vault.bucket.grantWrite(this.caRegistrator);

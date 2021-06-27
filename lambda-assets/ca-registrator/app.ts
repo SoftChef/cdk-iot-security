@@ -8,6 +8,7 @@ import {
   S3Client,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import {
   Request,
   Response,
@@ -84,6 +85,19 @@ export const handler = async (event: any = {}) : Promise <any> => {
     if (validated.error) {
       throw new InputError(JSON.stringify(validated.details));
     }
+    
+    const { Payload: payload = [] } = await new LambdaClient({}).send(
+      new InvokeCommand({
+        FunctionName: decodeURIComponent(process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN),
+        Payload: Buffer.from(''),
+      }),
+    );
+    let payloadString: string = '';
+    payload.forEach(num => {
+      payloadString += String.fromCharCode(num);
+    });
+    const { body } = JSON.parse(payloadString);
+    const verifiers = JSON.parse(body);
 
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
       commonName: '',
@@ -97,7 +111,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     const { verifierArn } = await verifierSchema.validateAsync({
       verifierName: verifierName,
-      verifierArn: process.env[request.input('verifierName')],
+      verifierArn: verifiers[request.input('verifierName')],
     }).catch((_error: Error) => {
       throw new VerifierError();
     });

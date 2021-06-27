@@ -41,17 +41,12 @@ const project = new AwsCdkConstructLibrary({
         'ES2020',
       ],
     },
-    include: [
-      'lambda-assets',
-    ],
   },
   eslintOptions: {
     dirs: [
       'src',
       'lambda-assets',
-      'lambda-assets/verifier-recorder/*',
     ],
-    devdirs: ['lambda-assets'],
   },
 });
 project.synth();
