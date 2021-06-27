@@ -27,8 +27,7 @@
   "include": [
     ".projenrc.js",
     "src/**/*.ts",
-    "test/**/*.ts",
-    "lambda-assets"
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules"

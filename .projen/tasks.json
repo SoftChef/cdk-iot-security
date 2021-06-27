@@ -219,7 +219,7 @@
       "description": "Runs eslint against the codebase",
       "steps": [
         {
-          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src lambda-assets lambda-assets/verifier-recorder/* lambda-assets .projenrc.js"
+          "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src lambda-assets test build-tools .projenrc.js"
         }
       ]
     },
