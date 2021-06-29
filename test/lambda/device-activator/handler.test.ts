@@ -71,12 +71,12 @@ afterEach(() => {
   lambdaMock.reset();
 });
 
-describe("Sucessfully execute the handler", () => {
+describe('Sucessfully execute the handler', () => {
   test('On a regular event', async () => {
     var response = await handler({ Records: [record] });
     expect(response.statusCode).toBe(200);
   });
-  
+
   test('Without specifying a verifier', async () => {
     let recordContent = JSON.parse(record.body);
     delete recordContent.verifierArn;
@@ -84,7 +84,7 @@ describe("Sucessfully execute the handler", () => {
     var response = await handler({ Records: [recordWithoutVerifier] });
     expect(response.statusCode).toBe(200);
   });
-  
+
   test('But fail to be verified', async () => {
     lambdaMock.on(InvokeCommand).resolves({
       StatusCode: 200,
@@ -98,16 +98,16 @@ describe("Sucessfully execute the handler", () => {
   });
 });
 
-describe("Fail on the AWS SDK error returns", () => {
+describe('Fail on the AWS SDK error returns', () => {
   test('Fail to execute the handler with an empty event', async () => {
     await expect(handler()).rejects.toThrow();
   });
-  
+
   test('Fail to set the client certificate active', async () => {
     iotMock.on(UpdateCertificateCommand).rejects(new Error());
     await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
   });
-  
+
   test('Fail to parse the verifier response', async () => {
     lambdaMock.on(InvokeCommand).resolves({
       StatusCode: 200,
@@ -119,17 +119,17 @@ describe("Fail on the AWS SDK error returns", () => {
     });
     await expect(handler({ Records: [record] })).rejects.toThrowError(VerificationError);
   });
-  
+
   test('Fail to invoke the verifier', async () => {
     lambdaMock.on(InvokeCommand).rejects(new Error());
     await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
   });
-  
+
   test('Get empty return from the verifier', async () => {
     lambdaMock.on(InvokeCommand).resolves({});
     await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
   });
-  
+
   test('Fail to query the client certificate information', async () => {
     iotMock.on(DescribeCertificateCommand).rejects(new Error());
     await expect(handler({ Records: [record] })).rejects.toThrowError(Error);

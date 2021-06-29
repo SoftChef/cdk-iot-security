@@ -9,25 +9,25 @@ const csrSubjects = {
   organizationName: 'Soft Chef',
   organizationUnitName: 'web',
 };
-describe("Call function getCaRegistrationCertificates", () => {
-  test("Certificates information are defined", () => {
+describe('Call function getCaRegistrationCertificates', () => {
+  test('Certificates information are defined', () => {
     var certificates = cg.getCaRegistrationCertificates(csrSubjects);
     expect(typeof certificates.ca.privateKey).toBe(typeof '');
     expect(typeof certificates.ca.publicKey).toBe(typeof '');
     expect(typeof certificates.ca.certificate).toBe(typeof '');
     expect(typeof certificates.verification.privateKey).toBe(typeof '');
     expect(typeof certificates.verification.publicKey).toBe(typeof '');
-    expect(typeof certificates.verification.certificate).toBe(typeof '');  
+    expect(typeof certificates.verification.certificate).toBe(typeof '');
   });
 
-  test("Verification certificate is signed with CA certificate", () => {
+  test('Verification certificate is signed with CA certificate', () => {
     var certificates = cg.getCaRegistrationCertificates(csrSubjects);
     var caCert = forge.pki.certificateFromPem(certificates.ca.certificate);
     var veriCert = forge.pki.certificateFromPem(certificates.verification.certificate);
     expect(caCert.verify(veriCert)).toBe(true);
   });
 
-  test("CA keys are paired", () => {
+  test('CA keys are paired', () => {
     var certificates = cg.getCaRegistrationCertificates(csrSubjects);
     var caCert = forge.pki.certificateFromPem(certificates.ca.certificate);
     var privateKey = forge.pki.privateKeyFromPem(certificates.ca.privateKey);
@@ -39,7 +39,7 @@ describe("Call function getCaRegistrationCertificates", () => {
     expect(forge.pki.publicKeyToPem(caCert.publicKey)).toBe(certificates.ca.publicKey);
   });
 
-  test("Verification keys are paired", () => {
+  test('Verification keys are paired', () => {
     var certificates = cg.getCaRegistrationCertificates(csrSubjects);
     var privateKey = forge.pki.privateKeyFromPem(certificates.verification.privateKey);
     var publicKey = forge.pki.publicKeyFromPem(certificates.verification.publicKey);
@@ -48,10 +48,10 @@ describe("Call function getCaRegistrationCertificates", () => {
     var signature = privateKey.sign(md);
     expect(publicKey.verify(md.digest().getBytes(), signature)).toBe(true);
   });
-})
+});
 
-describe("Call function getCaRegistrationCertificates without CSR subjects", () => {
-  test("Certificates information are defined", () => {
+describe('Call function getCaRegistrationCertificates without CSR subjects', () => {
+  test('Certificates information are defined', () => {
     var certificates = cg.getCaRegistrationCertificates();
     expect(typeof certificates.ca.privateKey).toBe(typeof '');
     expect(typeof certificates.ca.publicKey).toBe(typeof '');
@@ -60,13 +60,13 @@ describe("Call function getCaRegistrationCertificates without CSR subjects", () 
     expect(typeof certificates.verification.publicKey).toBe(typeof '');
     expect(typeof certificates.verification.certificate).toBe(typeof '');
   });
-  test("Verification certificate is signed with CA certificate", () => {
+  test('Verification certificate is signed with CA certificate', () => {
     var certificates = cg.getCaRegistrationCertificates();
     var caCert = forge.pki.certificateFromPem(certificates.ca.certificate);
     var veriCert = forge.pki.certificateFromPem(certificates.verification.certificate);
     expect(caCert.verify(veriCert)).toBe(true);
   });
-  test("CA keys are paired", () => {
+  test('CA keys are paired', () => {
     var certificates = cg.getCaRegistrationCertificates();
     var caCert = forge.pki.certificateFromPem(certificates.ca.certificate);
     var privateKey = forge.pki.privateKeyFromPem(certificates.ca.privateKey);
@@ -77,7 +77,7 @@ describe("Call function getCaRegistrationCertificates without CSR subjects", () 
     expect(publicKey.verify(md.digest().getBytes(), signature)).toBe(true);
     expect(forge.pki.publicKeyToPem(caCert.publicKey)).toBe(certificates.ca.publicKey);
   });
-  test("Verification keys are paired", () => {
+  test('Verification keys are paired', () => {
     var certificates = cg.getCaRegistrationCertificates();
     var privateKey = forge.pki.privateKeyFromPem(certificates.verification.privateKey);
     var publicKey = forge.pki.publicKeyFromPem(certificates.verification.publicKey);

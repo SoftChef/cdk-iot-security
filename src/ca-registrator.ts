@@ -5,7 +5,10 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { Construct, Duration } from '@aws-cdk/core';
+import {
+  Construct,
+  Duration
+} from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
 import { VerifiersRecorder } from './verifiers-recorder';
@@ -23,12 +26,9 @@ export module CaRegistrator {
      * information returned from the CA Registration Function.
      */
     readonly vault: JustInTimeRegistration.VaultProps;
-    // /**
-    //  * The verifiers to verify the client certificates.
-    //  */
-    // readonly verifiers?: [JustInTimeRegistration.VerifierProps];
     /**
-     * The verifiers
+     * The verifiers recorder which is a AWS Lambda Function
+     * returning the recorded verifiers information.
      */
     readonly verifiersRecorder: VerifiersRecorder;
   }
