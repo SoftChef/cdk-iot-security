@@ -2,7 +2,7 @@ const { AwsCdkConstructLibrary, NpmAccess } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'YehTarnSu',
   authorAddress: 'yehtarnsu@softchef.com',
-  cdkVersion: '1.109.0',
+  cdkVersion: '1.110.1',
   defaultReleaseBranch: 'main',
   name: '@softchef/cdk-iot-security',
   npmAccess: NpmAccess.PUBLIC,
@@ -28,7 +28,6 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
-    '@softchef/cdk-restapi',
   ],
   devDeps: [
     'aws-sdk-client-mock',
