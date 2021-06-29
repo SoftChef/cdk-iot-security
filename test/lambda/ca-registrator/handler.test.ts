@@ -109,7 +109,7 @@ describe('Sucessfully execute the handler', () => {
       Payload: new Uint8Array(
         Buffer.from(
           JSON.stringify({
-            body: JSON.stringify({})
+            body: JSON.stringify({}),
           }),
         ),
       ),
