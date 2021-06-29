@@ -14,6 +14,7 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
+import * as path from 'path';
 import { CertificateGenerator } from './certificate-generator';
 import {
   VerifierError,
@@ -71,7 +72,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }),
     Joi.object({
       verifierName: Joi.allow('', null).only(),
-      verifierArn: '',
+      verifierArn: Joi.string().default(''),
     }),
   );
 
@@ -94,7 +95,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
     let payloadString: string = '';
     payload.forEach(num => payloadString += String.fromCharCode(num));
-    const { body: { body } } = JSON.parse(payloadString);
+    const { body } = JSON.parse(payloadString);
     let { verifiers = '{}' } = JSON.parse(body);
     verifiers = JSON.parse(verifiers);
 
@@ -112,9 +113,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
       verifierName: verifierName,
       verifierArn: verifiers[verifierName],
     }).catch((error: Error) => {
-      console.log(verifiers);
-      console.log(typeof verifiers);
-      console.log({ verifierName, verifierArn: verifiers[verifierName] });
       throw new VerifierError(error.message);
     });
 
@@ -158,7 +156,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
+        Key: path.join(bucketPrefix || '', certificateId, 'ca-certificate.json'),
         Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
           certificateId: certificateId,
           certificateArn: certificateArn,
