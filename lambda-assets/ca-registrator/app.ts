@@ -5,7 +5,6 @@ import {
   RegisterCACertificateCommand,
   CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
-import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import {
   S3Client,
   PutObjectCommand,
@@ -87,18 +86,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new InputError(JSON.stringify(validated.details));
     }
 
-    const { Payload: payload } = await new LambdaClient({}).send(
-      new InvokeCommand({
-        FunctionName: decodeURIComponent(process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN!),
-        Payload: Buffer.from(''),
-      }),
-    );
-    let payloadString: string = '';
-    payload!.forEach(num => payloadString += String.fromCharCode(num));
-    const { body } = JSON.parse(payloadString);
-    let { verifiers = '{}' } = JSON.parse(body);
-    verifiers = JSON.parse(verifiers);
-
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
       commonName: '',
       countryName: '',
@@ -109,16 +96,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
     };
 
     let verifierName: string = request.input('verifierName');
+
     const { verifierArn } = await verifierSchema.validateAsync({
       verifierName: verifierName,
-      verifierArn: verifiers[verifierName],
-    }).catch((error: Error) => {
-      console.log(verifiers);
-      console.log({
-        verifierName,
-        verifierArn: verifiers[verifierName],
-      });
-      throw new VerifierError(error.message);
+      verifierArn: process.env[request.input('verifierName')],
+    }).catch((_error: Error) => {
+      throw new VerifierError();
     });
 
     const { registrationCode } = await iotClient.send(

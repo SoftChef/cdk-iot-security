@@ -11,7 +11,6 @@ import {
 } from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
-import { VerifiersRecorder } from './verifiers-recorder';
 
 export module CaRegistrator {
   export interface Props {
@@ -27,10 +26,9 @@ export module CaRegistrator {
      */
     readonly vault: JustInTimeRegistration.VaultProps;
     /**
-     * The verifiers recorder which is a AWS Lambda Function
-     * returning the recorded verifiers information.
+     * The verifiers to verify the client certificates.
      */
-    readonly verifiersRecorder: VerifiersRecorder;
+    readonly verifiers?: [JustInTimeRegistration.VerifierProps];
   }
 }
 export class CaRegistrator extends lambda.Function {
@@ -52,7 +50,9 @@ export class CaRegistrator extends lambda.Function {
     this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
-    this.addEnvironment('FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN', props.verifiersRecorder.fetchAllVerifierHttpFunction.functionArn);
+    props.verifiers?.forEach(verifier => {
+      this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
+    });
     this.role!.attachInlinePolicy(
       new Policy(this, `CaRegistrator-${id}`, {
         statements: [

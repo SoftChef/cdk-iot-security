@@ -45,11 +45,13 @@ beforeEach(async () => {
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'local';
-  process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN = 'arn:test_verifiers_recorder';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
   process.env.VERIFIERS = JSON.stringify(verifiers);
+  Object.entries(verifiers).forEach(([key, value]) => {
+    process.env[key] = value;
+  });
   iotMock.on(GetRegistrationCodeCommand).resolves({
     registrationCode: 'registration_code',
   });
@@ -103,16 +105,8 @@ describe('Sucessfully execute the handler', () => {
   });
 
   test('No recorded verifier ', async () => {
-    lambdaMock.on(InvokeCommand, {
-      FunctionName: process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN,
-    }).resolves({
-      Payload: new Uint8Array(
-        Buffer.from(
-          JSON.stringify({
-            body: JSON.stringify({}),
-          }),
-        ),
-      ),
+    Object.entries(verifiers).forEach(([key, _value]) => {
+      delete process.env[key];
     });
     let eventWithoutVerifier: any = Object.assign({}, event);
     delete eventWithoutVerifier.body.verifierName;
