@@ -46,7 +46,7 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 * **props** (<code>[CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)</code>)  *No description*
   * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
   * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **verifiersRecorder** (<code>[VerifiersRecorder](#softchef-cdk-iot-security-verifiersrecorder)</code>)  The verifiers. 
+  * **verifiersRecorder** (<code>[VerifiersRecorder](#softchef-cdk-iot-security-verifiersrecorder)</code>)  The verifiers recorder which is a AWS Lambda Function returning the recorded verifiers information. 
 
 
 
@@ -201,7 +201,6 @@ new VerifiersRecorder(scope: Construct, id: string, props: Props)
 
 Name | Type | Description 
 -----|------|-------------
-**fetchAllVerifierFunction** | <code>[Function](#aws-cdk-aws-lambda-function)</code> | <span></span>
 **fetchAllVerifierHttpFunction** | <code>[Function](#aws-cdk-aws-lambda-function)</code> | <span></span>
 
 
@@ -217,7 +216,7 @@ Name | Type | Description
 -----|------|-------------
 **reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
 **vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**verifiersRecorder** | <code>[VerifiersRecorder](#softchef-cdk-iot-security-verifiersrecorder)</code> | The verifiers.
+**verifiersRecorder** | <code>[VerifiersRecorder](#softchef-cdk-iot-security-verifiersrecorder)</code> | The verifiers recorder which is a AWS Lambda Function returning the recorded verifiers information.
 
 
 
