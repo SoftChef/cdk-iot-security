@@ -52,8 +52,8 @@ export class CaRegistrator extends lambda.Function {
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
     this.addEnvironment('VERIFIERS', JSON.stringify(
-        props.verifiers?.map(verifier => verifier.functionName) || '[]',
-      ),
+      props.verifiers?.map(verifier => verifier.functionName) || '[]',
+    ),
     );
     this.role!.attachInlinePolicy(
       new Policy(this, `CaRegistrator-${id}`, {

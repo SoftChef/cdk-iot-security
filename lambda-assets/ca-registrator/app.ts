@@ -146,9 +146,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
               {
                 certificateId: certificateId,
                 certificateArn: certificateArn,
-              }
-            )
-          )
+              },
+            ),
+          ),
         ),
       }),
     );
