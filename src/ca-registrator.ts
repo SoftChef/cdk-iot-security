@@ -11,7 +11,7 @@ import {
 } from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
-import { VerifiersFetcher } from './verifiers-recorder';
+import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module CaRegistrator {
   export interface Props {

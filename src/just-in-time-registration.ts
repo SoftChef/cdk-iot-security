@@ -4,7 +4,7 @@ import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 import { ReviewReceptor } from './review-receptor';
-import { VerifiersFetcher } from './verifiers-recorder';
+import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module JustInTimeRegistration {
   export interface Props {

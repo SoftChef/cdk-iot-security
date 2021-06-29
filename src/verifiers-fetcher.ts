@@ -17,8 +17,8 @@ export class VerifiersFetcher extends lambda.Function {
    * @param verifiers The user specified verifiers
    */
   constructor(scope: Construct, id: string, verifiers?: VerifiersFetcher.Verifier[]) {
-    super(scope, `FetchAllVerifierFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-recorder/get-all-verifiers-http')),
+    super(scope, `VerifiersFetcher-${id}`, {
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-fetcher')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
     });

@@ -387,9 +387,55 @@ Object {
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcase6B130678": Object {
+    "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE": Object {
+      "DeletionPolicy": "Delete",
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "JustInTimeRegistrationtestcaseReviewReceptortestcaseReviewAcceptionRoletestcaseA3AF3CD4": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "sqs:SendMessageBatch",
+                    "sqs:SendMessage",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::GetAtt": Array [
+                      "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "SqsPushPolicy",
+          },
+        ],
+        "RoleName": "ReviewAcceptionRoleName-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "JustInTimeRegistrationtestcaseVerifiersFetchertestcase4F2CFBBA": Object {
       "DependsOn": Array [
-        "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcaseServiceRole877E0682",
+        "JustInTimeRegistrationtestcaseVerifiersFetchertestcaseServiceRoleFE2AC6E2",
       ],
       "Properties": Object {
         "Code": Object {
@@ -449,7 +495,7 @@ Object {
         "Handler": "app.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
-            "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcaseServiceRole877E0682",
+            "JustInTimeRegistrationtestcaseVerifiersFetchertestcaseServiceRoleFE2AC6E2",
             "Arn",
           ],
         },
@@ -457,7 +503,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcaseServiceRole877E0682": Object {
+    "JustInTimeRegistrationtestcaseVerifiersFetchertestcaseServiceRoleFE2AC6E2": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -485,52 +531,6 @@ Object {
             ],
           },
         ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE": Object {
-      "DeletionPolicy": "Delete",
-      "Type": "AWS::SQS::Queue",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "JustInTimeRegistrationtestcaseReviewReceptortestcaseReviewAcceptionRoletestcaseA3AF3CD4": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "iot.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
-                    "sqs:SendMessageBatch",
-                    "sqs:SendMessage",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::GetAtt": Array [
-                      "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE",
-                      "Arn",
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "SqsPushPolicy",
-          },
-        ],
-        "RoleName": "ReviewAcceptionRoleName-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
@@ -914,9 +914,55 @@ Object {
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcase6B130678": Object {
+    "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE": Object {
+      "DeletionPolicy": "Delete",
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "JustInTimeRegistrationtestcaseReviewReceptortestcaseReviewAcceptionRoletestcaseA3AF3CD4": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "sqs:SendMessageBatch",
+                    "sqs:SendMessage",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::GetAtt": Array [
+                      "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "SqsPushPolicy",
+          },
+        ],
+        "RoleName": "ReviewAcceptionRoleName-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "JustInTimeRegistrationtestcaseVerifiersFetchertestcase4F2CFBBA": Object {
       "DependsOn": Array [
-        "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcaseServiceRole877E0682",
+        "JustInTimeRegistrationtestcaseVerifiersFetchertestcaseServiceRoleFE2AC6E2",
       ],
       "Properties": Object {
         "Code": Object {
@@ -965,7 +1011,7 @@ Object {
         "Handler": "app.handler",
         "Role": Object {
           "Fn::GetAtt": Array [
-            "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcaseServiceRole877E0682",
+            "JustInTimeRegistrationtestcaseVerifiersFetchertestcaseServiceRoleFE2AC6E2",
             "Arn",
           ],
         },
@@ -973,7 +1019,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "JustInTimeRegistrationtestcaseFetchAllVerifierFunctiontestcaseServiceRole877E0682": Object {
+    "JustInTimeRegistrationtestcaseVerifiersFetchertestcaseServiceRoleFE2AC6E2": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -1001,52 +1047,6 @@ Object {
             ],
           },
         ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE": Object {
-      "DeletionPolicy": "Delete",
-      "Type": "AWS::SQS::Queue",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "JustInTimeRegistrationtestcaseReviewReceptortestcaseReviewAcceptionRoletestcaseA3AF3CD4": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "iot.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
-                    "sqs:SendMessageBatch",
-                    "sqs:SendMessage",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::GetAtt": Array [
-                      "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE",
-                      "Arn",
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "SqsPushPolicy",
-          },
-        ],
-        "RoleName": "ReviewAcceptionRoleName-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
