@@ -96,10 +96,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
     };
 
     let verifierName: string = request.input('verifierName');
+    const verifiers: {[key:string]: string} = JSON.parse(process.env.VERIFIERS!);
 
     const { verifierArn } = await verifierSchema.validateAsync({
       verifierName: verifierName,
-      verifierArn: process.env[request.input('verifierName')],
+      verifierArn: verifiers[request.input('verifierName')],
     }).catch((_error: Error) => {
       throw new VerifierError();
     });

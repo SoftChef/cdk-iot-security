@@ -1,18 +1,16 @@
-import { Function } from '@aws-cdk/aws-lambda';
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 import { ReviewReceptor } from './review-receptor';
-import { VerifiersRecorder } from './verifiers-recorder';
+import { VerifiersFetcher } from './verifiers-recorder';
 
 export module JustInTimeRegistration {
   export interface Props {
     readonly vault: VaultProps;
-    readonly verifiers?: [VerifierProps];
+    readonly verifiers?: VerifiersFetcher.Verifier[];
   }
-
   export interface VaultProps {
     /**
      * The S3 bucket
@@ -23,31 +21,13 @@ export module JustInTimeRegistration {
      */
     readonly prefix: string;
   }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    readonly name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    readonly lambdaFunction: Function;
-  }
-}
-
-export module JustInTimeRegistration {
-  export interface Props {
-    readonly vault: VaultProps;
-    readonly verifiers?: [VerifierProps];
-  }
 }
 
 export class JustInTimeRegistration extends Construct {
   public readonly deviceActivator: DeviceActivator;
   public readonly caRegistrator: CaRegistrator;
   public readonly reviewReceptor: ReviewReceptor;
-  public readonly verifierRecorder: VerifiersRecorder;
+  public readonly verifiersFetcher: VerifiersFetcher;
   public readonly vault: JustInTimeRegistration.VaultProps;
 
   /**
@@ -69,9 +49,7 @@ export class JustInTimeRegistration extends Construct {
    */
   constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
     super(scope, `JustInTimeRegistration-${id}`);
-    this.verifierRecorder = new VerifiersRecorder(this, id, {
-      verifiers: props.verifiers,
-    });
+    this.verifiersFetcher = new VerifiersFetcher(this, id, props.verifiers);
     this.deviceActivator = new DeviceActivator(this, id);
     this.reviewReceptor = new ReviewReceptor(this, id);
     this.reviewReceptor.grantConsumeMessages(this.deviceActivator);
@@ -83,7 +61,6 @@ export class JustInTimeRegistration extends Construct {
       vault: props.vault,
       verifiers: props.verifiers,
     });
-    this.verifierRecorder.fetchAllVerifierHttpFunction.grantInvoke(this.caRegistrator);
     this.vault = props.vault;
     this.vault.bucket.grantWrite(this.caRegistrator);
   }

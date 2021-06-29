@@ -6,7 +6,6 @@ import {
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
-  InvokeCommand,
 } from '@aws-sdk/client-lambda';
 import {
   S3Client,
@@ -18,7 +17,6 @@ import {
   VerifierError,
   InputError,
 } from '../../../lambda-assets/ca-registrator/errors';
-import * as verifiersRecorder from '../../../lambda-assets/verifiers-recorder/get-all-verifiers-http/app';
 
 const event = {
   body: {
@@ -61,15 +59,6 @@ beforeEach(async () => {
   });
   iotMock.on(CreateTopicRuleCommand).resolves({});
   s3Mock.on(PutObjectCommand).resolves({});
-  lambdaMock.on(InvokeCommand, {
-    FunctionName: process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN,
-  }).resolves({
-    Payload: new Uint8Array(
-      Buffer.from(
-        JSON.stringify(await verifiersRecorder.handler()),
-      ),
-    ),
-  });
 });
 
 afterEach(() => {
@@ -81,8 +70,6 @@ afterEach(() => {
 describe('Sucessfully execute the handler', () => {
   test('On a regular event', async () => {
     var response = await handler(event);
-    console.log(response);
-    console.log(await verifiersRecorder.handler());
     expect(response.statusCode).toBe(200);
   });
 

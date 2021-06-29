@@ -22,14 +22,13 @@ test('CaRegisterApi integration test', () => {
   const anotherStack = new Stack(app, 'another-stack');
   const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   new JustInTimeRegistration(stack, name, {
-    verifiers: [{
-      name: 'test_verifier',
-      lambdaFunction: new Function(verifierStack, name, {
+    verifiers: [
+      new Function(verifierStack, name, {
         code: new InlineCode('exports.handler = () => { return true; }'),
         runtime: Runtime.NODEJS_12_X,
         handler: 'index.js',
       }),
-    }],
+    ],
     vault: {
       bucket: bucket,
       prefix: 'test',
