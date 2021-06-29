@@ -83,6 +83,7 @@ export class JustInTimeRegistration extends Construct {
       vault: props.vault,
       verifiersRecorder: this.verifierRecorder,
     });
+    this.verifierRecorder.fetchAllVerifierHttpFunction.grantInvoke(this.caRegistrator);
     this.vault = props.vault;
     this.vault.bucket.grantWrite(this.caRegistrator);
   }

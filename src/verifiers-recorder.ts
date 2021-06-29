@@ -19,16 +19,14 @@ export module VerifiersRecorder {
 }
 
 export class VerifiersRecorder extends Construct {
-  public readonly fetchAllVerifierFunction: lambda.Function;
   public readonly fetchAllVerifierHttpFunction: lambda.Function;
   constructor(scope: Construct, id: string, props: VerifiersRecorder.Props) {
     super(scope, `VerifierRecorder-${id}`);
-    this.fetchAllVerifierFunction = new FetchAllVerifierFunction(this, id, props.verifiers);
-    this.fetchAllVerifierHttpFunction = new FetchAllVerifierHttpFunction(this, id, this.fetchAllVerifierFunction);
+    this.fetchAllVerifierHttpFunction = new FetchAllVerifierHttpFunction(this, id, props.verifiers);
   }
 }
 
-class FetchAllVerifierFunction extends lambda.Function {
+class FetchAllVerifierHttpFunction extends lambda.Function {
   /**
    * The Lambda Function returning all the verifier name and ARNs.
    * @param scope
@@ -37,7 +35,7 @@ class FetchAllVerifierFunction extends lambda.Function {
    */
   constructor(scope: Construct, id: string, verifiers?: [VerifiersRecorder.VerifierProps]) {
     super(scope, `FetchAllVerifierFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-recorder')),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-recorder/get-all-verifiers-http')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
     });
@@ -46,25 +44,5 @@ class FetchAllVerifierFunction extends lambda.Function {
       verifiersMap[verifier.name] = verifier.lambdaFunction.functionArn;
     });
     this.addEnvironment('VERIFIERS', JSON.stringify(verifiersMap));
-  }
-}
-
-class FetchAllVerifierHttpFunction extends lambda.Function {
-  /**
-   * The Lambda Function accepting HTTP requests and returning all the verifier name and ARNs.
-   * @param scope
-   * @param id
-   * @param fetchAllVerifierFunction The lambda function providing the verifiers information.
-   */
-  constructor(scope: Construct, id: string, fetchAllVerifierFunction: FetchAllVerifierFunction) {
-    super(scope, `FetchAllVerifierHttpFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-recorder')),
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'app.httpHandler',
-      environment: {
-        FETCH_ALL_VERIFIER_FUNCTION_ARN: fetchAllVerifierFunction.functionArn,
-      },
-    });
-    fetchAllVerifierFunction.grantInvoke(this);
   }
 }

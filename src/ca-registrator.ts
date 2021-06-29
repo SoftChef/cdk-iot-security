@@ -52,7 +52,7 @@ export class CaRegistrator extends lambda.Function {
     this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
-    this.addEnvironment('FETCH_ALL_VERIFIER_FUNCTION_ARN', props.verifiersRecorder.fetchAllVerifierFunction.functionArn);
+    this.addEnvironment('FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN', props.verifiersRecorder.fetchAllVerifierHttpFunction.functionArn);
     this.role!.attachInlinePolicy(
       new Policy(this, `CaRegistrator-${id}`, {
         statements: [
