@@ -1,3 +1,6 @@
+import {
+  strict as assert,
+} from 'assert';
 import * as path from 'path';
 import {
   IoTClient,
@@ -64,17 +67,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     organizationUnitName: Joi.string().allow(''),
   }).unknown(true).allow({}, null);
 
-  const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
-    Joi.object({
-      verifierName: Joi.string().invalid('').required(),
-      verifierArn: Joi.string().regex(/^arn:/).required(),
-    }),
-    Joi.object({
-      verifierName: Joi.string().allow('', null).only(),
-      verifierArn: Joi.string().default(''),
-    }),
-  );
-
   try {
     const validated = request.validate(joi => {
       return {
@@ -95,22 +87,22 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationUnitName: '',
     };
 
-    let verifierName: string = request.input('verifierName');
-    const verifiers: {[key:string]: string} = JSON.parse(process.env.VERIFIERS!);
-
-    const { verifierArn } = await verifierSchema.validateAsync({
-      verifierName: verifierName,
-      verifierArn: verifiers[request.input('verifierName')],
-    }).catch((_error: Error) => {
-      throw new VerifierError();
-    });
+    let verifierName: string | undefined = '';
+    if (request.input('verifierName')) {
+      try {
+        const verifiers: string[] = JSON.parse(process.env.VERIFIERS!);
+        assert(verifierName = verifiers.find((listedName: string) => listedName === request.input('verifierName')));
+      } catch (error) {
+        throw new VerifierError(error.message);
+      }
+    }
 
     const { registrationCode } = await iotClient.send(
       new GetRegistrationCodeCommand({}),
     );
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
 
-    let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const {
       certificateId,
@@ -137,7 +129,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
               },
             },
           ],
-          sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
+          sql: `SELECT *, "${verifierName}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
         },
       }),
     );
@@ -146,10 +138,18 @@ export const handler = async (event: any = {}) : Promise <any> => {
       new PutObjectCommand({
         Bucket: bucketName,
         Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
-        Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-          certificateId: certificateId,
-          certificateArn: certificateArn,
-        }))),
+        Body: Buffer.from(
+          JSON.stringify(
+            Object.assign(
+              {},
+              certificates,
+              {
+                certificateId: certificateId,
+                certificateArn: certificateArn,
+              }
+            )
+          )
+        ),
       }),
     );
     return response.json({ certificateId: certificateId });

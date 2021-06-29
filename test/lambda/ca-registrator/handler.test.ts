@@ -31,9 +31,10 @@ const event = {
     verifierName: 'test_verifier',
   },
 };
-const verifiers = {
-  test_verifier: 'arn:test_verifier_arn',
-};
+const verifiers = [
+  'test_verifier1',
+  'test_verifier',
+];
 
 const iotMock = mockClient(IoTClient);
 const s3Mock = mockClient(S3Client);
@@ -47,9 +48,6 @@ beforeEach(async () => {
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
   process.env.VERIFIERS = JSON.stringify(verifiers);
-  Object.entries(verifiers).forEach(([key, value]) => {
-    process.env[key] = value;
-  });
   iotMock.on(GetRegistrationCodeCommand).resolves({
     registrationCode: 'registration_code',
   });
