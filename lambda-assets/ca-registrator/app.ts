@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {
   IoTClient,
   GetRegistrationCodeCommand,
@@ -14,7 +15,6 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
-import * as path from 'path';
 import { CertificateGenerator } from './certificate-generator';
 import {
   VerifierError,
@@ -71,7 +71,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       verifierArn: Joi.string().regex(/^arn:/).required(),
     }),
     Joi.object({
-      verifierName: Joi.allow('', null).only(),
+      verifierName: Joi.string().allow('', null).only(),
       verifierArn: Joi.string().default(''),
     }),
   );
@@ -87,14 +87,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new InputError(JSON.stringify(validated.details));
     }
 
-    const { Payload: payload = [] } = await new LambdaClient({}).send(
+    const { Payload: payload } = await new LambdaClient({}).send(
       new InvokeCommand({
         FunctionName: decodeURIComponent(process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN!),
         Payload: Buffer.from(''),
       }),
     );
     let payloadString: string = '';
-    payload.forEach(num => payloadString += String.fromCharCode(num));
+    payload!.forEach(num => payloadString += String.fromCharCode(num));
     const { body } = JSON.parse(payloadString);
     let { verifiers = '{}' } = JSON.parse(body);
     verifiers = JSON.parse(verifiers);
@@ -113,6 +113,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       verifierName: verifierName,
       verifierArn: verifiers[verifierName],
     }).catch((error: Error) => {
+      console.log(verifiers);
+      console.log({
+        verifierName,
+        verifierArn: verifiers[verifierName],
+      });
       throw new VerifierError(error.message);
     });
 
@@ -156,7 +161,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId, 'ca-certificate.json'),
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
         Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
           certificateId: certificateId,
           certificateArn: certificateArn,

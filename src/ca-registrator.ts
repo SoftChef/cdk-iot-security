@@ -7,7 +7,7 @@ import {
 import * as lambda from '@aws-cdk/aws-lambda';
 import {
   Construct,
-  Duration
+  Duration,
 } from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';

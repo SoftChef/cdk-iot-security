@@ -18,7 +18,7 @@ import {
   VerifierError,
   InputError,
 } from '../../../lambda-assets/ca-registrator/errors';
-import * as verifiersRecorder from '../../../lambda-assets/verifiers-recorder/app';
+import * as verifiersRecorder from '../../../lambda-assets/verifiers-recorder/get-all-verifiers-http/app';
 
 const event = {
   body: {
@@ -45,7 +45,7 @@ beforeEach(async () => {
   process.env.DEIVCE_ACTIVATOR_QUEUE_URL = 'activator_queue_url';
   process.env.DEIVCE_ACTIVATOR_ROLE_ARN = 'activator_role_arn';
   process.env.AWS_REGION = 'local';
-  process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN = 'arn:test_verifiers_recorder';
+  process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN = 'arn:test_verifiers_recorder';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
@@ -60,11 +60,11 @@ beforeEach(async () => {
   iotMock.on(CreateTopicRuleCommand).resolves({});
   s3Mock.on(PutObjectCommand).resolves({});
   lambdaMock.on(InvokeCommand, {
-    FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN,
+    FunctionName: process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN,
   }).resolves({
     Payload: new Uint8Array(
       Buffer.from(
-        JSON.stringify({ body: JSON.stringify(await verifiersRecorder.handler()) }),
+        JSON.stringify(await verifiersRecorder.handler()),
       ),
     ),
   });
@@ -79,11 +79,19 @@ afterEach(() => {
 describe('Sucessfully execute the handler', () => {
   test('On a regular event', async () => {
     var response = await handler(event);
+    console.log(response);
+    console.log(await verifiersRecorder.handler());
     expect(response.statusCode).toBe(200);
   });
 
   test('On an empty event', async () => {
     var response = await handler();
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('Without providing a bucket prefix', async () => {
+    delete process.env.BUCKET_PREFIX;
+    var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });
 
@@ -96,11 +104,13 @@ describe('Sucessfully execute the handler', () => {
 
   test('No recorded verifier ', async () => {
     lambdaMock.on(InvokeCommand, {
-      FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN,
+      FunctionName: process.env.FETCH_ALL_VERIFIER_HTTP_FUNCTION_ARN,
     }).resolves({
       Payload: new Uint8Array(
         Buffer.from(
-          JSON.stringify({ body: JSON.stringify({}) }),
+          JSON.stringify({
+            body: JSON.stringify({})
+          }),
         ),
       ),
     });
@@ -133,14 +143,6 @@ describe('Fail on the AWS SDK error returns', () => {
   test('Fail to get CA registration code', async () => {
     iotMock.on(GetRegistrationCodeCommand).rejects(new Error());
     var response = await handler(event);
-    expect(response.statusCode).toBe(500);
-  });
-
-  test('Fail to get payload returned from the verifier recorder', async () => {
-    lambdaMock.on(InvokeCommand, {
-      FunctionName: process.env.FETCH_ALL_VERIFIER_FUNCTION_ARN,
-    }).resolves({});
-    var response = await handler({});
     expect(response.statusCode).toBe(500);
   });
 });
