@@ -129,7 +129,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
               },
             },
           ],
-          sql: `SELECT *, "${verifierName}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
+          sql: `SELECT *, "${verifierName}" as verifierName FROM '$aws/events/certificates/registered/${certificateId}'`,
         },
       }),
     );
