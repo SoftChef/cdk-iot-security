@@ -93,12 +93,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
         ),
       }),
     );
-
-    let payloadString: string = '';
-    payload.forEach(num => {
-      payloadString += String.fromCharCode(num);
-    });
-    const { body } = JSON.parse(payloadString);
+    
+    const { body } = JSON.parse(
+      [...payload].map((num: number) => String.fromCharCode(num)).join(''),
+    );
 
     await Joi.object({
       verified: Joi.boolean().allow(true).only().required(),
