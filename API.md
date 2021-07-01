@@ -4,9 +4,9 @@
 
 Name|Description
 ----|-----------
-[Antenna](#softchef-cdk-iot-security-antenna)|*No description*
 [CaRegistrator](#softchef-cdk-iot-security-caregistrator)|*No description*
 [DeviceActivator](#softchef-cdk-iot-security-deviceactivator)|*No description*
+[JitrTopicRule](#softchef-cdk-iot-security-jitrtopicrule)|*No description*
 [JustInTimeRegistration](#softchef-cdk-iot-security-justintimeregistration)|*No description*
 [ReviewAcceptionRole](#softchef-cdk-iot-security-reviewacceptionrole)|*No description*
 [ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)|*No description*
@@ -21,28 +21,6 @@ Name|Description
 [JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)|*No description*
 [JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)|*No description*
 [VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)|*No description*
-
-
-
-## class Antenna  <a id="softchef-cdk-iot-security-antenna"></a>
-
-
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IInspectable](#aws-cdk-core-iinspectable)
-__Extends__: [CfnTopicRule](#aws-cdk-aws-iot-cfntopicrule)
-
-### Initializer
-
-
-
-
-```ts
-new Antenna(queue: ReviewReceptor, id: string)
-```
-
-* **queue** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-
 
 
 
@@ -89,6 +67,28 @@ new DeviceActivator(scope: Construct, id: string)
 ```
 
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+
+
+
+
+## class JitrTopicRule  <a id="softchef-cdk-iot-security-jitrtopicrule"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IInspectable](#aws-cdk-core-iinspectable)
+__Extends__: [CfnTopicRule](#aws-cdk-aws-iot-cfntopicrule)
+
+### Initializer
+
+
+
+
+```ts
+new JitrTopicRule(queue: ReviewReceptor, id: string)
+```
+
+* **queue** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -192,7 +192,7 @@ new ReviewReceptor(scope: Construct, id: string)
 Name | Type | Description 
 -----|------|-------------
 **acceptionRole** | <code>[ReviewAcceptionRole](#softchef-cdk-iot-security-reviewacceptionrole)</code> | The Role allowed to push messages into this Receptor.
-**antenna** | <code>[Antenna](#softchef-cdk-iot-security-antenna)</code> | <span></span>
+**jitrTopicRule** | <code>[JitrTopicRule](#softchef-cdk-iot-security-jitrtopicrule)</code> | <span></span>
 
 
 
