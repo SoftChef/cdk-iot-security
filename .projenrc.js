@@ -34,7 +34,7 @@ const project = new AwsCdkConstructLibrary({
   ],
   tsconfig: {
     compilerOptions: {
-      target: 'ES6',
+      target: 'ES2020',
       lib: [
         'DOM',
         'ES2020',

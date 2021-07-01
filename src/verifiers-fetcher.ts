@@ -22,7 +22,9 @@ export class VerifiersFetcher extends lambda.Function {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
     });
+    // Object.fromEntries()
     this.addEnvironment('VERIFIERS', JSON.stringify(
+
       verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
     );
