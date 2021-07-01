@@ -31,41 +31,50 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const iotClient: IoTClient = new IoTClient({});
   const lambdaClient: LambdaClient = new LambdaClient({});
 
-  const { certificateId } = JSON.parse(record.body);
+  const { certificateId: deviceCertificateId } = JSON.parse(record.body);
 
-  const { certificateDescription = {} } = await iotClient.send(
+  const { certificateDescription: deviceCertificateDescription = {} } = await iotClient.send(
     new DescribeCertificateCommand({
-      certificateId: certificateId,
+      certificateId: deviceCertificateId,
     }),
   );
 
-  const { caCertificateId, certificateArn } = await Joi.object({
+  const { caCertificateId, certificateArn: deviceCertificateArn } = await Joi.object({
     caCertificateId: Joi.string().required(),
     certificateArn: Joi.string().regex(/^arn/).required(),
   }).unknown(true)
-    .validateAsync(certificateDescription).catch((error: Error) => {
+    .validateAsync(deviceCertificateDescription).catch((error: Error) => {
       throw new InformationNotFoundError(error.message);
     });
 
-  const { certificateDescription: caCertificateDescription } = await iotClient.send(
+  const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
     new DescribeCACertificateCommand({
       certificateId: caCertificateId,
     }),
   );
 
-  const { caCertificateArn } = await Joi.object({
+  const { certificateArn: caCertificateArn } = await Joi.object({
     certificateArn: Joi.string().regex(/^arn/).required(),
   }).unknown(true)
     .validateAsync(caCertificateDescription).catch((error: Error) => {
       throw new InformationNotFoundError(error.message);
     });
 
-  const { tags = [] } = await iotClient.send(
+  let { tags } = await iotClient.send(
     new ListTagsForResourceCommand({
       resourceArn: caCertificateArn,
     }),
   );
-  const { Value: verifierName } = tags.find(tag => tag.Key === 'verifierName') || { Value: '' };
+  tags = await Joi.array().items(
+    Joi.object({
+      Key: Joi.string().required(),
+      Value: Joi.string(),
+    }).optional(),
+  ).required()
+    .validateAsync(tags).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
+  const { Value: verifierName } = tags!.find(tag => tag.Key === 'verifierName') || { Value: '' };
 
   if (verifierName) {
     let {
@@ -80,7 +89,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       new InvokeCommand({
         FunctionName: decodeURIComponent(verifierName),
         Payload: Buffer.from(
-          JSON.stringify(certificateDescription),
+          JSON.stringify(deviceCertificateDescription),
         ),
       }),
     );
@@ -101,7 +110,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const { thingName } = await iotClient.send(
     new CreateThingCommand({
-      thingName: certificateId,
+      thingName: deviceCertificateId,
       attributePayload: {
         attributes: {
           version: 'v1',
@@ -125,33 +134,33 @@ export const handler = async (event: any = {}) : Promise <any> => {
           },
         ],
       }),
-      policyName: `Policy-${certificateId}`,
+      policyName: `Policy-${deviceCertificateId}`,
     }),
   );
 
   await iotClient.send(
     new AttachPolicyCommand({
       policyName: policyName,
-      target: certificateArn,
+      target: deviceCertificateArn,
     }),
   );
 
   await iotClient.send(
     new AttachThingPrincipalCommand({
-      principal: certificateArn,
+      principal: deviceCertificateArn,
       thingName: thingName,
     }),
   );
 
   await iotClient.send(
     new UpdateCertificateCommand({
-      certificateId: certificateId,
+      certificateId: deviceCertificateId,
       newStatus: 'ACTIVE',
     }),
   );
 
   const message: any = response.json({
-    certificateId: certificateId,
+    certificateId: deviceCertificateId,
     verifierName: verifierName,
   });
   return message;
