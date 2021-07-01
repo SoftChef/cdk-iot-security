@@ -143,7 +143,8 @@
       "error",
       {
         "devDependencies": [
-          "**/lambda-assets/**"
+          "**/test/**",
+          "**/build-tools/**"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

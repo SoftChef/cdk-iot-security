@@ -22,14 +22,13 @@ test('CaRegisterApi integration test', () => {
   const anotherStack = new Stack(app, 'another-stack');
   const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   new JustInTimeRegistration(stack, name, {
-    verifiers: [{
-      name: 'test_verifier',
-      lambdaFunction: new Function(verifierStack, name, {
+    verifiers: [
+      new Function(verifierStack, name, {
         code: new InlineCode('exports.handler = () => { return true; }'),
         runtime: Runtime.NODEJS_12_X,
         handler: 'index.js',
       }),
-    }],
+    ],
     vault: {
       bucket: bucket,
       prefix: 'test',
@@ -37,10 +36,33 @@ test('CaRegisterApi integration test', () => {
   });
 
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-  expect(stack).toCountResources('AWS::Lambda::Function', 7);
-  expect(stack).toCountResources('AWS::IAM::Role', 8);
+  expect(stack).toCountResources('AWS::Lambda::Function', 3);
+  expect(stack).toCountResources('AWS::IAM::Role', 4);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
-    RoleName: 'DeviceActivatorQueuePushingRoleName-' + name,
+    RoleName: 'ReviewAcceptionRoleName-' + name,
+  });
+  expect(stack).toCountResources('AWS::SQS::Queue', 1);
+});
+
+test('CaRegisterApi integration test without providing verifiers', () => {
+  process.env.BASE_PATH = __dirname;
+  process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+  const app = new App();
+  const stack = new Stack(app, 'test-stack');
+  const name = 'test-case';
+  const anotherStack = new Stack(app, 'another-stack');
+  const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+  new JustInTimeRegistration(stack, name, {
+    vault: {
+      bucket: bucket,
+      prefix: 'test',
+    },
+  });
+  expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+  expect(stack).toCountResources('AWS::Lambda::Function', 3);
+  expect(stack).toCountResources('AWS::IAM::Role', 4);
+  expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+    RoleName: 'ReviewAcceptionRoleName-' + name,
   });
   expect(stack).toCountResources('AWS::SQS::Queue', 1);
 });

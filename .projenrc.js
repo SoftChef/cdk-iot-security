@@ -1,10 +1,11 @@
-const { AwsCdkConstructLibrary } = require('projen');
+const { AwsCdkConstructLibrary, NpmAccess } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'YehTarnSu',
   authorAddress: 'yehtarnsu@softchef.com',
-  cdkVersion: '1.109.0',
+  cdkVersion: '1.110.1',
   defaultReleaseBranch: 'main',
-  name: 'cdk-iot-security',
+  name: '@softchef/cdk-iot-security',
+  npmAccess: NpmAccess.PUBLIC,
   repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
   cdkDependencies: [
     '@aws-cdk/core',
@@ -27,7 +28,6 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
-    '@softchef/cdk-restapi',
   ],
   devDeps: [
     'aws-sdk-client-mock',
@@ -40,17 +40,12 @@ const project = new AwsCdkConstructLibrary({
         'ES2020',
       ],
     },
-    include: [
-      'lambda-assets',
-    ],
   },
   eslintOptions: {
     dirs: [
       'src',
       'lambda-assets',
-      'lambda-assets/verifier-recorder/*',
     ],
-    devdirs: ['lambda-assets'],
   },
 });
 project.synth();

@@ -65,9 +65,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
       resourceArn: caCertificateArn,
     }),
   );
-  const { Value: verifierArn } = tags.find(tag => tag.Key === 'verifierArn') || { Value: '' };
+  const { Value: verifierName } = tags.find(tag => tag.Key === 'verifierName') || { Value: '' };
 
-  if (verifierArn) {
+  if (verifierName) {
     let {
       Payload: payload = new Uint8Array(
         Buffer.from(
@@ -78,14 +78,13 @@ export const handler = async (event: any = {}) : Promise <any> => {
       ),
     } = await lambdaClient.send(
       new InvokeCommand({
-        FunctionName: decodeURIComponent(verifierArn),
+        FunctionName: decodeURIComponent(verifierName),
         Payload: Buffer.from(
           JSON.stringify(certificateDescription),
         ),
       }),
     );
 
-    // payload.reduce((acc: string = '', num: number) => acc + String.fromCharCode(num));
     let payloadString: string = '';
     payload.forEach(num => {
       payloadString += String.fromCharCode(num);
@@ -99,7 +98,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
       .validateAsync(body).catch((error: Error) => {
         throw new VerificationError(error.message);
       });
-    // console.log(body, verified);
   }
 
   const { thingName } = await iotClient.send(
@@ -155,7 +153,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const message: any = response.json({
     certificateId: certificateId,
-    verifierArn: verifierArn,
+    verifierArn: verifierName,
   });
   return message;
 };

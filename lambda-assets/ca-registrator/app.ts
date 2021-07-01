@@ -1,3 +1,6 @@
+import {
+  strict as assert,
+} from 'assert';
 import * as path from 'path';
 import {
   IoTClient,
@@ -64,17 +67,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     organizationUnitName: Joi.string().allow(''),
   }).unknown(true).allow({}, null);
 
-  const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
-    Joi.object({
-      verifierName: Joi.string().invalid('').required(),
-      verifierArn: Joi.string().regex(/^arn:/).required(),
-    }),
-    Joi.object({
-      verifierName: Joi.allow('', null).only(),
-      verifierArn: '',
-    }),
-  );
-
   try {
     const validated = request.validate(joi => {
       return {
@@ -94,21 +86,23 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationName: '',
       organizationUnitName: '',
     };
-    let verifierName: string = request.input('verifierName');
 
-    const { verifierArn } = await verifierSchema.validateAsync({
-      verifierName: verifierName,
-      verifierArn: process.env[request.input('verifierName')],
-    }).catch((_error: Error) => {
-      throw new VerifierError();
-    });
+    let verifierName: string | undefined = '';
+    if (request.input('verifierName')) {
+      try {
+        const verifiers: string[] = JSON.parse(process.env.VERIFIERS!);
+        assert(verifierName = verifiers.find((listedName: string) => listedName === request.input('verifierName')));
+      } catch (error) {
+        throw new VerifierError(error.message);
+      }
+    }
 
     const { registrationCode } = await iotClient.send(
       new GetRegistrationCodeCommand({}),
     );
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
 
-    let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const CaRegistration = await iotClient.send(
         new RegisterCACertificateCommand({
@@ -117,7 +111,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
         allowAutoRegistration: true,
         registrationConfig: {},
         setAsActive: true,
-        tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
+        tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
       })
     );
 
@@ -131,12 +125,20 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId, 'ca-certificate.json'),
-        Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-          certificateId: certificateId,
-          certificateArn: certificateArn,
-        }))),
-      })
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
+        Body: Buffer.from(
+          JSON.stringify(
+            Object.assign(
+              {},
+              certificates,
+              {
+                certificateId: certificateId,
+                certificateArn: certificateArn,
+              },
+            ),
+          ),
+        ),
+      }),
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
