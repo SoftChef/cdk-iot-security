@@ -16,14 +16,14 @@ export class VerifiersFetcher extends lambda.Function {
    * @param id
    * @param verifiers The user specified verifiers
    */
-  constructor(scope: Construct, id: string, verifiers?: VerifiersFetcher.Verifier[]) {
+  constructor(scope: Construct, id: string, props?: VerifiersFetcher.Props) {
     super(scope, `VerifiersFetcher-${id}`, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-fetcher')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
     });
     this.addEnvironment('VERIFIERS', JSON.stringify(
-      verifiers?.map(verifier => verifier.functionName) || '[]',
+      props?.verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
     );
   }

@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import * as path from 'path';
 import {
   PolicyStatement,
@@ -10,27 +9,24 @@ import {
   Construct,
   Duration,
 } from '@aws-cdk/core';
-import { JustInTimeRegistration } from './just-in-time-registration';
-import { ReviewReceptor } from './review-receptor';
 import { VerifiersFetcher } from '../verifiers-fetcher';
+import { VaultProps } from '../vault';
 
 export module CaRegistrator {
   export interface Props {
     /**
-     * The AWS SQS Queue collecting the MQTT messages sending
-     * from the CA-associated Iot Rule, which sends a message
-     * every time a client register its certificate.
-     */
-    readonly reviewReceptor: ReviewReceptor;
-    /**
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    readonly vault: JustInTimeRegistration.VaultProps;
+    readonly vault: VaultProps;
     /**
      * The verifiers to verify the client certificates.
      */
     readonly verifiers?: VerifiersFetcher.Verifier[];
+    /**
+     * The mode is JITP or not.
+     */
+    readonly jitp?: boolean;
   }
 }
 export class CaRegistrator extends lambda.Function {
@@ -48,10 +44,9 @@ export class CaRegistrator extends lambda.Function {
       timeout: Duration.seconds(10),
       memorySize: 256,
     });
-    this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', props.reviewReceptor.acceptionRole.roleArn);
-    this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
+    this.addEnvironment('JITP', props.jitp? 'true' : 'false');
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',
     ),

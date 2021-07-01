@@ -121,14 +121,13 @@ export const handler = async (event: any = {}) : Promise <any> => {
       } : {},
       setAsActive: true,
       tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
-      }),
+    }),
     );
 
     const { certificateId, certificateArn } = await Joi.object({
       certificateId: Joi.string().required(),
       certificateArn: Joi.string().required(),
-    })
-      .unknown(true)
+    }).unknown(true)
       .validateAsync(CaRegistration).catch((error: Error) => {
         throw new InformationNotFoundError(error.message);
       });

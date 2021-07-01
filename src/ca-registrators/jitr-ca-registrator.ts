@@ -1,37 +1,31 @@
 import { Construct } from '@aws-cdk/core';
-import { DeviceActivator } from '../device-activator';
-import { CaRegistrationFunction } from './ca-registrator';
+import { CaRegistrator } from './ca-registrator';
+import { VerifiersFetcher } from '../verifiers-fetcher';
+import { VaultProps } from '../vault';
 
-export module JitrCaRegistrationFunction {
+export module JitrCaRegistrator {
   export interface Props {
-    /**
-     * The AWS SQS Queue collecting the MQTT messages sending
-     * from the CA-associated Iot Rule, which sends a message
-     * every time a client register its certificate.
-     */
-    readonly deviceActivatorQueue: DeviceActivator.Queue;
     /**
       * The secure AWS S3 Bucket recepting the CA registration
       * information returned from the CA Registration Function.
       */
-    readonly vault: CaRegistrationFunction.VaultProps;
+    readonly vault: VaultProps;
     /**
       * The verifiers to verify the client certificates.
       */
-    readonly verifiers?: [CaRegistrationFunction.VerifierProps];
+    readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }
 
-export class JitrCaRegistrationFunction extends CaRegistrationFunction {
+export class JitrCaRegistrator extends CaRegistrator {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: JitrCaRegistrationFunction.Props) {
+  constructor(scope: Construct, id: string, props: JitrCaRegistrator.Props) {
     super(scope, `CaRegistrationFunction-${id}`, {
-      deviceActivatorQueue: props.deviceActivatorQueue,
       verifiers: props.verifiers,
       vault: props.vault,
     });

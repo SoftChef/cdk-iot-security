@@ -9,10 +9,10 @@ import {
 import { Bucket } from '@aws-cdk/aws-s3';
 import { App, Stack } from '@aws-cdk/core';
 import {
-  CaRegistrationFunction,
+  CaRegistrator,
   DeviceActivator,
-  JitrCaRegistrationFunction,
-  JitpCaRegistrationFunction,
+  JitrCaRegistrator,
+  JitpCaRegistrator,
   JustInTimeRegistration,
   JustInTimeProvision,
 } from '../../src/index';
@@ -26,21 +26,19 @@ describe('Test index.ts importation', () => {
     const anotherStack = new Stack(app, 'another-stack');
     const bucket = new Bucket(anotherStack, 'userProvidedBucket');
     const deviceActivator = new DeviceActivator(stack, 'testDeviceActivator');
-    new CaRegistrationFunction(stack, 'testCaRegistrationFunction', {
-      deviceActivatorQueue: deviceActivator.queue,
+    new CaRegistrator(stack, 'testCaRegistrationFunction', {
       vault: {
         bucket: bucket,
         prefix: 'test',
       },
     });
-    new JitpCaRegistrationFunction(stack, 'testJitpCaRegistrationFunction', {
+    new JitpCaRegistrator(stack, 'testJitpCaRegistrationFunction', {
       vault: {
         bucket: bucket,
         prefix: 'test',
       },
     });
-    new JitrCaRegistrationFunction(stack, 'testJitrCaRegistrationFunction', {
-      deviceActivatorQueue: deviceActivator.queue,
+    new JitrCaRegistrator(stack, 'testJitrCaRegistrationFunction', {
       vault: {
         bucket: bucket,
         prefix: 'test',

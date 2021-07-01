@@ -4,7 +4,8 @@ import {
   ManagedPolicy,
 } from '@aws-cdk/aws-iam';
 import { Construct } from '@aws-cdk/core';
-import { CaRegistrationFunction } from './ca-registrator';
+import { CaRegistrator } from './ca-registrator';
+import { VaultProps } from '../vault';
 
 export module JitpCaRegistrationFunction {
   export interface Props {
@@ -12,11 +13,11 @@ export module JitpCaRegistrationFunction {
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    readonly vault: CaRegistrationFunction.VaultProps;
+    readonly vault: VaultProps;
   }
 }
 
-export class JitpCaRegistrationFunction extends CaRegistrationFunction {
+export class JitpCaRegistrator extends CaRegistrator {
   public readonly jitpRole: Role;
   /**
    * Initialize the CA Registrator Function.
@@ -25,7 +26,7 @@ export class JitpCaRegistrationFunction extends CaRegistrationFunction {
    * @param props
    */
   constructor(scope: Construct, id: string, props: JitpCaRegistrationFunction.Props) {
-    super(scope, `CaRegistrationFunction-${id}`, {
+    super(scope, `JitpCaRegistrator-${id}`, {
       jitp: true,
       vault: props.vault,
     });
