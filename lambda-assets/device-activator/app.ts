@@ -31,7 +31,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   let [record] = event.Records;
 
-  const { certificateId, verifierArn } = JSON.parse(record.body);
+  const { certificateId, verifierName } = JSON.parse(record.body);
 
   const { certificateDescription = {} } = await iotClient.send(
     new DescribeCertificateCommand({
@@ -44,10 +44,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new CertificateNotFoundError(error.message);
     });
 
-  if (verifierArn) {
+  if (verifierName) {
     const { Payload: payload = [] } = await lambdaClient.send(
       new InvokeCommand({
-        FunctionName: decodeURIComponent(verifierArn),
+        FunctionName: decodeURIComponent(verifierName),
         Payload: Buffer.from(
           JSON.stringify(certificateDescription),
         ),
@@ -120,7 +120,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const message: any = response.json({
     certificateId: certificateId,
-    verifierArn: verifierArn,
+    verifierArn: verifierName,
   });
   return message;
 };

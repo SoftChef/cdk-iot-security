@@ -5,9 +5,13 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { Construct, Duration } from '@aws-cdk/core';
+import {
+  Construct,
+  Duration,
+} from '@aws-cdk/core';
 import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
+import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module CaRegistrator {
   export interface Props {
@@ -25,7 +29,7 @@ export module CaRegistrator {
     /**
      * The verifiers to verify the client certificates.
      */
-    readonly verifiers?: [JustInTimeRegistration.VerifierProps];
+    readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }
 export class CaRegistrator extends lambda.Function {
@@ -47,9 +51,10 @@ export class CaRegistrator extends lambda.Function {
     this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
-    props.verifiers?.forEach(verifier => {
-      this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
-    });
+    this.addEnvironment('VERIFIERS', JSON.stringify(
+      props.verifiers?.map(verifier => verifier.functionName) || '[]',
+    ),
+    );
     this.role!.attachInlinePolicy(
       new Policy(this, `CaRegistrator-${id}`, {
         statements: [

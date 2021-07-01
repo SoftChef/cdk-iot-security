@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {
   IoTClient,
   GetRegistrationCodeCommand,
@@ -63,17 +64,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     organizationUnitName: Joi.string().allow(''),
   }).unknown(true).allow({}, null);
 
-  const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
-    Joi.object({
-      verifierName: Joi.string().invalid('').required(),
-      verifierArn: Joi.string().regex(/^arn:/).required(),
-    }),
-    Joi.object({
-      verifierName: Joi.allow('', null).only(),
-      verifierArn: '',
-    }),
-  );
-
   try {
     const validated = request.validate(joi => {
       return {
@@ -93,21 +83,20 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationName: '',
       organizationUnitName: '',
     };
-    let verifierName: string = request.input('verifierName');
 
-    const { verifierArn } = await verifierSchema.validateAsync({
-      verifierName: verifierName,
-      verifierArn: process.env[request.input('verifierName')],
-    }).catch((_error: Error) => {
+    const verifiers: {[key: string]: string} = JSON.parse(process.env.VERIFIERS!)
+      .reduce((accumulator: {[key:string]: string}, current: string) => (accumulator[current]=current, accumulator), {});
+    let verifierName: string | undefined = '';
+    if (request.input('verifierName') && !(verifierName = verifiers[request.input('verifierName')])) {
       throw new VerifierError();
-    });
+    }
 
     const { registrationCode } = await iotClient.send(
       new GetRegistrationCodeCommand({}),
     );
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
 
-    let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const {
       certificateId,
@@ -134,7 +123,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
               },
             },
           ],
-          sql: `SELECT *, "${verifierArn}" as verifierArn FROM '$aws/events/certificates/registered/${certificateId}'`,
+          sql: `SELECT *, "${verifierName}" as verifierName FROM '$aws/events/certificates/registered/${certificateId}'`,
         },
       }),
     );
@@ -142,11 +131,19 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: `${bucketPrefix}/${certificateId}/ca-certificate.json`,
-        Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-          certificateId: certificateId,
-          certificateArn: certificateArn,
-        }))),
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
+        Body: Buffer.from(
+          JSON.stringify(
+            Object.assign(
+              {},
+              certificates,
+              {
+                certificateId: certificateId,
+                certificateArn: certificateArn,
+              },
+            ),
+          ),
+        ),
       }),
     );
     return response.json({ certificateId: certificateId });

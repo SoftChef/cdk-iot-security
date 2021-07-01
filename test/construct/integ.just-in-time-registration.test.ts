@@ -22,14 +22,13 @@ test('CaRegisterApi integration test', () => {
   const anotherStack = new Stack(app, 'another-stack');
   const bucket = new Bucket(anotherStack, 'userProvidedBucket');
   new JustInTimeRegistration(stack, name, {
-    verifiers: [{
-      name: 'test_verifier',
-      lambdaFunction: new Function(verifierStack, name, {
+    verifiers: [
+      new Function(verifierStack, name, {
         code: new InlineCode('exports.handler = () => { return true; }'),
         runtime: Runtime.NODEJS_12_X,
         handler: 'index.js',
       }),
-    }],
+    ],
     vault: {
       bucket: bucket,
       prefix: 'test',
@@ -37,8 +36,8 @@ test('CaRegisterApi integration test', () => {
   });
 
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-  expect(stack).toCountResources('AWS::Lambda::Function', 2);
-  expect(stack).toCountResources('AWS::IAM::Role', 3);
+  expect(stack).toCountResources('AWS::Lambda::Function', 3);
+  expect(stack).toCountResources('AWS::IAM::Role', 4);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
     RoleName: 'ReviewAcceptionRoleName-' + name,
   });
@@ -60,8 +59,8 @@ test('CaRegisterApi integration test without providing verifiers', () => {
     },
   });
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-  expect(stack).toCountResources('AWS::Lambda::Function', 2);
-  expect(stack).toCountResources('AWS::IAM::Role', 3);
+  expect(stack).toCountResources('AWS::Lambda::Function', 3);
+  expect(stack).toCountResources('AWS::IAM::Role', 4);
   expect(stack).toHaveResourceLike('AWS::IAM::Role', {
     RoleName: 'ReviewAcceptionRoleName-' + name,
   });

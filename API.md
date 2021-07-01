@@ -9,6 +9,7 @@ Name|Description
 [JustInTimeRegistration](#softchef-cdk-iot-security-justintimeregistration)|*No description*
 [ReviewAcceptionRole](#softchef-cdk-iot-security-reviewacceptionrole)|*No description*
 [ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)|*No description*
+[VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)|*No description*
 
 
 **Structs**
@@ -18,7 +19,7 @@ Name|Description
 [CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)|*No description*
 [JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)|*No description*
 [JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)|*No description*
-[JustInTimeRegistration.VerifierProps](#softchef-cdk-iot-security-justintimeregistration-verifierprops)|*No description*
+[VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)|*No description*
 
 
 
@@ -41,12 +42,9 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)</code>)  *No description*
-  * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending
- from the CA-associated Iot Rule, which sends a message
- every time a client register its certificate. 
-  * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration
- information returned from the CA Registration Function. 
-  * **verifiers** (<code>json</code>)  The verifiers to verify the client certificates. __*Optional*__
+  * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
+  * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
 
@@ -104,7 +102,7 @@ new JustInTimeRegistration(scope: Construct, id: string, props: Props)
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)</code>)  *No description*
   * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  *No description* 
-  * **verifiers** (<code>json</code>)  *No description* __*Optional*__
+  * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  *No description* __*Optional*__
 
 
 
@@ -117,6 +115,7 @@ Name | Type | Description
 **deviceActivator** | <code>[DeviceActivator](#softchef-cdk-iot-security-deviceactivator)</code> | <span></span>
 **reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | <span></span>
 **vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | <span></span>
+**verifiersFetcher** | <code>[VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)</code> | <span></span>
 
 
 
@@ -172,6 +171,29 @@ Name | Type | Description
 
 
 
+## class VerifiersFetcher  <a id="softchef-cdk-iot-security-verifiersfetcher"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [Function](#aws-cdk-aws-lambda-function)
+
+### Initializer
+
+
+The Lambda Function returning all the verifier name and ARNs.
+
+```ts
+new VerifiersFetcher(scope: Construct, id: string, verifiers?: Array<Function>)
+```
+
+* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+* **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The user specified verifiers.
+
+
+
+
 ## struct Props  <a id="softchef-cdk-iot-security-caregistrator-props"></a>
 
 
@@ -181,12 +203,9 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending
- from the CA-associated Iot Rule, which sends a message
- every time a client register its certificate.
-**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration
- information returned from the CA Registration Function.
-**verifiers**? | <code>json</code> | The verifiers to verify the client certificates.<br/>__*Optional*__
+**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
+**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
 
@@ -200,7 +219,7 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | <span></span>
-**verifiers**? | <code>json</code> | __*Optional*__
+**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
 
 
 
@@ -218,7 +237,7 @@ Name | Type | Description
 
 
 
-## struct VerifierProps  <a id="softchef-cdk-iot-security-justintimeregistration-verifierprops"></a>
+## struct Props  <a id="softchef-cdk-iot-security-verifiersfetcher-props"></a>
 
 
 
@@ -227,8 +246,7 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**lambdaFunction** | <code>[Function](#aws-cdk-aws-lambda-function)</code> | The verifier Lambda Function.
-**name** | <code>string</code> | The verifier name.
+**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
 
 
 

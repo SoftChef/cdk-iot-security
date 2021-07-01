@@ -26,8 +26,12 @@ export class DeviceActivator extends lambda.Function {
           new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
-              'iot:UpdateCertificate',
               'iot:DescribeCertificate',
+              'iot:CreateThing',
+              'iot:CreatePolicy',
+              'iot:AttachPolicy',
+              'iot:AttachThingPrincipal',
+              'iot:UpdateCertificate',
               'lambda:InvokeFunction',
               'lambda:InvokeAsync',
             ],
