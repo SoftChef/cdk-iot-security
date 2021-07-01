@@ -7,7 +7,7 @@ import { JustInTimeRegistration } from '..';
 /**
  * Demonstration of listing the verifiers to make a check
  * of the registered device.
- * 
+ *
  * The device activator will ask the CA-specified verifier
  * if the device is suspicious or not, and make the decision
  * on the device activation.

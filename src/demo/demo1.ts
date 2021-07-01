@@ -6,7 +6,7 @@ import { JustInTimeRegistration } from '..';
 /**
  * Demonstration of initializing the JustInTimeRegistration
  * construct with only providing the AWS S3 Bucket as the Vault.
- * 
+ *
  * You can integrate the CA Registrator, handling the CA registration,
  * and the Verifier Fetcher, providing the verifier information,
  * to your own API.

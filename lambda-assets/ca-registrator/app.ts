@@ -113,9 +113,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
       certificateId: Joi.string().required(),
       certificateArn: Joi.string().required(),
     }).unknown(true)
-    .validateAsync(CaRegistration).catch((error: Error) => {
-      throw new InformationNotFoundError(error.message);
-    });
+      .validateAsync(CaRegistration).catch((error: Error) => {
+        throw new InformationNotFoundError(error.message);
+      });
 
     await s3Client.send(
       new PutObjectCommand({
