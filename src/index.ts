@@ -4,5 +4,6 @@ export {
   JitpCaRegistrationFunction,
   JitrCaRegistrationFunction,
 } from './ca-registrators/index';
-export { JustInTimeRegistration } from './just-in-time-registration';
 export { JustInTimeProvision } from './just-in-time-provision';
+export { VerifiersFetcher } from './verifiers-fetcher';
+export { ReviewReceptor } from './review-receptor';

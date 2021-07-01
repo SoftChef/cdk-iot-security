@@ -6,96 +6,71 @@ import {
   Policy,
 } from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { Construct, Duration } from '@aws-cdk/core';
-import { DeviceActivator } from '../device-activator';
+import {
+  Construct,
+  Duration,
+} from '@aws-cdk/core';
+import { JustInTimeRegistration } from './just-in-time-registration';
+import { ReviewReceptor } from './review-receptor';
+import { VerifiersFetcher } from '../verifiers-fetcher';
 
-export module CaRegistrationFunction {
+export module CaRegistrator {
   export interface Props {
     /**
      * The AWS SQS Queue collecting the MQTT messages sending
      * from the CA-associated Iot Rule, which sends a message
      * every time a client register its certificate.
      */
-    readonly deviceActivatorQueue?: DeviceActivator.Queue;
+    readonly reviewReceptor: ReviewReceptor;
     /**
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    readonly vault: VaultProps;
+    readonly vault: JustInTimeRegistration.VaultProps;
     /**
      * The verifiers to verify the client certificates.
      */
-    readonly verifiers?: [VerifierProps];
-    readonly jitp?: boolean;
-  }
-
-  export interface VaultProps {
-    /**
-     * The S3 bucket
-     */
-    readonly bucket: Bucket;
-    /**
-     * The specified prefix to save the file.
-     */
-    readonly prefix: string;
-  }
-
-  export interface VerifierProps {
-    /**
-     * The verifier name.
-     */
-    readonly name: string;
-    /**
-     * The verifier Lambda Function
-     */
-    readonly lambdaFunction: lambda.Function;
+    readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }
-
-export class CaRegistrationFunction extends lambda.Function {
+export class CaRegistrator extends lambda.Function {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
    * @param id
    * @param props
    */
-  constructor(scope: Construct, id: string, props: CaRegistrationFunction.Props) {
-    super(scope, `CaRegistrationFunction-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda-assets/ca-registrator')),
+  constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
+    super(scope, `CaRegistrator-${id}`, {
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
     });
-    const jitp: boolean = props.jitp || false;
-    const vault: CaRegistrationFunction.VaultProps = props.vault;
-    this.addEnvironment('JITP', jitp? 'true' : 'false');
-    this.addEnvironment('BUCKET_NAME', vault.bucket.bucketName);
-    this.addEnvironment('BUCKET_PREFIX', vault.prefix);
-    if (!jitp) {
-      const deviceActivatorQueue: DeviceActivator.Queue | undefined = props.deviceActivatorQueue;
-      const verifiers: CaRegistrationFunction.VerifierProps[] = props.verifiers || [];
-      assert(deviceActivatorQueue instanceof DeviceActivator.Queue);
-      this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', deviceActivatorQueue.pushingRole.roleArn);
-      this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', deviceActivatorQueue.queueUrl);
-      verifiers?.forEach(verifier => {
-        this.addEnvironment(verifier.name, verifier.lambdaFunction.functionArn);
-      });
-    }
-    this.role?.attachInlinePolicy(new Policy(this, `CaRegistrationFunction-${id}`, {
-      statements: [new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          'iam:PassRole',
-          'iot:RegisterCACertificate',
-          'iot:GetRegistrationCode',
-          'iot:CreateTopicRule',
-          'iot:TagResource',
+    this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', props.reviewReceptor.acceptionRole.roleArn);
+    this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
+    this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
+    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
+    this.addEnvironment('VERIFIERS', JSON.stringify(
+      props.verifiers?.map(verifier => verifier.functionName) || '[]',
+    ),
+    );
+    this.role!.attachInlinePolicy(
+      new Policy(this, `CaRegistrator-${id}`, {
+        statements: [
+          new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+              'iam:PassRole',
+              'iot:RegisterCACertificate',
+              'iot:GetRegistrationCode',
+              'iot:CreateTopicRule',
+            ],
+            resources: ['*'],
+          }),
         ],
-        resources: ['*'],
-      })],
-    }));
-    props.vault.bucket.grantWrite(this);
+      }),
+    );
   }
 }

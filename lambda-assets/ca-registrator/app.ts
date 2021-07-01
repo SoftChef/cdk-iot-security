@@ -1,3 +1,6 @@
+import {
+  strict as assert,
+} from 'assert';
 import * as path from 'path';
 import {
   IoTClient,
@@ -64,40 +67,49 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
     commonName: Joi.string().allow(''),
+    countryName: Joi.string().allow(''),
     stateName: Joi.string().allow(''),
     localityName: Joi.string().allow(''),
     organizationName: Joi.string().allow(''),
     organizationUnitName: Joi.string().allow(''),
-  }).unknown(true);
-
-  const verifierSchema: Joi.AlternativesSchema = Joi.alternatives(
-    Joi.object({
-      verifierName: Joi.string().invalid('').required(),
-      verifierArn: Joi.string().regex(/^arn:/).required(),
-    }),
-    Joi.object({
-      verifierName: Joi.allow('', null).only(),
-      verifierArn: '',
-    }),
-  );
+  }).unknown(true).allow({}, null);
 
   try {
-    let csrSubjects: CertificateGenerator.CsrSubjects = await csrSubjectsSchema
-      .validateAsync(request.input('csrSubjects', {})).catch((error: Error) => {
-        throw new InputError(error.message);
-      });
-
-    const { verifierArn } = await verifierSchema.validateAsync({
-      verifierName: request.input('verifierName'),
-      verifierArn: process.env[request.input('verifierName')] || '',
-    }).catch((error: Error) => {
-      throw new VerifierError(error.message);
+    const validated = request.validate(joi => {
+      return {
+        csrSubjects: csrSubjectsSchema,
+        verifierName: joi.string().allow('', null),
+      };
     });
+    if (validated.error) {
+      throw new InputError(JSON.stringify(validated.details));
+    }
 
-    const { registrationCode } = await iotClient.send(new GetRegistrationCodeCommand({}));
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
+      commonName: '',
+      countryName: '',
+      stateName: '',
+      localityName: '',
+      organizationName: '',
+      organizationUnitName: '',
+    };
+
+    let verifierName: string | undefined = '';
+    if (request.input('verifierName')) {
+      try {
+        const verifiers: string[] = JSON.parse(process.env.VERIFIERS!);
+        assert(verifierName = verifiers.find((listedName: string) => listedName === request.input('verifierName')));
+      } catch (error) {
+        throw new VerifierError(error.message);
+      }
+    }
+
+    const { registrationCode } = await iotClient.send(
+      new GetRegistrationCodeCommand({}),
+    );
     csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
 
-    let certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
     const CaRegistration = await iotClient.send(new RegisterCACertificateCommand({
       caCertificate: certificates.ca.certificate,
@@ -108,8 +120,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
         roleArn: process.env.JITP_ROLE_ARN,
       } : {},
       setAsActive: true,
-      tags: verifierArn? [{ Key: 'verifierArn', Value: verifierArn }] : [],
-    }));
+      tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
+      }),
+    );
 
     const { certificateId, certificateArn } = await Joi.object({
       certificateId: Joi.string().required(),
@@ -120,17 +133,26 @@ export const handler = async (event: any = {}) : Promise <any> => {
         throw new InformationNotFoundError(error.message);
       });
 
-    await s3Client.send(new PutObjectCommand({
-      Bucket: bucketName,
-      Key: path.join(bucketPrefix, certificateId, 'ca-certificate.json'),
-      Body: Buffer.from(JSON.stringify(Object.assign({}, certificates, {
-        certificateId: certificateId,
-        certificateArn: certificateArn,
-      }))),
-    }));
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
+        Body: Buffer.from(
+          JSON.stringify(
+            Object.assign(
+              {},
+              certificates,
+              {
+                certificateId: certificateId,
+                certificateArn: certificateArn,
+              },
+            ),
+          ),
+        ),
+      }),
+    );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    console.log(error);
     return response.error(error, error.code);
   }
 };

@@ -1,20 +1,40 @@
+import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
+import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct } from '@aws-cdk/core';
 import {
   CaRegistrationFunction,
   JitrCaRegistrationFunction,
 } from './ca-registrators/index';
+import { CaRegistrator } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
+import { ReviewReceptor } from './review-receptor';
+import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module JustInTimeRegistration {
   export interface Props {
-    readonly vault: CaRegistrationFunction.VaultProps;
-    readonly verifiers?: [CaRegistrationFunction.VerifierProps];
+    readonly vault: VaultProps;
+    readonly verifiers?: VerifiersFetcher.Verifier[];
+  }
+  export interface VaultProps {
+    /**
+     * The S3 bucket
+     */
+    readonly bucket: Bucket;
+    /**
+     * The specified prefix to save the file.
+     */
+    readonly prefix: string;
   }
 }
 
 export class JustInTimeRegistration extends Construct {
   public activator: DeviceActivator;
   public jitrCaRegistrationFunction: JitrCaRegistrationFunction;
+  public readonly deviceActivator: DeviceActivator;
+  public readonly caRegistrator: CaRegistrator;
+  public readonly reviewReceptor: ReviewReceptor;
+  public readonly verifiersFetcher: VerifiersFetcher;
+  public readonly vault: JustInTimeRegistration.VaultProps;
 
   /**
    * Initialize a Just-In-Time Registration API.
@@ -34,12 +54,23 @@ export class JustInTimeRegistration extends Construct {
    * @param props
    */
   constructor(scope: Construct, id: string, props: JustInTimeRegistration.Props) {
-    super(scope, `CaRegisterApi-${id}`);
+    super(scope, `JustInTimeRegistration-${id}`);
     this.activator = new DeviceActivator(this, id);
     this.jitrCaRegistrationFunction = new JitrCaRegistrationFunction(this, id, {
       deviceActivatorQueue: this.activator.queue,
+    this.verifiersFetcher = new VerifiersFetcher(this, id, props.verifiers);
+    this.deviceActivator = new DeviceActivator(this, id);
+    this.reviewReceptor = new ReviewReceptor(this, id);
+    this.reviewReceptor.grantConsumeMessages(this.deviceActivator);
+    this.deviceActivator.addEventSource(
+      new SqsEventSource(this.reviewReceptor, { batchSize: 1 }),
+    );
+    this.caRegistrator = new CaRegistrator(this, id, {
+      reviewReceptor: this.reviewReceptor,
       vault: props.vault,
       verifiers: props.verifiers,
     });
+    this.vault = props.vault;
+    this.vault.bucket.grantWrite(this.caRegistrator);
   }
 }

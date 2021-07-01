@@ -48,8 +48,11 @@ new CaRegistrationFunction(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrationFunction.Props](#cdk-iot-security-caregistrationfunction-props)</code>)  *No description*
-  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **deviceActivatorQueue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. __*Optional*__
+  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration
+ information returned from the CA Registration Function. 
+  * **deviceActivatorQueue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  The AWS SQS Queue collecting the MQTT messages sending
+ from the CA-associated Iot Rule, which sends a message
+ every time a client register its certificate. __*Optional*__
   * **jitp** (<code>boolean</code>)  *No description* __*Optional*__
   * **verifiers** (<code>json</code>)  The verifiers to verify the client certificates. __*Optional*__
 
@@ -194,7 +197,8 @@ new JitpCaRegistrationFunction(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JitpCaRegistrationFunction.Props](#cdk-iot-security-jitpcaregistrationfunction-props)</code>)  *No description*
-  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration
+ information returned from the CA Registration Function. 
 
 
 
@@ -226,8 +230,11 @@ new JitrCaRegistrationFunction(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JitrCaRegistrationFunction.Props](#cdk-iot-security-jitrcaregistrationfunction-props)</code>)  *No description*
-  * **deviceActivatorQueue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
-  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **deviceActivatorQueue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  The AWS SQS Queue collecting the MQTT messages sending
+ from the CA-associated Iot Rule, which sends a message
+ every time a client register its certificate. 
+  * **vault** (<code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration
+ information returned from the CA Registration Function. 
   * **verifiers** (<code>json</code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
@@ -321,8 +328,11 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**deviceActivatorQueue**? | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.<br/>__*Optional*__
+**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration
+ information returned from the CA Registration Function.
+**deviceActivatorQueue**? | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the MQTT messages sending
+ from the CA-associated Iot Rule, which sends a message
+ every time a client register its certificate.<br/>__*Optional*__
 **jitp**? | <code>boolean</code> | __*Optional*__
 **verifiers**? | <code>json</code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
@@ -365,7 +375,8 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration
+ information returned from the CA Registration Function.
 
 
 
@@ -378,8 +389,11 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**deviceActivatorQueue** | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
-**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**deviceActivatorQueue** | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the MQTT messages sending
+ from the CA-associated Iot Rule, which sends a message
+ every time a client register its certificate.
+**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration
+ information returned from the CA Registration Function.
 **verifiers**? | <code>json</code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
