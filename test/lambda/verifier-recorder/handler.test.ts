@@ -1,6 +1,6 @@
 import {
   handler,
-} from '../../../lambda-assets/verifiers-fetcher/app';
+} from '../../../lambda-assets/verifiers/fetch-verifiers/app';
 
 const verifiers = [
   {

@@ -1,6 +1,3 @@
-import {
-  strict as assert,
-} from 'assert';
 import * as path from 'path';
 import {
   IoTClient,
@@ -87,14 +84,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationUnitName: '',
     };
 
+    const verifiers: {[key: string]: string} = JSON.parse(process.env.VERIFIERS!)
+      .reduce((accumulator: {[key:string]: string}, current: string) => (accumulator[current]=current, accumulator), {});
     let verifierName: string | undefined = '';
-    if (request.input('verifierName')) {
-      try {
-        const verifiers: string[] = JSON.parse(process.env.VERIFIERS!);
-        assert(verifierName = verifiers.find((listedName: string) => listedName === request.input('verifierName')));
-      } catch (error) {
-        throw new VerifierError(error.message);
-      }
+    if (request.input('verifierName') && !(verifierName = verifiers[request.input('verifierName')])) {
+      throw new VerifierError();
     }
 
     const { registrationCode } = await iotClient.send(
