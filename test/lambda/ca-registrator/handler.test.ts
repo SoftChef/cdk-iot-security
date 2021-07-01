@@ -106,11 +106,11 @@ describe('Fail on the AWS SDK error returns', () => {
     expect(response.statusCode).toBe(500);
   });
 
-  test('Fail to create Rule', async () => {
-    iotMock.on(CreateTopicRuleCommand).rejects(new Error());
-    var response = await handler(event);
-    expect(response.statusCode).toBe(500);
-  });
+  // test('Fail to create Rule', async () => {
+  //   iotMock.on(CreateTopicRuleCommand).rejects(new Error());
+  //   var response = await handler(event);
+  //   expect(response.statusCode).toBe(500);
+  // });
 
   test('Fail to register CA', async () => {
     iotMock.on(RegisterCACertificateCommand).rejects(new Error());

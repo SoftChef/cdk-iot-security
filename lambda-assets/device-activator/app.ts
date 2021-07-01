@@ -91,7 +91,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     });
     const { body } = JSON.parse(payloadString);
 
-
     await Joi.object({
       verified: Joi.boolean().allow(true).only().required(),
     }).required().unknown(true)
@@ -153,7 +152,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const message: any = response.json({
     certificateId: certificateId,
-    verifierArn: verifierName,
+    verifierName: verifierName,
   });
   return message;
 };

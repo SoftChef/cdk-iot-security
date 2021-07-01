@@ -56,7 +56,7 @@ beforeEach(() => {
     },
   });
   iotMock.on(ListTagsForResourceCommand).resolves({
-    tags: [{ Key: 'verifierArn', Value: 'test_verifier_arn' }],
+    tags: [{ Key: 'verifierName', Value: 'test_verifier' }],
   });
   lambdaMock.on(InvokeCommand).resolves({
     StatusCode: 200,
@@ -147,7 +147,7 @@ describe('Fail on the AWS SDK error returns', () => {
 
   test('SDK found no such certificate exists', async () => {
     iotMock.on(DescribeCertificateCommand).resolves({});
-    await expect(handler({ Records: [record] })).rejects.toThrowError(CertificateNotFoundError);
+    await expect(handler({ Records: [record] })).rejects.toThrowError(InformationNotFoundError);
   });
 });
 
