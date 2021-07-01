@@ -3,7 +3,6 @@ import {
   IoTClient,
   GetRegistrationCodeCommand,
   RegisterCACertificateCommand,
-  CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -18,10 +17,13 @@ import { CertificateGenerator } from './certificate-generator';
 import {
   VerifierError,
   InputError,
+  InformationNotFoundError,
 } from './errors';
 
 /**
- * event example
+ * event examples
+ *
+ * event = {}
  *
  * event = {
  *  "csrSubjects": {
@@ -47,9 +49,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const response: Response = new Response();
 
   const bucketName: string | undefined = process.env.BUCKET_NAME;
-  const bucketPrefix: string | undefined = process.env.BUCKET_PREFIX;
-  const queueUrl: string | undefined = process.env.DEIVCE_ACTIVATOR_QUEUE_URL;
-  const deviceActivatorRoleArn: string | undefined = process.env.DEIVCE_ACTIVATOR_ROLE_ARN;
+  const bucketPrefix: string = process.env.BUCKET_PREFIX || '';
   const region: string | undefined = process.env.AWS_REGION;
 
   const iotClient: IoTClient = new IoTClient({ region: region });
@@ -98,35 +98,23 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
-    const {
-      certificateId,
-      certificateArn,
-    } = await iotClient.send(
+    const CaRegistration = await iotClient.send(
       new RegisterCACertificateCommand({
         caCertificate: certificates.ca.certificate,
         verificationCertificate: certificates.verification.certificate,
         allowAutoRegistration: true,
         registrationConfig: {},
         setAsActive: true,
+        tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
       }),
     );
 
-    await iotClient.send(
-      new CreateTopicRuleCommand({
-        ruleName: `ActivationRule_${certificateId}`,
-        topicRulePayload: {
-          actions: [
-            {
-              sqs: {
-                queueUrl: queueUrl,
-                roleArn: deviceActivatorRoleArn,
-              },
-            },
-          ],
-          sql: `SELECT *, "${verifierName}" as verifierName FROM '$aws/events/certificates/registered/${certificateId}'`,
-        },
-      }),
-    );
+    const { certificateId, certificateArn } = await Joi.object({
+      certificateId: Joi.string().required(),
+      certificateArn: Joi.string().required(),
+    }).validateAsync(CaRegistration).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
 
     await s3Client.send(
       new PutObjectCommand({

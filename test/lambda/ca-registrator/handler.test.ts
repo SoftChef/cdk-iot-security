@@ -2,7 +2,6 @@ import {
   IoTClient,
   GetRegistrationCodeCommand,
   RegisterCACertificateCommand,
-  CreateTopicRuleCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -16,6 +15,7 @@ import { handler } from '../../../lambda-assets/ca-registrator/app';
 import {
   VerifierError,
   InputError,
+  InformationNotFoundError,
 } from '../../../lambda-assets/ca-registrator/errors';
 
 const event = {
@@ -55,7 +55,6 @@ beforeEach(async () => {
     certificateId: 'ca_certificate_id',
     certificateArn: 'ca_certificate_arn',
   });
-  iotMock.on(CreateTopicRuleCommand).resolves({});
   s3Mock.on(PutObjectCommand).resolves({});
 });
 
@@ -107,11 +106,11 @@ describe('Fail on the AWS SDK error returns', () => {
     expect(response.statusCode).toBe(500);
   });
 
-  test('Fail to create Rule', async () => {
-    iotMock.on(CreateTopicRuleCommand).rejects(new Error());
-    var response = await handler(event);
-    expect(response.statusCode).toBe(500);
-  });
+  // test('Fail to create Rule', async () => {
+  //   iotMock.on(CreateTopicRuleCommand).rejects(new Error());
+  //   var response = await handler(event);
+  //   expect(response.statusCode).toBe(500);
+  // });
 
   test('Fail to register CA', async () => {
     iotMock.on(RegisterCACertificateCommand).rejects(new Error());
@@ -154,7 +153,19 @@ describe('Fail on the provided wrong input data', () => {
   });
 });
 
+test('No bucket prefix is provided', async () => {
+  var response = await handler(event);
+  expect(response.statusCode).toBe(200);
+});
+
 test('Get Error Codes successfully', () => {
   expect(new VerifierError().code).toBe(VerifierError.code);
   expect(new InputError().code).toBe(InputError.code);
+  expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
+});
+
+test('SDK return no certificationId and certificationArn when register CA', async () => {
+  iotMock.on(RegisterCACertificateCommand).resolves({});
+  var response = await handler(event);
+  expect(response.statusCode).toBe(InformationNotFoundError.code);
 });
