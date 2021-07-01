@@ -85,7 +85,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     };
 
     const verifiers: {[key: string]: string} = JSON.parse(process.env.VERIFIERS!)
-      .reduce((acc: {[key:string]: string}, cur: string) => (acc[cur]=cur, acc), {});
+      .reduce((accumulator: {[key:string]: string}, current: string) => (accumulator[current]=current, accumulator), {});
     let verifierName: string | undefined = '';
     if (request.input('verifierName') && !(verifierName = verifiers[request.input('verifierName')])) {
       throw new VerifierError();
