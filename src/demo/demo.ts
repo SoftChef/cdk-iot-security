@@ -1,5 +1,5 @@
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
+import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
 import { JustInTimeRegistration } from '../';
@@ -21,7 +21,7 @@ const jitr1 = new JustInTimeRegistration(stack1, id1, {
   },
 });
 const api1 = new apigateway.RestApi(anotherStack, 'JitrDemo1', {
-    restApiName: 'Jitr Demo 1'
+  restApiName: 'Jitr Demo 1',
 });
 api1.root.addResource('caRegister').addMethod('GET', new apigateway.LambdaIntegration(jitr1.caRegistrator));
 api1.root.addResource('deviceActivate').addMethod('GET', new apigateway.LambdaIntegration(jitr1.deviceActivator));
@@ -36,7 +36,7 @@ const jitr2 = new JustInTimeRegistration(stack2, id2, {
   },
 });
 const api2 = new apigateway.RestApi(anotherStack, 'JitrDemo2', {
-    restApiName: 'Jitr Demo 2'
+  restApiName: 'Jitr Demo 2',
 });
 api2.root.addResource('caRegister').addMethod('GET', new apigateway.LambdaIntegration(jitr2.caRegistrator));
 api2.root.addResource('deviceActivate').addMethod('GET', new apigateway.LambdaIntegration(jitr2.deviceActivator));
@@ -58,7 +58,7 @@ const jitr3 = new JustInTimeRegistration(stack3, id3, {
   ],
 });
 const api3 = new apigateway.RestApi(anotherStack, 'JitrDemo3', {
-    restApiName: 'Jitr Demo 3'
+  restApiName: 'Jitr Demo 3',
 });
 api3.root.addResource('caRegister').addMethod('GET', new apigateway.LambdaIntegration(jitr3.caRegistrator));
 api3.root.addResource('deviceActivate').addMethod('GET', new apigateway.LambdaIntegration(jitr3.deviceActivator));
