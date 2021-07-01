@@ -4,14 +4,13 @@
 
 Name|Description
 ----|-----------
-[CaRegistrationFunction](#cdk-iot-security-caregistrationfunction)|*No description*
-[DeviceActivator](#cdk-iot-security-deviceactivator)|*No description*
-[DeviceActivator.Function](#cdk-iot-security-deviceactivator-function)|*No description*
-[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)|*No description*
-[DeviceActivator.Queue.Antenna](#cdk-iot-security-deviceactivator-queue-antenna)|*No description*
-[DeviceActivator.Queue.PushingRole](#cdk-iot-security-deviceactivator-queue-pushingrole)|The Role allowing pushing messages into a specific Device Activator Queue.
-[JustInTimeRegistration](#cdk-iot-security-justintimeregistration)|*No description*
-[VerifierRecorder](#cdk-iot-security-verifierrecorder)|*No description*
+[Antenna](#softchef-cdk-iot-security-antenna)|*No description*
+[CaRegistrator](#softchef-cdk-iot-security-caregistrator)|*No description*
+[DeviceActivator](#softchef-cdk-iot-security-deviceactivator)|*No description*
+[JustInTimeRegistration](#softchef-cdk-iot-security-justintimeregistration)|*No description*
+[ReviewAcceptionRole](#softchef-cdk-iot-security-reviewacceptionrole)|*No description*
+[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)|*No description*
+[VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)|*No description*
 
 
 **Structs**
@@ -22,6 +21,28 @@ Name|Description
 [JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)|*No description*
 [JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)|*No description*
 [VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)|*No description*
+
+
+
+## class Antenna  <a id="softchef-cdk-iot-security-antenna"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IInspectable](#aws-cdk-core-iinspectable)
+__Extends__: [CfnTopicRule](#aws-cdk-aws-iot-cfntopicrule)
+
+### Initializer
+
+
+
+
+```ts
+new Antenna(queue: ReviewReceptor, id: string)
+```
+
+* **queue** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+
 
 
 
@@ -44,55 +65,14 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)</code>)  *No description*
-  * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending
- from the CA-associated Iot Rule, which sends a message
- every time a client register its certificate. 
-  * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration
- information returned from the CA Registration Function. 
+  * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
+  * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
   * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
 
 
-## class DeviceActivator  <a id="cdk-iot-security-deviceactivator"></a>
-
-
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable)
-__Extends__: [Construct](#aws-cdk-core-construct)
-
-### Initializer
-
-
-Initialize the Device Activator.
-
-The Device Activator is mainly consist of three parts,
-a Lambda Function providing the Activation functionality,
-a Receptor which is a SQS Queue receiving the messages
-from the CA-associated Iot Rules created by the Registrator,
-and a Role allowing pushing to the Receptor for granting the
-Iot Rule through the Registrator.
-
-```ts
-new DeviceActivator(scope: Construct, id: string)
-```
-
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-
-
-
-### Properties
-
-
-Name | Type | Description 
------|------|-------------
-**function** | <code>[DeviceActivator.Function](#cdk-iot-security-deviceactivator-function)</code> | The Device Activation Function.
-**queue** | <code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code> | The AWS SQS Queue collecting the messages received from the IoT rules.
-
-
-
-## class Function  <a id="cdk-iot-security-deviceactivator-function"></a>
+## class DeviceActivator  <a id="softchef-cdk-iot-security-deviceactivator"></a>
 
 
 
@@ -154,36 +134,15 @@ new JustInTimeRegistration(scope: Construct, id: string, props: Props)
 
 Name | Type | Description 
 -----|------|-------------
-**antenna** | <code>[DeviceActivator.Queue.Antenna](#cdk-iot-security-deviceactivator-queue-antenna)</code> | <span></span>
-**pushingRole** | <code>[DeviceActivator.Queue.PushingRole](#cdk-iot-security-deviceactivator-queue-pushingrole)</code> | <span></span>
+**caRegistrator** | <code>[CaRegistrator](#softchef-cdk-iot-security-caregistrator)</code> | <span></span>
+**deviceActivator** | <code>[DeviceActivator](#softchef-cdk-iot-security-deviceactivator)</code> | <span></span>
+**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | <span></span>
+**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | <span></span>
+**verifiersFetcher** | <code>[VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)</code> | <span></span>
 
 
 
-## class Antenna  <a id="cdk-iot-security-deviceactivator-queue-antenna"></a>
-
-
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IInspectable](#aws-cdk-core-iinspectable)
-__Submodule__: DeviceActivator.Queue
-
-__Extends__: [CfnTopicRule](#aws-cdk-aws-iot-cfntopicrule)
-
-### Initializer
-
-
-
-
-```ts
-new DeviceActivator.Queue.Antenna(queue: Queue, id: string)
-```
-
-* **queue** (<code>[DeviceActivator.Queue](#cdk-iot-security-deviceactivator-queue)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-
-
-
-
-## class PushingRole  <a id="cdk-iot-security-deviceactivator-queue-pushingrole"></a>
+## class ReviewAcceptionRole  <a id="softchef-cdk-iot-security-reviewacceptionrole"></a>
 
 
 
@@ -196,10 +155,11 @@ __Extends__: [Role](#aws-cdk-aws-iam-role)
 Initialize the Role allowed to push messages into the receptor specified in the argument.
 
 ```ts
-new ReviewAcceptionRole(reviewReceptor: ReviewReceptor, principalName: string)
+new ReviewAcceptionRole(reviewReceptor: ReviewReceptor, id: string, principalName: string)
 ```
 
 * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue recepting the messages from the IoT Topic Rule.
+* **id** (<code>string</code>)  *No description*
 * **principalName** (<code>string</code>)  The Principal name of the Resource which is arranged to send in the messages.
 
 
@@ -215,18 +175,7 @@ __Extends__: [Queue](#aws-cdk-aws-sqs-queue)
 ### Initializer
 
 
-Initialize a Just-In-Time Registration API.
-
-This API is
-consist of three parts, a Registrator mainly
-registering CA, an Activator mainly activating
-the device certificate, and a RestApi as the
-entry of the Registrator.
-
-If a RestApi is provided as an input property,
-This Api would add a POST method to the path
-'/register'. Otherwise, a RestApi with the same
-method is created.
+Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
 
 ```ts
 new ReviewReceptor(scope: Construct, id: string)
@@ -243,6 +192,7 @@ new ReviewReceptor(scope: Construct, id: string)
 Name | Type | Description 
 -----|------|-------------
 **acceptionRole** | <code>[ReviewAcceptionRole](#softchef-cdk-iot-security-reviewacceptionrole)</code> | The Role allowed to push messages into this Receptor.
+**antenna** | <code>[Antenna](#softchef-cdk-iot-security-antenna)</code> | <span></span>
 
 
 
@@ -259,7 +209,7 @@ __Extends__: [Function](#aws-cdk-aws-lambda-function)
 The Lambda Function returning all the verifier name and ARNs.
 
 ```ts
-new VerifierRecorder(scope: Construct, id: string, props: Props)
+new VerifiersFetcher(scope: Construct, id: string, verifiers?: Array<Function>)
 ```
 
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
@@ -269,15 +219,7 @@ new VerifierRecorder(scope: Construct, id: string, props: Props)
 
 
 
-
-Name | Type | Description 
------|------|-------------
-**vault** | <code>[CaRegistrationFunction.VaultProps](#cdk-iot-security-caregistrationfunction-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**verifiers**? | <code>Array<[VerifierRecorder.VerifierProps](#cdk-iot-security-verifierrecorder-verifierprops)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
-
-
-
-## struct VaultProps  <a id="cdk-iot-security-caregistrationfunction-vaultprops"></a>
+## struct Props  <a id="softchef-cdk-iot-security-caregistrator-props"></a>
 
 
 
@@ -286,11 +228,8 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending
- from the CA-associated Iot Rule, which sends a message
- every time a client register its certificate.
-**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration
- information returned from the CA Registration Function.
+**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
+**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
