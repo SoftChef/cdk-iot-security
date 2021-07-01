@@ -1100,7 +1100,7 @@ Object {
 }
 `;
 
-exports[`CaRegisterApi integration test without providing verifiers 1`] = `
+exports[`CaRegisterApi integration test without providing verifiers and prefix 1`] = `
 Object {
   "Parameters": Object {
     "AssetParameters08e87a62acfddc5b7df61dd4b46c939978754497dfb8a7336c8459e85cad3666ArtifactHash77D1B195": Object {
@@ -1190,7 +1190,7 @@ Object {
             "BUCKET_NAME": Object {
               "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
             },
-            "BUCKET_PREFIX": "test",
+            "BUCKET_PREFIX": "",
             "DEIVCE_ACTIVATOR_QUEUE_URL": Object {
               "Ref": "JustInTimeRegistrationtestcaseReviewReceptortestcaseAB8D5DFE",
             },

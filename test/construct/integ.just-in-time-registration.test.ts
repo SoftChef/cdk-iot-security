@@ -44,7 +44,7 @@ test('CaRegisterApi integration test', () => {
   expect(stack).toCountResources('AWS::SQS::Queue', 1);
 });
 
-test('CaRegisterApi integration test without providing verifiers', () => {
+test('CaRegisterApi integration test without providing verifiers and prefix', () => {
   process.env.BASE_PATH = __dirname;
   process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
   const app = new App();
@@ -55,7 +55,6 @@ test('CaRegisterApi integration test without providing verifiers', () => {
   new JustInTimeRegistration(stack, name, {
     vault: {
       bucket: bucket,
-      prefix: 'test',
     },
   });
   expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();

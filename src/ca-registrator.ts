@@ -9,8 +9,8 @@ import {
   Construct,
   Duration,
 } from '@aws-cdk/core';
-import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
+import { VaultProps } from './vault';
 import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module CaRegistrator {
@@ -25,7 +25,7 @@ export module CaRegistrator {
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    readonly vault: JustInTimeRegistration.VaultProps;
+    readonly vault: VaultProps;
     /**
      * The verifiers to verify the client certificates.
      */
@@ -50,7 +50,7 @@ export class CaRegistrator extends lambda.Function {
     this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', props.reviewReceptor.acceptionRole.roleArn);
     this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
-    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
+    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
