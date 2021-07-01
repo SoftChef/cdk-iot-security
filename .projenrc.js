@@ -31,8 +31,12 @@ const project = new AwsCdkConstructLibrary({
   ],
   devDeps: [
     'aws-sdk-client-mock',
+    'esbuild',
   ],
   tsconfig: {
+    include: [
+      'lambda-assets',
+    ],
     compilerOptions: {
       target: 'ES6',
       lib: [

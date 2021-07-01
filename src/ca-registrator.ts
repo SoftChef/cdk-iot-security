@@ -4,7 +4,8 @@ import {
   Effect,
   Policy,
 } from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
+// import * as lambda from '@aws-cdk/aws-lambda';
+import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import {
   Construct,
   Duration,
@@ -32,7 +33,7 @@ export module CaRegistrator {
     readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }
-export class CaRegistrator extends lambda.Function {
+export class CaRegistrator extends NodejsFunction {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
@@ -41,9 +42,10 @@ export class CaRegistrator extends lambda.Function {
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'app.handler',
+      entry: path.resolve(__dirname, '../lambda-assets/ca-registrator/app.ts'),
+      // code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
+      // runtime: lambda.Runtime.NODEJS_14_X,
+      // handler: 'handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
     });

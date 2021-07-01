@@ -1,5 +1,5 @@
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
+import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
 import { JustInTimeRegistration } from '../';
@@ -20,11 +20,10 @@ const jitr1 = new JustInTimeRegistration(stack1, id1, {
     bucket: myVault,
   },
 });
-const api1 = new apigateway.RestApi(anotherStack, 'JitrDemo1', {
-    restApiName: 'Jitr Demo 1'
+const api1 = new apigateway.RestApi(stack1, 'JitrDemo1', {
+  restApiName: 'Jitr Demo 1',
 });
-api1.root.addResource('caRegister').addMethod('GET', new apigateway.LambdaIntegration(jitr1.caRegistrator));
-api1.root.addResource('deviceActivate').addMethod('GET', new apigateway.LambdaIntegration(jitr1.deviceActivator));
+api1.root.addResource('caRegister').addMethod('POST', new apigateway.LambdaIntegration(jitr1.caRegistrator));
 api1.root.addResource('verifiersFetch').addMethod('GET', new apigateway.LambdaIntegration(jitr1.verifiersFetcher));
 
 const id2 = 'JitrDemo2';
@@ -35,11 +34,10 @@ const jitr2 = new JustInTimeRegistration(stack2, id2, {
     prefix: 'my/ca/path',
   },
 });
-const api2 = new apigateway.RestApi(anotherStack, 'JitrDemo2', {
-    restApiName: 'Jitr Demo 2'
+const api2 = new apigateway.RestApi(stack2, 'JitrDemo2', {
+  restApiName: 'Jitr Demo 2',
 });
-api2.root.addResource('caRegister').addMethod('GET', new apigateway.LambdaIntegration(jitr2.caRegistrator));
-api2.root.addResource('deviceActivate').addMethod('GET', new apigateway.LambdaIntegration(jitr2.deviceActivator));
+api2.root.addResource('caRegister').addMethod('POST', new apigateway.LambdaIntegration(jitr2.caRegistrator));
 api2.root.addResource('verifiersFetch').addMethod('GET', new apigateway.LambdaIntegration(jitr2.verifiersFetcher));
 
 const id3 = 'JitrDemo3';
@@ -57,9 +55,8 @@ const jitr3 = new JustInTimeRegistration(stack3, id3, {
     }),
   ],
 });
-const api3 = new apigateway.RestApi(anotherStack, 'JitrDemo3', {
-    restApiName: 'Jitr Demo 3'
+const api3 = new apigateway.RestApi(stack3, 'JitrDemo3', {
+  restApiName: 'Jitr Demo 3',
 });
-api3.root.addResource('caRegister').addMethod('GET', new apigateway.LambdaIntegration(jitr3.caRegistrator));
-api3.root.addResource('deviceActivate').addMethod('GET', new apigateway.LambdaIntegration(jitr3.deviceActivator));
+api3.root.addResource('caRegister').addMethod('POST', new apigateway.LambdaIntegration(jitr3.caRegistrator));
 api3.root.addResource('verifiersFetch').addMethod('GET', new apigateway.LambdaIntegration(jitr3.verifiersFetcher));
