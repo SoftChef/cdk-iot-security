@@ -19,7 +19,7 @@ Name|Description
 ----|-----------
 [CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)|*No description*
 [JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)|*No description*
-[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)|*No description*
+[VaultProps](#softchef-cdk-iot-security-vaultprops)|*No description*
 [VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)|*No description*
 
 
@@ -29,7 +29,7 @@ Name|Description
 
 
 __Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [Function](#aws-cdk-aws-lambda-function)
+__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -43,8 +43,8 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)</code>)  *No description*
-  * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
-  * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **reviewReceptor** (<code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code>)  The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate. 
+  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
   * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
@@ -55,7 +55,7 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 
 
 __Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [Function](#aws-cdk-aws-lambda-function)
+__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -124,7 +124,7 @@ new JustInTimeRegistration(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)</code>)  *No description*
-  * **vault** (<code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code>)  *No description* 
+  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  *No description* 
   * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  *No description* __*Optional*__
 
 
@@ -137,7 +137,7 @@ Name | Type | Description
 **caRegistrator** | <code>[CaRegistrator](#softchef-cdk-iot-security-caregistrator)</code> | <span></span>
 **deviceActivator** | <code>[DeviceActivator](#softchef-cdk-iot-security-deviceactivator)</code> | <span></span>
 **reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | <span></span>
-**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | <span></span>
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | <span></span>
 **verifiersFetcher** | <code>[VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)</code> | <span></span>
 
 
@@ -201,7 +201,7 @@ Name | Type | Description
 
 
 __Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [Function](#aws-cdk-aws-lambda-function)
+__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -228,8 +228,8 @@ new VerifiersFetcher(scope: Construct, id: string, verifiers?: Array<Function>)
 
 Name | Type | Description 
 -----|------|-------------
-**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
-**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | The AWS SQS Queue collecting the MQTT messages sending from the CA-associated Iot Rule, which sends a message every time a client register its certificate.
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
@@ -243,12 +243,12 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**vault** | <code>[JustInTimeRegistration.VaultProps](#softchef-cdk-iot-security-justintimeregistration-vaultprops)</code> | <span></span>
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | <span></span>
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
 
 
 
-## struct VaultProps  <a id="softchef-cdk-iot-security-justintimeregistration-vaultprops"></a>
+## struct VaultProps  <a id="softchef-cdk-iot-security-vaultprops"></a>
 
 
 
@@ -258,7 +258,7 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **bucket** | <code>[Bucket](#aws-cdk-aws-s3-bucket)</code> | The S3 bucket.
-**prefix** | <code>string</code> | The specified prefix to save the file.
+**prefix**? | <code>string</code> | The specified prefix to save the file.<br/>__*Optional*__
 
 
 
@@ -272,5 +272,6 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
+
 
 
