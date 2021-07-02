@@ -4,15 +4,6 @@ import * as s3 from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
 import { JustInTimeRegistration } from '..';
 
-/**
- * Demonstration of listing the verifiers to make a check
- * of the registered device.
- *
- * The device activator will ask the CA-specified verifier
- * if the device is suspicious or not, and make the decision
- * on the device activation.
- */
-
 const app = new cdk.App();
 const anotherStack = new cdk.Stack(app, 'anotherStack');
 

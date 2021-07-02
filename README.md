@@ -15,9 +15,9 @@
 
 ## Just-in-Time Registration
 
-![](https://drive.google.com/uc?export=view&id=1pq8N6uDgTxA9qxgeBPptPJvDFE_hc0lM)
+![](./doc/JITR-AWS.png)
 
-![](https://drive.google.com/uc?export=view&id=1JzjIjNnB4fTQVwebBTTkn2-AFHNw2dlD)
+![](./doc/JITR.png)
 
 ### Basic Usage
 

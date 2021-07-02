@@ -95,7 +95,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
 
     const { body } = JSON.parse(
-      [...payload].map((num: number) => String.fromCharCode(num)).join(''),
+      String.fromCharCode.apply(null, [...payload]),
     );
 
     await Joi.object({
