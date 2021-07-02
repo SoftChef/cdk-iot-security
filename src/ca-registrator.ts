@@ -43,9 +43,6 @@ export class CaRegistrator extends NodejsFunction {
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
       entry: path.resolve(__dirname, '../lambda-assets/ca-registrator/app.ts'),
-      // code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
-      // runtime: lambda.Runtime.NODEJS_14_X,
-      // handler: 'handler',
       timeout: Duration.seconds(10),
       memorySize: 256,
     });

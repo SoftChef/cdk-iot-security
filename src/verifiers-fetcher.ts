@@ -20,12 +20,8 @@ export class VerifiersFetcher extends NodejsFunction {
   constructor(scope: Construct, id: string, verifiers?: VerifiersFetcher.Verifier[]) {
     super(scope, `VerifiersFetcher-${id}`, {
       entry: path.resolve(__dirname, '../lambda-assets/verifiers/fetch-verifiers/app.ts'),
-      // code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers/fetch-verifiers')),
-      // runtime: lambda.Runtime.NODEJS_14_X,
-      // handler: 'handler',
     });
     this.addEnvironment('VERIFIERS', JSON.stringify(
-
       verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
     );
