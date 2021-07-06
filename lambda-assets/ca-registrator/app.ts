@@ -57,7 +57,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketName: string | undefined = process.env.BUCKET_NAME;
   const bucketPrefix: string = process.env.BUCKET_PREFIX || '';
   const region: string | undefined = process.env.AWS_REGION;
-  const jitp: boolean = Joi.attempt(process.env.JITP || false, Joi.boolean());
+  const jitp: boolean = Joi.attempt(process.env.JITP === 'true' || false, Joi.boolean());
 
   const templateBody: string = jitp? request.input('templateBody', deafultTemplateBody) : undefined;
   // can directly set registrationConfig base on the condition of jitp?

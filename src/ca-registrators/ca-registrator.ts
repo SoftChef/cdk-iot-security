@@ -9,8 +9,8 @@ import {
   Construct,
   Duration,
 } from '@aws-cdk/core';
-import { VerifiersFetcher } from '../verifiers-fetcher';
 import { VaultProps } from '../vault';
+import { VerifiersFetcher } from '../verifiers-fetcher';
 
 export module CaRegistrator {
   export interface Props {
@@ -38,7 +38,7 @@ export class CaRegistrator extends lambda.Function {
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda-assets/ca-registrator')),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
       timeout: Duration.seconds(10),

@@ -1,7 +1,7 @@
 import { Construct } from '@aws-cdk/core';
-import { CaRegistrator } from './ca-registrator';
-import { VerifiersFetcher } from '../verifiers-fetcher';
 import { VaultProps } from '../vault';
+import { VerifiersFetcher } from '../verifiers-fetcher';
+import { CaRegistrator } from './ca-registrator';
 
 export module JitrCaRegistrator {
   export interface Props {

@@ -4,8 +4,8 @@ import {
   ManagedPolicy,
 } from '@aws-cdk/aws-iam';
 import { Construct } from '@aws-cdk/core';
-import { CaRegistrator } from './ca-registrator';
 import { VaultProps } from '../vault';
+import { CaRegistrator } from './ca-registrator';
 
 export module JitpCaRegistrationFunction {
   export interface Props {

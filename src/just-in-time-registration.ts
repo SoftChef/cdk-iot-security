@@ -3,8 +3,8 @@ import { Construct } from '@aws-cdk/core';
 import { JitrCaRegistrator } from './ca-registrators/index';
 import { DeviceActivator } from './device-activator';
 import { ReviewReceptor } from './review-receptor';
-import { VerifiersFetcher } from './verifiers-fetcher';
 import { VaultProps } from './vault';
+import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module JustInTimeRegistration {
   export interface Props {
