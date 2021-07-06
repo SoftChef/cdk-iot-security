@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
 import { Construct } from '@aws-cdk/core';
 
@@ -18,7 +17,7 @@ export class VerifiersFetcher extends lambda.Function {
    */
   constructor(scope: Construct, id: string, props?: VerifiersFetcher.Props) {
     super(scope, `VerifiersFetcher-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers-fetcher')),
+      code: lambda.Code.fromAsset(`${__dirname}/../../lambda-assets/verifiers-fetcher`),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
     });

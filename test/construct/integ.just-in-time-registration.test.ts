@@ -11,8 +11,6 @@ import { App, Stack } from '@aws-cdk/core';
 import {
   CaRegistrator,
   DeviceActivator,
-  JitrCaRegistrator,
-  JitpCaRegistrator,
   JustInTimeRegistration,
   JustInTimeProvision,
   VerifiersFetcher,
@@ -31,18 +29,6 @@ describe('Test index.ts importation', () => {
     new VerifiersFetcher(stack, 'testVerifiersFetcher');
     new ReviewReceptor(stack, 'testReviewReceptor');
     new CaRegistrator(stack, 'testCaRegistrationFunction', {
-      vault: {
-        bucket: bucket,
-        prefix: 'test',
-      },
-    });
-    new JitpCaRegistrator(stack, 'testJitpCaRegistrationFunction', {
-      vault: {
-        bucket: bucket,
-        prefix: 'test',
-      },
-    });
-    new JitrCaRegistrator(stack, 'testJitrCaRegistrationFunction', {
       vault: {
         bucket: bucket,
         prefix: 'test',

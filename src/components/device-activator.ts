@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {
   PolicyStatement,
   Effect,
@@ -16,7 +15,7 @@ export class DeviceActivator extends lambda.Function {
    */
   constructor(scope: Construct, id: string) {
     super(scope, `DeviceActivator-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/device-activator')),
+      code: lambda.Code.fromAsset(`${__dirname}/../../lambda-assets/device-activator`),
       handler: 'app.handler',
       runtime: lambda.Runtime.NODEJS_14_X,
     });

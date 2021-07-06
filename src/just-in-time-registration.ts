@@ -1,20 +1,27 @@
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { Construct } from '@aws-cdk/core';
-import { JitrCaRegistrator } from './ca-registrators/index';
-import { DeviceActivator } from './device-activator';
-import { ReviewReceptor } from './review-receptor';
+import { CaRegistrator } from './components/ca-registrator';
+import { DeviceActivator } from './components/device-activator';
+import { ReviewReceptor } from './components/review-receptor';
+import { VerifiersFetcher } from './components/verifiers-fetcher';
 import { VaultProps } from './vault';
-import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module JustInTimeRegistration {
   export interface Props {
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
     readonly vault: VaultProps;
+    /**
+      * The verifiers to verify the client certificates.
+      */
     readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }
 
 export class JustInTimeRegistration extends Construct {
-  public readonly jitrCaRegistrator: JitrCaRegistrator;
+  public readonly caRegistrator: CaRegistrator;
   public readonly deviceActivator: DeviceActivator;
   public readonly reviewReceptor: ReviewReceptor;
   public readonly verifiersFetcher: VerifiersFetcher;
@@ -48,11 +55,15 @@ export class JustInTimeRegistration extends Construct {
     this.deviceActivator.addEventSource(
       new SqsEventSource(this.reviewReceptor, { batchSize: 1 }),
     );
-    this.jitrCaRegistrator = new JitrCaRegistrator(this, id, {
-      vault: props.vault,
+    // this.caRegistrator = new JitrCaRegistrator(this, id, {
+    //   vault: props.vault,
+    //   verifiers: props.verifiers,
+    // });
+    this.caRegistrator = new CaRegistrator(this, id, {
       verifiers: props.verifiers,
+      vault: props.vault,
     });
     this.vault = props.vault;
-    this.vault.bucket.grantWrite(this.jitrCaRegistrator);
+    this.vault.bucket.grantWrite(this.caRegistrator);
   }
 }

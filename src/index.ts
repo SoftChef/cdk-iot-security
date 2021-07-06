@@ -1,10 +1,6 @@
-export { DeviceActivator } from './device-activator';
-export {
-  JitpCaRegistrator,
-  CaRegistrator,
-  JitrCaRegistrator,
-} from './ca-registrators/index';
+export { DeviceActivator } from './components/device-activator';
+export { CaRegistrator } from './components/ca-registrator';
 export { JustInTimeProvision } from './just-in-time-provision';
 export { JustInTimeRegistration } from './just-in-time-registration';
-export { VerifiersFetcher } from './verifiers-fetcher';
-export { ReviewReceptor } from './review-receptor';
+export { VerifiersFetcher } from './components/verifiers-fetcher';
+export { ReviewReceptor } from './components/review-receptor';

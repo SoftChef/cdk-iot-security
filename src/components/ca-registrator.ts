@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {
   PolicyStatement,
   Effect,
@@ -10,7 +9,8 @@ import {
   Duration,
 } from '@aws-cdk/core';
 import { VaultProps } from '../vault';
-import { VerifiersFetcher } from '../verifiers-fetcher';
+import { JitpRole } from './jitp-role';
+import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module CaRegistrator {
   export interface Props {
@@ -24,9 +24,9 @@ export module CaRegistrator {
      */
     readonly verifiers?: VerifiersFetcher.Verifier[];
     /**
-     * The mode is JITP or not.
+     * The Role for JITP.
      */
-    readonly jitp?: boolean;
+    readonly jitpRole?: JitpRole;
   }
 }
 export class CaRegistrator extends lambda.Function {
@@ -38,7 +38,7 @@ export class CaRegistrator extends lambda.Function {
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../../lambda-assets/ca-registrator')),
+      code: lambda.Code.fromAsset(`${__dirname}/../../lambda-assets/ca-registrator`),
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
       timeout: Duration.seconds(10),
@@ -46,7 +46,8 @@ export class CaRegistrator extends lambda.Function {
     });
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
-    this.addEnvironment('JITP', props.jitp? 'true' : 'false');
+    this.addEnvironment('JITP', props.jitpRole? 'true' : 'false');
+    this.addEnvironment('JITP_ROLE_ARN', props.jitpRole?.roleArn || '');
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
