@@ -15,6 +15,8 @@ import {
   JitpCaRegistrator,
   JustInTimeRegistration,
   JustInTimeProvision,
+  VerifiersFetcher,
+  ReviewReceptor,
 } from '../../src/index';
 
 describe('Test index.ts importation', () => {
@@ -26,6 +28,8 @@ describe('Test index.ts importation', () => {
     const anotherStack = new Stack(app, 'another-stack');
     const bucket = new Bucket(anotherStack, 'userProvidedBucket');
     new DeviceActivator(stack, 'testDeviceActivator');
+    new VerifiersFetcher(stack, 'testVerifiersFetcher');
+    new ReviewReceptor(stack, 'testReviewReceptor');
     new CaRegistrator(stack, 'testCaRegistrationFunction', {
       vault: {
         bucket: bucket,
@@ -44,7 +48,6 @@ describe('Test index.ts importation', () => {
         prefix: 'test',
       },
     });
-    expect(stack).toCountResources('AWS::Lambda::Function', 4);
   });
 });
 
