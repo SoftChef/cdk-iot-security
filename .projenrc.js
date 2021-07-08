@@ -31,7 +31,6 @@ const project = new AwsCdkConstructLibrary({
   ],
   devDeps: [
     'aws-sdk-client-mock',
-    'esbuild',
   ],
   tsconfig: {
     compilerOptions: {
