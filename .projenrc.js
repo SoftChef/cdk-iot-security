@@ -33,9 +33,6 @@ const project = new AwsCdkConstructLibrary({
     'aws-sdk-client-mock',
   ],
   tsconfig: {
-    include: [
-      'lambda-assets',
-    ],
     compilerOptions: {
       target: 'ES6',
       lib: [
@@ -43,12 +40,6 @@ const project = new AwsCdkConstructLibrary({
         'ES2020',
       ],
     },
-  },
-  eslintOptions: {
-    dirs: [
-      'src',
-      'lambda-assets',
-    ],
   },
 });
 project.synth();
