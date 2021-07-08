@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
+import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Construct } from '@aws-cdk/core';
 
 export module VerifiersFetcher {
@@ -9,7 +10,7 @@ export module VerifiersFetcher {
   }
 }
 
-export class VerifiersFetcher extends lambda.Function {
+export class VerifiersFetcher extends NodejsFunction {
   /**
    * The Lambda Function returning all the verifier name and ARNs.
    * @param scope
@@ -18,12 +19,9 @@ export class VerifiersFetcher extends lambda.Function {
    */
   constructor(scope: Construct, id: string, verifiers?: VerifiersFetcher.Verifier[]) {
     super(scope, `VerifiersFetcher-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/verifiers/fetch-verifiers')),
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'app.handler',
+      entry: path.resolve(__dirname, '../lambda-assets/verifiers/fetch-verifiers/app.ts'),
     });
     this.addEnvironment('VERIFIERS', JSON.stringify(
-
       verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
     );

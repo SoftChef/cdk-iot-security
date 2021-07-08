@@ -1,25 +1,15 @@
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
-import { Bucket } from '@aws-cdk/aws-s3';
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './ca-registrator';
 import { DeviceActivator } from './device-activator';
 import { ReviewReceptor } from './review-receptor';
+import { VaultProps } from './vault';
 import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module JustInTimeRegistration {
   export interface Props {
     readonly vault: VaultProps;
     readonly verifiers?: VerifiersFetcher.Verifier[];
-  }
-  export interface VaultProps {
-    /**
-     * The S3 bucket
-     */
-    readonly bucket: Bucket;
-    /**
-     * The specified prefix to save the file.
-     */
-    readonly prefix: string;
   }
 }
 
@@ -28,7 +18,7 @@ export class JustInTimeRegistration extends Construct {
   public readonly caRegistrator: CaRegistrator;
   public readonly reviewReceptor: ReviewReceptor;
   public readonly verifiersFetcher: VerifiersFetcher;
-  public readonly vault: JustInTimeRegistration.VaultProps;
+  public readonly vault: VaultProps;
 
   /**
    * Initialize a Just-In-Time Registration API.

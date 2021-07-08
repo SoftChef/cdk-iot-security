@@ -84,7 +84,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationUnitName: '',
     };
 
-    const verifiers: {[key: string]: string} = JSON.parse(process.env.VERIFIERS!)
+    const verifiers: {[key: string]: string} = [...JSON.parse(process.env.VERIFIERS!)]
       .reduce((accumulator: {[key:string]: string}, current: string) => (accumulator[current]=current, accumulator), {});
     let verifierName: string | undefined = '';
     if (request.input('verifierName') && !(verifierName = verifiers[request.input('verifierName')])) {
@@ -112,9 +112,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const { certificateId, certificateArn } = await Joi.object({
       certificateId: Joi.string().required(),
       certificateArn: Joi.string().required(),
-    }).validateAsync(CaRegistration).catch((error: Error) => {
-      throw new InformationNotFoundError(error.message);
-    });
+    }).unknown(true)
+      .validateAsync(CaRegistration).catch((error: Error) => {
+        throw new InformationNotFoundError(error.message);
+      });
 
     await s3Client.send(
       new PutObjectCommand({

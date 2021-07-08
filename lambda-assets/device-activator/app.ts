@@ -94,11 +94,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
       }),
     );
 
-    let payloadString: string = '';
-    payload.forEach(num => {
-      payloadString += String.fromCharCode(num);
-    });
-    const { body } = JSON.parse(payloadString);
+    const { body } = JSON.parse(
+      String.fromCharCode.apply(null, [...payload]),
+    );
 
     await Joi.object({
       verified: Joi.boolean().allow(true).only().required(),

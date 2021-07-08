@@ -4,13 +4,14 @@ import {
   Effect,
   Policy,
 } from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
+// import * as lambda from '@aws-cdk/aws-lambda';
+import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import {
   Construct,
   Duration,
 } from '@aws-cdk/core';
-import { JustInTimeRegistration } from './just-in-time-registration';
 import { ReviewReceptor } from './review-receptor';
+import { VaultProps } from './vault';
 import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module CaRegistrator {
@@ -25,14 +26,14 @@ export module CaRegistrator {
      * The secure AWS S3 Bucket recepting the CA registration
      * information returned from the CA Registration Function.
      */
-    readonly vault: JustInTimeRegistration.VaultProps;
+    readonly vault: VaultProps;
     /**
      * The verifiers to verify the client certificates.
      */
     readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }
-export class CaRegistrator extends lambda.Function {
+export class CaRegistrator extends NodejsFunction {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
@@ -41,16 +42,14 @@ export class CaRegistrator extends lambda.Function {
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
-      code: lambda.Code.fromAsset(path.resolve(__dirname, '../lambda-assets/ca-registrator')),
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'app.handler',
+      entry: path.resolve(__dirname, '../lambda-assets/ca-registrator/app.ts'),
       timeout: Duration.seconds(10),
       memorySize: 256,
     });
     this.addEnvironment('DEIVCE_ACTIVATOR_ROLE_ARN', props.reviewReceptor.acceptionRole.roleArn);
     this.addEnvironment('DEIVCE_ACTIVATOR_QUEUE_URL', props.reviewReceptor.queueUrl);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
-    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
+    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix ?? '');
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',
     ),
