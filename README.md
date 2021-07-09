@@ -70,24 +70,9 @@ After deploying the construct, an URL returned from the console as the following
 
 Call API with this command.
 
-    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
+    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister > ca-certificate.json
 
-The registered CA certificate ID will be returned in the following format.
-
-    {
-        "ca":{
-            "publicKey":"...",
-            "privateKey":"...",
-            "certificate":"..."
-        },
-        "verification":{
-            "publicKey":"...",
-            "privateKey":"...",
-            "certificate":"..."
-        },"certificateId":"365322f54ee983a8d36e5ee24b7d5ce684836e859e873c51ac8cac3269472769","certificateArn":"arn:aws:iot:us-east-1:079794712254:cacert/365322f54ee983a8d36e5ee24b7d5ce684836e859e873c51ac8cac3269472769"
-    }
-
-Please save the file and replace the sample file ```ca-certificate.json```.
+The registered CA certificate ID will be returned and saved in the file ```ca-certificate.json```.
 
 ### JITP
 
