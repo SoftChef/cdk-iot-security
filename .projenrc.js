@@ -36,6 +36,9 @@ const project = new AwsCdkConstructLibrary({
     'esbuild',
   ],
   tsconfig: {
+    include: [
+      'lambda-assets',
+    ],
     compilerOptions: {
       target: 'ES6',
       lib: [

@@ -53,7 +53,7 @@
 
 ### Demonstration
 
-#### Construct Deployment
+First, deploy the JITP construct with demo file.
 
     git clone https://github.com/SoftChef/cdk-iot-security.git
     cd cdk-iot-security
@@ -64,17 +64,25 @@ After deploying the construct, an URL returned from the console as the following
 
     https://<prefix>.execute-api.<region>.amazonaws.com/prod/
 
-#### Create CA Certificate
+Call the API with the following command. The API will invoke the CA Registrator and return an ID belongs to a CA certificate registered on AWS IoT. Save the CA ID for after use.
 
-Call API with this command.
+    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
 
-    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister > lib/demo/jitp/ca-certificate.json
+You can design your own way to use the CA Registrator.
 
-The registered CA certificate ID will be returned and saved in the file ```ca-certificate.json```.
+Call the API with the following command. The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Notice that the device certificate is not registered on AWS IoT yet.
 
-#### Simulate the Work FLow
+    curl -X POST -d '{caCertificateId:"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
 
-    node lib/demo/jitp/example-flow.js
+You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
+
+The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
+
+    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > lib/demo/jitp/AmazonRootCA1.pem
+
+Finally, the device use the certificate to connect to the AWS IoT through MQTT connection. We simulate this process with the demostration file.
+
+    node lib/demo/jitp/connect.js
 
 A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
 

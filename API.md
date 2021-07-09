@@ -6,10 +6,10 @@ Name|Description
 ----|-----------
 [CaRegistrator](#softchef-cdk-iot-security-caregistrator)|*No description*
 [DeviceActivator](#softchef-cdk-iot-security-deviceactivator)|*No description*
-[JitpRole](#softchef-cdk-iot-security-jitprole)|*No description*
 [JitrTopicRule](#softchef-cdk-iot-security-jitrtopicrule)|*No description*
 [JustInTimeProvision](#softchef-cdk-iot-security-justintimeprovision)|*No description*
 [JustInTimeRegistration](#softchef-cdk-iot-security-justintimeregistration)|*No description*
+[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)|*No description*
 [ReviewAcceptionRole](#softchef-cdk-iot-security-reviewacceptionrole)|*No description*
 [ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)|*No description*
 [VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)|*No description*
@@ -46,8 +46,8 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)</code>)  *No description*
-  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **jitpRole** (<code>[JitpRole](#softchef-cdk-iot-security-jitprole)</code>)  The Role for JITP. __*Optional*__
+  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **role** (<code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code>)  The Role for JITP. __*Optional*__
   * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
@@ -67,28 +67,6 @@ Inistialize the Device Activator Function.
 
 ```ts
 new DeviceActivator(scope: Construct, id: string)
-```
-
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
-* **id** (<code>string</code>)  *No description*
-
-
-
-
-## class JitpRole  <a id="softchef-cdk-iot-security-jitprole"></a>
-
-
-
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
-__Extends__: [Role](#aws-cdk-aws-iam-role)
-
-### Initializer
-
-
-
-
-```ts
-new JitpRole(scope: Construct, id: string)
 ```
 
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
@@ -140,7 +118,7 @@ new JustInTimeProvision(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JustInTimeProvision.Props](#softchef-cdk-iot-security-justintimeprovision-props)</code>)  *No description*
-  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
 
 
 
@@ -150,7 +128,7 @@ new JustInTimeProvision(scope: Construct, id: string, props: Props)
 Name | Type | Description 
 -----|------|-------------
 **caRegistrator** | <code>[CaRegistrator](#softchef-cdk-iot-security-caregistrator)</code> | <span></span>
-**jitpRole** | <code>[JitpRole](#softchef-cdk-iot-security-jitprole)</code> | <span></span>
+**registrationConfigRole** | <code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code> | <span></span>
 
 
 
@@ -184,7 +162,7 @@ new JustInTimeRegistration(scope: Construct, id: string, props: Props)
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)</code>)  *No description*
-  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
   * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
@@ -199,6 +177,28 @@ Name | Type | Description
 **reviewReceptor** | <code>[ReviewReceptor](#softchef-cdk-iot-security-reviewreceptor)</code> | <span></span>
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | <span></span>
 **verifiersFetcher** | <code>[VerifiersFetcher](#softchef-cdk-iot-security-verifiersfetcher)</code> | <span></span>
+
+
+
+## class RegistrationConfigRole  <a id="softchef-cdk-iot-security-registrationconfigrole"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
+__Extends__: [Role](#aws-cdk-aws-iam-role)
+
+### Initializer
+
+
+
+
+```ts
+new RegistrationConfigRole(scope: Construct, id: string)
+```
+
+* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+
 
 
 
@@ -289,8 +289,8 @@ new VerifiersFetcher(scope: Construct, id: string, props?: Props)
 
 Name | Type | Description 
 -----|------|-------------
-**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**jitpRole**? | <code>[JitpRole](#softchef-cdk-iot-security-jitprole)</code> | The Role for JITP.<br/>__*Optional*__
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**role**? | <code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code> | The Role for JITP.<br/>__*Optional*__
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
@@ -304,7 +304,7 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 
 
 
@@ -317,7 +317,7 @@ Name | Type | Description
 
 Name | Type | Description 
 -----|------|-------------
-**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 

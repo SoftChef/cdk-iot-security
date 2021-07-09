@@ -1,5 +1,6 @@
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './components/ca-registrator';
+import { DeviceCertificateGenerator } from './components/deivce-certificate-generator';
 import { RegistrationConfigRole } from './components/registration-config-role';
 import { VaultProps } from './vault';
 
@@ -15,6 +16,7 @@ export module JustInTimeProvision {
 
 export class JustInTimeProvision extends Construct {
   public caRegistrator: CaRegistrator;
+  public deviceCertificateGenerator: DeviceCertificateGenerator;
   public readonly registrationConfigRole: RegistrationConfigRole;
 
   /**
@@ -31,6 +33,9 @@ export class JustInTimeProvision extends Construct {
     this.registrationConfigRole = new RegistrationConfigRole(this, id);
     this.caRegistrator = new CaRegistrator(this, id, {
       role: this.registrationConfigRole,
+      vault: props.vault,
+    });
+    this.deviceCertificateGenerator = new DeviceCertificateGenerator(this, id, {
       vault: props.vault,
     });
   }

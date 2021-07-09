@@ -141,9 +141,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
         ),
       }),
     );
-    if (jitpRoleArn) {
-      return response.json(results);
-    }
     return response.json({ certificateId: certificateId });
   } catch (error) {
     return response.error(error, error.code);

@@ -15,3 +15,6 @@ const restApi = new apigateway.RestApi(stack, 'testRestApi');
 restApi.root
   .addResource('caRegister')
   .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.caRegistrator));
+restApi.root
+  .addResource('deviceCertificateGenerate')
+  .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.deviceCertificateGenerator));
