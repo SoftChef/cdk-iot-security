@@ -106,7 +106,7 @@ describe('Sucessfully execute the handler', () => {
   });
 
   test('On JITP mode', async () => {
-    process.env.JITP_ROLE_ARN = 'arn:test_jitp_role';
+    process.env.REGISTRATION_CONFIG_ROLE_ARN = 'arn:test_jitp_role';
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });

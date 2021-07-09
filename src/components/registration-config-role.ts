@@ -5,7 +5,7 @@ import {
 } from '@aws-cdk/aws-iam';
 import { Construct } from '@aws-cdk/core';
 
-export class JitpRole extends Role {
+export class RegistrationConfigRole extends Role {
   constructor(scope: Construct, id: string) {
     super(scope, `JitpRole-${id}`, {
       roleName: `JitpRoleName-${id}`,

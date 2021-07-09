@@ -49,8 +49,6 @@
         ]
     });
 
-## Roadmap
-
 ## Just-in-Time Provision
 
 ### Demonstration
@@ -79,6 +77,8 @@ The registered CA certificate ID will be returned and saved in the file ```ca-ce
     node lib/demo/jitp/example-flow.js
 
 A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
+
+## Roadmap
 
 ### JITP
 

@@ -1,6 +1,6 @@
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './components/ca-registrator';
-import { JitpRole } from './components/jitp-role';
+import { RegistrationConfigRole } from './components/registration-config-role';
 import { VaultProps } from './vault';
 
 export module JustInTimeProvision {
@@ -15,7 +15,7 @@ export module JustInTimeProvision {
 
 export class JustInTimeProvision extends Construct {
   public caRegistrator: CaRegistrator;
-  public readonly jitpRole: JitpRole;
+  public readonly registrationConfigRole: RegistrationConfigRole;
 
   /**
    * Initialize a Just-In-Time Provision Construct.
@@ -28,9 +28,9 @@ export class JustInTimeProvision extends Construct {
    */
   constructor(scope: Construct, id: string, props: JustInTimeProvision.Props) {
     super(scope, `JustInTimeProvision-${id}`);
-    this.jitpRole = new JitpRole(this, id);
+    this.registrationConfigRole = new RegistrationConfigRole(this, id);
     this.caRegistrator = new CaRegistrator(this, id, {
-      jitpRole: this.jitpRole,
+      role: this.registrationConfigRole,
       vault: props.vault,
     });
   }

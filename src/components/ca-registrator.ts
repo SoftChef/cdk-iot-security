@@ -9,7 +9,7 @@ import {
   Duration,
 } from '@aws-cdk/core';
 import { VaultProps } from '../vault';
-import { JitpRole } from './jitp-role';
+import { RegistrationConfigRole } from './registration-config-role';
 import { VerifiersFetcher } from './verifiers-fetcher';
 
 export module CaRegistrator {
@@ -26,7 +26,7 @@ export module CaRegistrator {
     /**
      * The Role for JITP.
      */
-    readonly jitpRole?: JitpRole;
+    readonly role?: RegistrationConfigRole;
   }
 }
 export class CaRegistrator extends NodejsFunction {
@@ -45,8 +45,8 @@ export class CaRegistrator extends NodejsFunction {
     props.vault.bucket.grantReadWrite(this);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
-    if (props.jitpRole) {
-      this.addEnvironment('JITP_ROLE_ARN', props.jitpRole.roleArn);
+    if (props.role) {
+      this.addEnvironment('REGISTRATION_CONFIG_ROLE_ARN', props.role.roleArn);
     }
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',

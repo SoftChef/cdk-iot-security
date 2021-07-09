@@ -5,4 +5,4 @@ export { JustInTimeRegistration } from './just-in-time-registration';
 export { VerifiersFetcher } from './components/verifiers-fetcher';
 export { Vault, VaultProps } from './vault';
 export { ReviewReceptor, ReviewAcceptionRole, JitrTopicRule } from './components/review-receptor';
-export { JitpRole } from './components/jitp-role';
+export { RegistrationConfigRole } from './components/registration-config-role';
