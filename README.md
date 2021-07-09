@@ -60,7 +60,7 @@
     git clone https://github.com/SoftChef/cdk-iot-security.git
     cd cdk-iot-security
     npx projen build
-    cdk deploy --app 'node lib/demo/jitp/demo'
+    cdk deploy --app 'node lib/demo/jitp/deploy'
 
 After deploying the construct, an URL returned from the console as the following format:
 
@@ -70,9 +70,13 @@ After deploying the construct, an URL returned from the console as the following
 
 Call API with this command.
 
-    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister > ca-certificate.json
+    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister > lib/demo/jitp/ca-certificate.json
 
 The registered CA certificate ID will be returned and saved in the file ```ca-certificate.json```.
+
+#### Simulate the Work FLow
+
+    node lib/demo/jitp/example-flow.js
 
 ### JITP
 
