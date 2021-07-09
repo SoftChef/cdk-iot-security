@@ -124,24 +124,26 @@ export const handler = async (event: any = {}) : Promise <any> => {
         throw new InformationNotFoundError(error.message);
       });
 
+    const results = Object.assign(
+      {},
+      certificates,
+      {
+        certificateId: certificateId,
+        certificateArn: certificateArn,
+      },
+    );
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
         Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
         Body: Buffer.from(
-          JSON.stringify(
-            Object.assign(
-              {},
-              certificates,
-              {
-                certificateId: certificateId,
-                certificateArn: certificateArn,
-              },
-            ),
-          ),
+          JSON.stringify(results),
         ),
       }),
     );
+    if (jitpRoleArn) {
+      return response.json(results);
+    }
     return response.json({ certificateId: certificateId });
   } catch (error) {
     return response.error(error, error.code);

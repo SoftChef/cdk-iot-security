@@ -74,7 +74,20 @@ Call API with this command.
 
 The registered CA certificate ID will be returned in the following format.
 
-    {"certificateId":"7d0558657f130e42aa9b6f810e36b817c902b314ca8ab4b7fd3817274aa1c154"}
+    {
+        "ca":{
+            "publicKey":"...",
+            "privateKey":"...",
+            "certificate":"..."
+        },
+        "verification":{
+            "publicKey":"...",
+            "privateKey":"...",
+            "certificate":"..."
+        },"certificateId":"365322f54ee983a8d36e5ee24b7d5ce684836e859e873c51ac8cac3269472769","certificateArn":"arn:aws:iot:us-east-1:079794712254:cacert/365322f54ee983a8d36e5ee24b7d5ce684836e859e873c51ac8cac3269472769"
+    }
+
+Please save the file and replace the sample file ```ca-certificate.json```.
 
 ### JITP
 
