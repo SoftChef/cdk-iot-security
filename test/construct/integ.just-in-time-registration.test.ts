@@ -18,6 +18,9 @@ import {
   ReviewAcceptionRole,
   JitrTopicRule,
   JitpRole,
+  FleetGenerator,
+  FleetProvision,
+  FleetProvisionRole,
 } from '../../src/index';
 
 describe('Test index.ts importation', () => {
@@ -40,11 +43,28 @@ describe('Test index.ts importation', () => {
     new ReviewAcceptionRole(reviewReceptor, 'testReviewAcceptionRole', 'iot.amazonaws.com');
     new JitrTopicRule(reviewReceptor, 'testJitrTopicRule');
     new JitpRole(stack, 'testJitpRole');
+    new FleetProvisionRole(stack, 'testFleetProvisionRole');
+    new FleetGenerator(stack, 'testFleetGenerator', {
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
+    new JustInTimeRegistration(stack, 'testJustInTimeRegistration', {
+      vault: {
+        bucket: bucket,
+      },
+    });
+    new FleetProvision(stack, 'testFleetProvision', {
+      vault: {
+        bucket: bucket,
+      },
+    });
   });
 });
 
-describe('Test JustInTimeRegistration', () => {
-  test('integration test', () => {
+describe('Integration test', () => {
+  test('JustInTimeRegistration', () => {
     process.env.BASE_PATH = __dirname;
     process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
     const app = new App();
@@ -66,36 +86,13 @@ describe('Test JustInTimeRegistration', () => {
         prefix: 'test',
       },
     });
-
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
     expect(stack).toCountResources('AWS::Lambda::Function', 3);
     expect(stack).toCountResources('AWS::IAM::Role', 4);
     expect(stack).toCountResources('AWS::SQS::Queue', 1);
   });
 
-  test('integration test without providing verifier and prefix', () => {
-    process.env.BASE_PATH = __dirname;
-    process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
-    const app = new App();
-    const stack = new Stack(app, 'test-stack');
-    const name = 'test-case';
-    const anotherStack = new Stack(app, 'another-stack');
-    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
-    new JustInTimeRegistration(stack, name, {
-      vault: {
-        bucket: bucket,
-      },
-    });
-
-    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 3);
-    expect(stack).toCountResources('AWS::IAM::Role', 4);
-    expect(stack).toCountResources('AWS::SQS::Queue', 1);
-  });
-});
-
-describe('Test JustInTimeProvision', () => {
-  test('Integration test', () => {
+  test('JustInTimeProvision', () => {
     process.env.BASE_PATH = __dirname;
     process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
     const app = new App();
@@ -109,7 +106,25 @@ describe('Test JustInTimeProvision', () => {
         prefix: 'test',
       },
     });
+    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
+    expect(stack).toCountResources('AWS::Lambda::Function', 1);
+    expect(stack).toCountResources('AWS::IAM::Role', 2);
+  });
 
+  test('FleetProvision', () => {
+    process.env.BASE_PATH = __dirname;
+    process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
+    const app = new App();
+    const stack = new Stack(app, 'test-stack');
+    const name = 'test-case';
+    const anotherStack = new Stack(app, 'another-stack');
+    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+    new FleetProvision(stack, name, {
+      vault: {
+        bucket: bucket,
+        prefix: 'test',
+      },
+    });
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
     expect(stack).toCountResources('AWS::Lambda::Function', 1);
     expect(stack).toCountResources('AWS::IAM::Role', 2);

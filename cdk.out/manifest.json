@@ -19,13 +19,13 @@
           {
             "type": "aws:cdk:asset",
             "data": {
-              "path": "asset.4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30",
-              "id": "4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30",
+              "path": "asset.b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
+              "id": "b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
               "packaging": "zip",
-              "sourceHash": "4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30",
-              "s3BucketParameter": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3BucketD6409836",
-              "s3KeyParameter": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3VersionKey242C0698",
-              "artifactHashParameter": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30ArtifactHash9BAB1489"
+              "sourceHash": "b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
+              "s3BucketParameter": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3BucketB287C4EF",
+              "s3KeyParameter": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1",
+              "artifactHashParameter": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dArtifactHash5BA6DE8A"
             },
             "trace": [
               "ConstructNode.addMetadata (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\construct-compat.js:405:62)",
@@ -37,9 +37,9 @@
               "AssetCode.bind (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\code.js:258:26)",
               "new Function (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function.js:97:33)",
               "new NodejsFunction (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda-nodejs\\lib\\function.js:32:9)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:20:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:16:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -49,13 +49,13 @@
             ]
           }
         ],
-        "/test/myVault/Resource": [
+        "/test/testVault/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "myVaultE4D40284",
+            "data": "testVaultB2FA1968",
             "trace": [
               "new Bucket (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:573:26)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:12:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:10:15)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -65,15 +65,15 @@
             ]
           }
         ],
-        "/test/JustInTimeProvision-test/JitpRole-test/Resource": [
+        "/test/test/FleetProvisionRole-test/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "JustInTimeProvisiontestJitpRoletest86D72B65",
+            "data": "testFleetProvisionRoletest781E9D26",
             "trace": [
               "new Role (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:72:22)",
-              "new JitpRole (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\jitp-role.js:15:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:22:25)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetProvisionRole (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-provision-role.js:15:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:18:35)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -83,17 +83,17 @@
             ]
           }
         ],
-        "/test/JustInTimeProvision-test/CaRegistrator-test/ServiceRole/Resource": [
+        "/test/test/FleetGenerator-test/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "JustInTimeProvisiontestCaRegistratortestServiceRoleF2DB2772",
+            "data": "testFleetGeneratortestServiceRoleC606281F",
             "trace": [
               "new Role (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:72:22)",
               "new Function (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function.js:79:35)",
               "new NodejsFunction (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda-nodejs\\lib\\function.js:32:9)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:20:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:16:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -103,10 +103,10 @@
             ]
           }
         ],
-        "/test/JustInTimeProvision-test/CaRegistrator-test/ServiceRole/DefaultPolicy/Resource": [
+        "/test/test/FleetGenerator-test/ServiceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "JustInTimeProvisiontestCaRegistratortestServiceRoleDefaultPolicyBCDA7D56",
+            "data": "testFleetGeneratortestServiceRoleDefaultPolicy1B6D8646",
             "trace": [
               "new Policy (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:56:26)",
               "Role.addToPrincipalPolicy (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:209:34)",
@@ -114,9 +114,9 @@
               "Function.addToPrincipalOrResource (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:45:30)",
               "Bucket.grant (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:429:31)",
               "Bucket.grantReadWrite (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:328:21)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:25:28)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:19:28)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -126,16 +126,16 @@
             ]
           }
         ],
-        "/test/JustInTimeProvision-test/CaRegistrator-test/Resource": [
+        "/test/test/FleetGenerator-test/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "JustInTimeProvisiontestCaRegistratortestA6355EC9",
+            "data": "testFleetGeneratortest3B4299BA",
             "trace": [
               "new Function (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function.js:135:26)",
               "new NodejsFunction (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda-nodejs\\lib\\function.js:32:9)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:20:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:16:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -145,15 +145,15 @@
             ]
           }
         ],
-        "/test/JustInTimeProvision-test/CaRegistrator-test/CaRegistrator-test/Resource": [
+        "/test/test/FleetGenerator-test/CaRegistrator-test/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "JustInTimeProvisiontestCaRegistratortest5FF030B2",
+            "data": "testFleetGeneratortestCaRegistratortestB8E5DDFF",
             "trace": [
               "new Policy (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:56:26)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:32:38)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:22:38)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -163,10 +163,10 @@
             ]
           }
         ],
-        "/test/AssetParameters/4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30/S3Bucket": [
+        "/test/AssetParameters/b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d/S3Bucket": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3BucketD6409836",
+            "data": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3BucketB287C4EF",
             "trace": [
               "new FileAssetParameters (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\private\\asset-parameters.js:12:36)",
               "LegacyStackSynthesizer.doAddFileAsset (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\stack-synthesizers\\legacy.js:162:22)",
@@ -177,9 +177,9 @@
               "AssetCode.bind (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\code.js:258:26)",
               "new Function (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function.js:97:33)",
               "new NodejsFunction (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda-nodejs\\lib\\function.js:32:9)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:20:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:16:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -189,10 +189,10 @@
             ]
           }
         ],
-        "/test/AssetParameters/4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30/S3VersionKey": [
+        "/test/AssetParameters/b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d/S3VersionKey": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3VersionKey242C0698",
+            "data": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1",
             "trace": [
               "new FileAssetParameters (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\private\\asset-parameters.js:16:35)",
               "LegacyStackSynthesizer.doAddFileAsset (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\stack-synthesizers\\legacy.js:162:22)",
@@ -203,9 +203,9 @@
               "AssetCode.bind (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\code.js:258:26)",
               "new Function (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function.js:97:33)",
               "new NodejsFunction (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda-nodejs\\lib\\function.js:32:9)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:20:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:16:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -215,10 +215,10 @@
             ]
           }
         ],
-        "/test/AssetParameters/4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30/ArtifactHash": [
+        "/test/AssetParameters/b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d/ArtifactHash": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30ArtifactHash9BAB1489",
+            "data": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dArtifactHash5BA6DE8A",
             "trace": [
               "new FileAssetParameters (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\private\\asset-parameters.js:20:38)",
               "LegacyStackSynthesizer.doAddFileAsset (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\stack-synthesizers\\legacy.js:162:22)",
@@ -229,9 +229,9 @@
               "AssetCode.bind (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\code.js:258:26)",
               "new Function (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function.js:97:33)",
               "new NodejsFunction (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda-nodejs\\lib\\function.js:32:9)",
-              "new CaRegistrator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\ca-registrator.js:20:9)",
-              "new JustInTimeProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\just-in-time-provision.js:23:30)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:10:29)",
+              "new FleetGenerator (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\components\\fleet-generator.js:16:9)",
+              "new FleetProvision (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\fleet-provision.js:19:31)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:11:24)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -247,7 +247,7 @@
             "data": "testRestApi5A6FA7A3",
             "trace": [
               "new RestApi (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:401:26)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:15:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:16:17)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -265,7 +265,7 @@
               "new Role (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:72:22)",
               "RestApi._configureCloudWatchRole (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:250:22)",
               "new RestApi (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:418:18)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:15:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:16:17)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -282,7 +282,7 @@
             "trace": [
               "RestApi._configureCloudWatchRole (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:254:26)",
               "new RestApi (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:418:18)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:15:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:16:17)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -295,12 +295,12 @@
         "/test/testRestApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "testRestApiDeployment1ED9BE2Edc20e8a3ac7711e2ea17a3f9ea735b4d",
+            "data": "testRestApiDeployment1ED9BE2Ec87c071993da9a8f0d5a09911a8107c0",
             "trace": [
               "new Deployment (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\deployment.js:48:25)",
               "RestApi._configureDeployment (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:278:38)",
               "new RestApi (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:420:14)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:15:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:16:17)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -318,7 +318,7 @@
               "new Stage (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\stage.js:61:26)",
               "RestApi._configureDeployment (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:286:36)",
               "new RestApi (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:420:14)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:15:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:16:17)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -335,7 +335,7 @@
             "trace": [
               "RestApi._configureDeployment (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:290:13)",
               "new RestApi (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\restapi.js:420:14)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:15:17)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:16:17)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -345,14 +345,14 @@
             ]
           }
         ],
-        "/test/testRestApi/Default/caRegister/Resource": [
+        "/test/testRestApi/Default/fleetGenerator/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "testRestApicaRegister43BFBFF9",
+            "data": "testRestApifleetGenerator3C2A1C55",
             "trace": [
               "new Resource (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\resource.js:231:26)",
               "RootResource.addResource (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\resource.js:28:16)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:17:6)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:18:6)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -362,16 +362,16 @@
             ]
           }
         ],
-        "/test/testRestApi/Default/caRegister/POST/ApiPermission.testtestRestApi8972EE79.POST..caRegister": [
+        "/test/testRestApi/Default/fleetGenerator/POST/ApiPermission.testtestRestApi8972EE79.POST..fleetGenerator": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "testRestApicaRegisterPOSTApiPermissiontesttestRestApi8972EE79POSTcaRegisterBC9E59A4",
+            "data": "testRestApifleetGeneratorPOSTApiPermissiontesttestRestApi8972EE79POSTfleetGeneratorAEBF3FE2",
             "trace": [
-              "CaRegistrator.addPermission (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function-base.js:42:9)",
+              "FleetGenerator.addPermission (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function-base.js:42:9)",
               "LambdaIntegration.bind (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\integrations\\lambda.js:44:22)",
               "new Method (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\method.js:41:40)",
               "Resource.addMethod (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\resource.js:36:16)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:18:6)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:19:6)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -381,16 +381,16 @@
             ]
           }
         ],
-        "/test/testRestApi/Default/caRegister/POST/ApiPermission.Test.testtestRestApi8972EE79.POST..caRegister": [
+        "/test/testRestApi/Default/fleetGenerator/POST/ApiPermission.Test.testtestRestApi8972EE79.POST..fleetGenerator": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "testRestApicaRegisterPOSTApiPermissionTesttesttestRestApi8972EE79POSTcaRegister90FCBD9A",
+            "data": "testRestApifleetGeneratorPOSTApiPermissionTesttesttestRestApi8972EE79POSTfleetGeneratorAB73D933",
             "trace": [
-              "CaRegistrator.addPermission (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function-base.js:42:9)",
+              "FleetGenerator.addPermission (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-lambda\\lib\\function-base.js:42:9)",
               "LambdaIntegration.bind (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\integrations\\lambda.js:51:26)",
               "new Method (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\method.js:41:40)",
               "Resource.addMethod (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\resource.js:36:16)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:18:6)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:19:6)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",
@@ -400,14 +400,14 @@
             ]
           }
         ],
-        "/test/testRestApi/Default/caRegister/POST/Resource": [
+        "/test/testRestApi/Default/fleetGenerator/POST/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "testRestApicaRegisterPOST02A38AB8",
+            "data": "testRestApifleetGeneratorPOSTEDAA7597",
             "trace": [
               "new Method (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\method.js:57:26)",
               "Resource.addMethod (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\aws-apigateway\\lib\\resource.js:36:16)",
-              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\jitp\\demo.js:18:6)",
+              "Object.<anonymous> (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\lib\\demo\\fleet-provision\\deploy.js:19:6)",
               "Module._compile (internal/modules/cjs/loader.js:1068:30)",
               "Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)",
               "Module.load (internal/modules/cjs/loader.js:933:32)",

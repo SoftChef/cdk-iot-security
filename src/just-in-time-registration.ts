@@ -3,8 +3,8 @@ import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './components/ca-registrator';
 import { DeviceActivator } from './components/device-activator';
 import { ReviewReceptor } from './components/review-receptor';
+import { VaultProps } from './components/vault';
 import { VerifiersFetcher } from './components/verifiers-fetcher';
-import { VaultProps } from './vault';
 
 export module JustInTimeRegistration {
   export interface Props {
@@ -14,8 +14,8 @@ export module JustInTimeRegistration {
      */
     readonly vault: VaultProps;
     /**
-      * The verifiers to verify the client certificates.
-      */
+     * The verifiers to verify the client certificates.
+     */
     readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }

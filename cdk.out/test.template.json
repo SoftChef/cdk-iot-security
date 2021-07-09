@@ -1,14 +1,14 @@
 {
   "Resources": {
-    "myVaultE4D40284": {
+    "testVaultB2FA1968": {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain",
       "Metadata": {
-        "aws:cdk:path": "test/myVault/Resource"
+        "aws:cdk:path": "test/testVault/Resource"
       }
     },
-    "JustInTimeProvisiontestJitpRoletest86D72B65": {
+    "testFleetProvisionRoletest781E9D26": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -37,13 +37,13 @@
             ]
           }
         ],
-        "RoleName": "JitpRoleName-test"
+        "RoleName": "FleetProvisionRoleName-test"
       },
       "Metadata": {
-        "aws:cdk:path": "test/JustInTimeProvision-test/JitpRole-test/Resource"
+        "aws:cdk:path": "test/test/FleetProvisionRole-test/Resource"
       }
     },
-    "JustInTimeProvisiontestCaRegistratortestServiceRoleF2DB2772": {
+    "testFleetGeneratortestServiceRoleC606281F": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -74,10 +74,10 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "test/JustInTimeProvision-test/CaRegistrator-test/ServiceRole/Resource"
+        "aws:cdk:path": "test/test/FleetGenerator-test/ServiceRole/Resource"
       }
     },
-    "JustInTimeProvisiontestCaRegistratortestServiceRoleDefaultPolicyBCDA7D56": {
+    "testFleetGeneratortestServiceRoleDefaultPolicy1B6D8646": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
@@ -95,7 +95,7 @@
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "myVaultE4D40284",
+                    "testVaultB2FA1968",
                     "Arn"
                   ]
                 },
@@ -105,7 +105,7 @@
                     [
                       {
                         "Fn::GetAtt": [
-                          "myVaultE4D40284",
+                          "testVaultB2FA1968",
                           "Arn"
                         ]
                       },
@@ -118,23 +118,23 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "JustInTimeProvisiontestCaRegistratortestServiceRoleDefaultPolicyBCDA7D56",
+        "PolicyName": "testFleetGeneratortestServiceRoleDefaultPolicy1B6D8646",
         "Roles": [
           {
-            "Ref": "JustInTimeProvisiontestCaRegistratortestServiceRoleF2DB2772"
+            "Ref": "testFleetGeneratortestServiceRoleC606281F"
           }
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "test/JustInTimeProvision-test/CaRegistrator-test/ServiceRole/DefaultPolicy/Resource"
+        "aws:cdk:path": "test/test/FleetGenerator-test/ServiceRole/DefaultPolicy/Resource"
       }
     },
-    "JustInTimeProvisiontestCaRegistratortestA6355EC9": {
+    "testFleetGeneratortest3B4299BA": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
-            "Ref": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3BucketD6409836"
+            "Ref": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3BucketB287C4EF"
           },
           "S3Key": {
             "Fn::Join": [
@@ -147,7 +147,7 @@
                       "Fn::Split": [
                         "||",
                         {
-                          "Ref": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3VersionKey242C0698"
+                          "Ref": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1"
                         }
                       ]
                     }
@@ -160,7 +160,7 @@
                       "Fn::Split": [
                         "||",
                         {
-                          "Ref": "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3VersionKey242C0698"
+                          "Ref": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1"
                         }
                       ]
                     }
@@ -172,7 +172,7 @@
         },
         "Role": {
           "Fn::GetAtt": [
-            "JustInTimeProvisiontestCaRegistratortestServiceRoleF2DB2772",
+            "testFleetGeneratortestServiceRoleC606281F",
             "Arn"
           ]
         },
@@ -180,34 +180,31 @@
           "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "BUCKET_NAME": {
-              "Ref": "myVaultE4D40284"
+              "Ref": "testVaultB2FA1968"
             },
             "BUCKET_PREFIX": "",
-            "JITP_ROLE_ARN": {
+            "PROVISIONING_ROLE_ARN": {
               "Fn::GetAtt": [
-                "JustInTimeProvisiontestJitpRoletest86D72B65",
+                "testFleetProvisionRoletest781E9D26",
                 "Arn"
               ]
-            },
-            "VERIFIERS": "\"[]\""
+            }
           }
         },
         "Handler": "index.handler",
-        "MemorySize": 256,
-        "Runtime": "nodejs14.x",
-        "Timeout": 10
+        "Runtime": "nodejs14.x"
       },
       "DependsOn": [
-        "JustInTimeProvisiontestCaRegistratortestServiceRoleDefaultPolicyBCDA7D56",
-        "JustInTimeProvisiontestCaRegistratortestServiceRoleF2DB2772"
+        "testFleetGeneratortestServiceRoleDefaultPolicy1B6D8646",
+        "testFleetGeneratortestServiceRoleC606281F"
       ],
       "Metadata": {
-        "aws:cdk:path": "test/JustInTimeProvision-test/CaRegistrator-test/Resource",
-        "aws:asset:path": "asset.4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30",
+        "aws:cdk:path": "test/test/FleetGenerator-test/Resource",
+        "aws:asset:path": "asset.b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
         "aws:asset:property": "Code"
       }
     },
-    "JustInTimeProvisiontestCaRegistratortest5FF030B2": {
+    "testFleetGeneratortestCaRegistratortestB8E5DDFF": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
@@ -215,9 +212,10 @@
             {
               "Action": [
                 "iam:PassRole",
-                "iot:RegisterCACertificate",
-                "iot:GetRegistrationCode",
-                "iot:CreateTopicRule"
+                "iot:CreateProvisioningTemplate",
+                "iot:CreatePolicy",
+                "iot:CreateKeysAndCertificate",
+                "iot:AttachPolicy"
               ],
               "Effect": "Allow",
               "Resource": "*"
@@ -225,15 +223,15 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "JustInTimeProvisiontestCaRegistratortest5FF030B2",
+        "PolicyName": "testFleetGeneratortestCaRegistratortestB8E5DDFF",
         "Roles": [
           {
-            "Ref": "JustInTimeProvisiontestCaRegistratortestServiceRoleF2DB2772"
+            "Ref": "testFleetGeneratortestServiceRoleC606281F"
           }
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "test/JustInTimeProvision-test/CaRegistrator-test/CaRegistrator-test/Resource"
+        "aws:cdk:path": "test/test/FleetGenerator-test/CaRegistrator-test/Resource"
       }
     },
     "testRestApi5A6FA7A3": {
@@ -296,7 +294,7 @@
         "aws:cdk:path": "test/testRestApi/Account"
       }
     },
-    "testRestApiDeployment1ED9BE2Edc20e8a3ac7711e2ea17a3f9ea735b4d": {
+    "testRestApiDeployment1ED9BE2Ec87c071993da9a8f0d5a09911a8107c0": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -305,8 +303,8 @@
         "Description": "Automatically created by the RestApi construct"
       },
       "DependsOn": [
-        "testRestApicaRegisterPOST02A38AB8",
-        "testRestApicaRegister43BFBFF9"
+        "testRestApifleetGeneratorPOSTEDAA7597",
+        "testRestApifleetGenerator3C2A1C55"
       ],
       "Metadata": {
         "aws:cdk:path": "test/testRestApi/Deployment/Resource"
@@ -319,7 +317,7 @@
           "Ref": "testRestApi5A6FA7A3"
         },
         "DeploymentId": {
-          "Ref": "testRestApiDeployment1ED9BE2Edc20e8a3ac7711e2ea17a3f9ea735b4d"
+          "Ref": "testRestApiDeployment1ED9BE2Ec87c071993da9a8f0d5a09911a8107c0"
         },
         "StageName": "prod"
       },
@@ -327,7 +325,7 @@
         "aws:cdk:path": "test/testRestApi/DeploymentStage.prod/Resource"
       }
     },
-    "testRestApicaRegister43BFBFF9": {
+    "testRestApifleetGenerator3C2A1C55": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
@@ -336,22 +334,22 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "caRegister",
+        "PathPart": "fleetGenerator",
         "RestApiId": {
           "Ref": "testRestApi5A6FA7A3"
         }
       },
       "Metadata": {
-        "aws:cdk:path": "test/testRestApi/Default/caRegister/Resource"
+        "aws:cdk:path": "test/testRestApi/Default/fleetGenerator/Resource"
       }
     },
-    "testRestApicaRegisterPOSTApiPermissiontesttestRestApi8972EE79POSTcaRegisterBC9E59A4": {
+    "testRestApifleetGeneratorPOSTApiPermissiontesttestRestApi8972EE79POSTfleetGeneratorAEBF3FE2": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
-            "JustInTimeProvisiontestCaRegistratortestA6355EC9",
+            "testFleetGeneratortest3B4299BA",
             "Arn"
           ]
         },
@@ -380,22 +378,22 @@
               {
                 "Ref": "testRestApiDeploymentStageprod5AB21DDE"
               },
-              "/POST/caRegister"
+              "/POST/fleetGenerator"
             ]
           ]
         }
       },
       "Metadata": {
-        "aws:cdk:path": "test/testRestApi/Default/caRegister/POST/ApiPermission.testtestRestApi8972EE79.POST..caRegister"
+        "aws:cdk:path": "test/testRestApi/Default/fleetGenerator/POST/ApiPermission.testtestRestApi8972EE79.POST..fleetGenerator"
       }
     },
-    "testRestApicaRegisterPOSTApiPermissionTesttesttestRestApi8972EE79POSTcaRegister90FCBD9A": {
+    "testRestApifleetGeneratorPOSTApiPermissionTesttesttestRestApi8972EE79POSTfleetGeneratorAB73D933": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
-            "JustInTimeProvisiontestCaRegistratortestA6355EC9",
+            "testFleetGeneratortest3B4299BA",
             "Arn"
           ]
         },
@@ -420,21 +418,21 @@
               {
                 "Ref": "testRestApi5A6FA7A3"
               },
-              "/test-invoke-stage/POST/caRegister"
+              "/test-invoke-stage/POST/fleetGenerator"
             ]
           ]
         }
       },
       "Metadata": {
-        "aws:cdk:path": "test/testRestApi/Default/caRegister/POST/ApiPermission.Test.testtestRestApi8972EE79.POST..caRegister"
+        "aws:cdk:path": "test/testRestApi/Default/fleetGenerator/POST/ApiPermission.Test.testtestRestApi8972EE79.POST..fleetGenerator"
       }
     },
-    "testRestApicaRegisterPOST02A38AB8": {
+    "testRestApifleetGeneratorPOSTEDAA7597": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "POST",
         "ResourceId": {
-          "Ref": "testRestApicaRegister43BFBFF9"
+          "Ref": "testRestApifleetGenerator3C2A1C55"
         },
         "RestApiId": {
           "Ref": "testRestApi5A6FA7A3"
@@ -458,7 +456,7 @@
                 ":lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "JustInTimeProvisiontestCaRegistratortestA6355EC9",
+                    "testFleetGeneratortest3B4299BA",
                     "Arn"
                   ]
                 },
@@ -469,7 +467,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "test/testRestApi/Default/caRegister/POST/Resource"
+        "aws:cdk:path": "test/testRestApi/Default/fleetGenerator/POST/Resource"
       }
     },
     "CDKMetadata": {
@@ -484,17 +482,17 @@
     }
   },
   "Parameters": {
-    "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3BucketD6409836": {
+    "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3BucketB287C4EF": {
       "Type": "String",
-      "Description": "S3 bucket for asset \"4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30\""
+      "Description": "S3 bucket for asset \"b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d\""
     },
-    "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30S3VersionKey242C0698": {
+    "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1": {
       "Type": "String",
-      "Description": "S3 key for asset version \"4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30\""
+      "Description": "S3 key for asset version \"b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d\""
     },
-    "AssetParameters4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30ArtifactHash9BAB1489": {
+    "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dArtifactHash5BA6DE8A": {
       "Type": "String",
-      "Description": "Artifact hash for asset \"4b3608ed27fddd69d5ce01a4e1beb191b53c33dc691099dc959bcd89b26aea30\""
+      "Description": "Artifact hash for asset \"b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d\""
     }
   },
   "Outputs": {
