@@ -13,8 +13,8 @@
 .yarn-integrity
 /coverage
 /dist
-/dist/changelog.md
-/dist/version.txt
+/dist\changelog.md
+/dist\version.txt
 /lib
 /test-reports/
 build/Release

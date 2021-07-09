@@ -51,8 +51,8 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
 
-  const bucketName: string | undefined = process.env.BUCKET_NAME;
-  const bucketPrefix: string = process.env.BUCKET_PREFIX || '';
+  const bucketName: string = process.env.BUCKET_NAME!;
+  const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const region: string | undefined = process.env.AWS_REGION;
   const jitp: boolean = Joi.attempt(process.env.JITP === 'true' || false, Joi.boolean());
 

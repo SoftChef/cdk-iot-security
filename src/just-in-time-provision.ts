@@ -5,6 +5,10 @@ import { VaultProps } from './vault';
 
 export module JustInTimeProvision {
   export interface Props {
+    /**
+     * The secure AWS S3 Bucket recepting the CA registration
+     * information returned from the CA Registration Function.
+     */
     readonly vault: VaultProps;
   }
 }

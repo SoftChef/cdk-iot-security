@@ -3,7 +3,6 @@ import {
   Effect,
   Policy,
 } from '@aws-cdk/aws-iam';
-// import * as lambda from '@aws-cdk/aws-lambda';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import {
   Construct,
@@ -39,7 +38,7 @@ export class CaRegistrator extends NodejsFunction {
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
-      entry: `${__dirname}/../lambda-assets/ca-registrator/app.ts`,
+      entry: `${__dirname}/../../lambda-assets/ca-registrator/app.ts`,
       timeout: Duration.seconds(10),
       memorySize: 256,
     });

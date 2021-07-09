@@ -15,6 +15,8 @@ import {
   JustInTimeProvision,
   VerifiersFetcher,
   ReviewReceptor,
+  ReviewAcceptionRole,
+  JitrTopicRule,
 } from '../../src/index';
 
 describe('Test index.ts importation', () => {
@@ -27,13 +29,15 @@ describe('Test index.ts importation', () => {
     const bucket = new Bucket(anotherStack, 'userProvidedBucket');
     new DeviceActivator(stack, 'testDeviceActivator');
     new VerifiersFetcher(stack, 'testVerifiersFetcher');
-    new ReviewReceptor(stack, 'testReviewReceptor');
     new CaRegistrator(stack, 'testCaRegistrationFunction', {
       vault: {
         bucket: bucket,
         prefix: 'test',
       },
     });
+    const reviewReceptor = new ReviewReceptor(stack, 'testReviewReceptor');
+    new ReviewAcceptionRole(reviewReceptor, 'testReviewAcceptionRole', 'iot.amazonaws.com');
+    new JitrTopicRule(reviewReceptor, 'testJitrTopicRule');
   });
 });
 
@@ -66,7 +70,8 @@ describe('Test JustInTimeRegistration', () => {
     expect(stack).toCountResources('AWS::IAM::Role', 4);
     expect(stack).toCountResources('AWS::SQS::Queue', 1);
   });
-  test('integration test without providing verifier', () => {
+
+  test('integration test without providing verifier and prefix', () => {
     process.env.BASE_PATH = __dirname;
     process.env.APPS_PATH = path.resolve(__dirname, '..', '..', 'src', 'lambda-assets');
     const app = new App();
@@ -77,7 +82,6 @@ describe('Test JustInTimeRegistration', () => {
     new JustInTimeRegistration(stack, name, {
       vault: {
         bucket: bucket,
-        prefix: 'test',
       },
     });
 

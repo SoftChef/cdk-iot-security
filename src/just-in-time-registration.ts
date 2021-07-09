@@ -55,10 +55,6 @@ export class JustInTimeRegistration extends Construct {
     this.deviceActivator.addEventSource(
       new SqsEventSource(this.reviewReceptor, { batchSize: 1 }),
     );
-    // this.caRegistrator = new JitrCaRegistrator(this, id, {
-    //   vault: props.vault,
-    //   verifiers: props.verifiers,
-    // });
     this.caRegistrator = new CaRegistrator(this, id, {
       verifiers: props.verifiers,
       vault: props.vault,

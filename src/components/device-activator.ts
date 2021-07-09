@@ -16,7 +16,7 @@ export class DeviceActivator extends NodejsFunction {
    */
   constructor(scope: Construct, id: string) {
     super(scope, `DeviceActivator-${id}`, {
-      entry: `${__dirname}/../lambda-assets/device-activator/app.ts`,
+      entry: `${__dirname}/../../lambda-assets/device-activator/app.ts`,
     });
     this.role!.attachInlinePolicy(
       new Policy(this, `Policy-${this.node.id}`, {
