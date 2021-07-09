@@ -1,7 +1,7 @@
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import { Bucket } from '@aws-cdk/aws-s3';
 import * as cdk from '@aws-cdk/core';
-import { JustInTimeProvision } from '..';
+import { JustInTimeProvision } from '../..';
 
 const app = new cdk.App();
 const id = 'test';

@@ -18,7 +18,7 @@ import * as Joi from 'joi';
 import {
   VerificationError,
   InformationNotFoundError,
-} from './errors';
+} from '../errors';
 
 /**
  * The lambda function handler activating the client certificates.

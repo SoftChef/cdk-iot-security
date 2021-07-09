@@ -42,10 +42,12 @@ export class CaRegistrator extends NodejsFunction {
       timeout: Duration.seconds(10),
       memorySize: 256,
     });
+    props.vault.bucket.grantReadWrite(this);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
-    this.addEnvironment('JITP', props.jitpRole? 'true' : 'false');
-    this.addEnvironment('JITP_ROLE_ARN', props.jitpRole?.roleArn || '');
+    if (props.jitpRole) {
+      this.addEnvironment('JITP_ROLE_ARN', props.jitpRole.roleArn);
+    }
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',
     ),

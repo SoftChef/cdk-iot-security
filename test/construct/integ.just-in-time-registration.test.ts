@@ -17,6 +17,7 @@ import {
   ReviewReceptor,
   ReviewAcceptionRole,
   JitrTopicRule,
+  JitpRole,
 } from '../../src/index';
 
 describe('Test index.ts importation', () => {
@@ -38,6 +39,7 @@ describe('Test index.ts importation', () => {
     const reviewReceptor = new ReviewReceptor(stack, 'testReviewReceptor');
     new ReviewAcceptionRole(reviewReceptor, 'testReviewAcceptionRole', 'iot.amazonaws.com');
     new JitrTopicRule(reviewReceptor, 'testJitrTopicRule');
+    new JitpRole(stack, 'testJitpRole');
   });
 });
 

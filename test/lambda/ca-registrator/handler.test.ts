@@ -16,7 +16,7 @@ import {
   VerifierError,
   InputError,
   InformationNotFoundError,
-} from '../../../lambda-assets/ca-registrator/errors';
+} from '../../../lambda-assets/errors';
 
 const event = {
   body: {
@@ -106,7 +106,7 @@ describe('Sucessfully execute the handler', () => {
   });
 
   test('On JITP mode', async () => {
-    process.env.JITP = 'true';
+    process.env.JITP_ROLE_ARN = 'arn:test_jitp_role';
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });
@@ -164,11 +164,5 @@ describe('Fail on the provided wrong input data', () => {
     var response = await handler(eventWithWrongFormatCsrSubject);
     expect(response.statusCode).toBe(InputError.code);
   });
-});
-
-test('Get Error Codes successfully', () => {
-  expect(new VerifierError().code).toBe(VerifierError.code);
-  expect(new InputError().code).toBe(InputError.code);
-  expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
 });
 

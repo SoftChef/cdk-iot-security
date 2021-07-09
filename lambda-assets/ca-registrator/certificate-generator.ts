@@ -19,7 +19,7 @@ export class CertificateGenerator {
     const caCertificate: pki.Certificate = this.generateCACertificate(
       caKeys.publicKey, caKeys.privateKey, csrSubjects);
     const verificationKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
-    const verificationCertificate: pki.Certificate = this.generateVerificationCertificate(
+    const verificationCertificate: pki.Certificate = this.generateCaSignedCertificate(
       caKeys.privateKey, caCertificate, verificationKeys);
     const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = {
       ca: {
@@ -35,6 +35,25 @@ export class CertificateGenerator {
     };
     return certificates;
   }
+
+  public static getDeviceRegistrationCertificates(caCertificates: CertificateGenerator.CertificateSet) {
+    const caKeys: pki.KeyPair = {
+      publicKey: pki.publicKeyFromPem(caCertificates.publicKey),
+      privateKey: pki.privateKeyFromPem(caCertificates.privateKey),
+    };
+    const caCertificate: pki.Certificate = pki.certificateFromPem(caCertificates.certificate);
+
+    const deviceKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
+    const deviceCertificate: pki.Certificate = this.generateCaSignedCertificate(
+      caKeys.privateKey, caCertificate, deviceKeys);
+    const certificateSet: CertificateGenerator.CertificateSet = {
+      publicKey: forge.pki.publicKeyToPem(deviceKeys.publicKey),
+      privateKey: forge.pki.privateKeyToPem(deviceKeys.privateKey),
+      certificate: forge.pki.certificateToPem(deviceCertificate),
+    };
+    return certificateSet;
+  }
+
   /**
      * Generate a certificate template which can be further
      * used to generate a CA or a verification certificate.
@@ -91,7 +110,7 @@ export class CertificateGenerator {
      * @param years The valid time interval of the generated certificate. The default value is 1.
      * @returns A verification certificate.
      */
-  private static generateVerificationCertificate(
+  private static generateCaSignedCertificate(
     caPrivateKey: pki.PrivateKey,
     caCertificate: pki.Certificate,
     verificationKeys: pki.KeyPair,

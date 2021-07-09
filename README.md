@@ -51,6 +51,31 @@
 
 ## Roadmap
 
+## Just-in-Time Provision
+
+### Demonstration
+
+#### Construct Deployment
+
+    git clone https://github.com/SoftChef/cdk-iot-security.git
+    cd cdk-iot-security
+    npx projen build
+    cdk deploy --app 'node lib/demo/jitp/demo'
+
+After deploying the construct, an URL returned from the console as the following format:
+
+    https://<prefix>.execute-api.<region>.amazonaws.com/prod/
+
+#### Create CA Certificate
+
+Call API with this command.
+
+    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
+
+The registered CA certificate ID will be returned in the following format.
+
+    {"certificateId":"7d0558657f130e42aa9b6f810e36b817c902b314ca8ab4b7fd3817274aa1c154"}
+
 ### JITP
 
 * Directly return the generated device certificate and keys in a secure way.

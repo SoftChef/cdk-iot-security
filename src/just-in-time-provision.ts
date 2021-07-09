@@ -27,7 +27,7 @@ export class JustInTimeProvision extends Construct {
    * @param props
    */
   constructor(scope: Construct, id: string, props: JustInTimeProvision.Props) {
-    super(scope, `CaRegisterApi-${id}`);
+    super(scope, `JustInTimeProvision-${id}`);
     this.jitpRole = new JitpRole(this, id);
     this.caRegistrator = new CaRegistrator(this, id, {
       jitpRole: this.jitpRole,
