@@ -41,7 +41,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
       provisioningRoleArn,
     );
     const provisioningClaimCertificate = await createProvisioningClaimCertificate(templateArn, templateName, bucketName, bucketPrefix);
-    return response.json({ provisioningClaimCertificate });
+    return response.json({
+      provisioningClaimCertificate,
+      templateName,
+    });
   } catch (error) {
     return response.error(error.stack);
   }

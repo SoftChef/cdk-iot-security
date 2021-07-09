@@ -19,13 +19,13 @@
           {
             "type": "aws:cdk:asset",
             "data": {
-              "path": "asset.b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
-              "id": "b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
+              "path": "asset.7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373",
+              "id": "7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373",
               "packaging": "zip",
-              "sourceHash": "b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d",
-              "s3BucketParameter": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3BucketB287C4EF",
-              "s3KeyParameter": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1",
-              "artifactHashParameter": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dArtifactHash5BA6DE8A"
+              "sourceHash": "7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373",
+              "s3BucketParameter": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3Bucket23414690",
+              "s3KeyParameter": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3VersionKey0E0A0E63",
+              "artifactHashParameter": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373ArtifactHash55841879"
             },
             "trace": [
               "ConstructNode.addMetadata (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\construct-compat.js:405:62)",
@@ -163,10 +163,10 @@
             ]
           }
         ],
-        "/test/AssetParameters/b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d/S3Bucket": [
+        "/test/AssetParameters/7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373/S3Bucket": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3BucketB287C4EF",
+            "data": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3Bucket23414690",
             "trace": [
               "new FileAssetParameters (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\private\\asset-parameters.js:12:36)",
               "LegacyStackSynthesizer.doAddFileAsset (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\stack-synthesizers\\legacy.js:162:22)",
@@ -189,10 +189,10 @@
             ]
           }
         ],
-        "/test/AssetParameters/b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d/S3VersionKey": [
+        "/test/AssetParameters/7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373/S3VersionKey": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dS3VersionKeyB26DD0E1",
+            "data": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3VersionKey0E0A0E63",
             "trace": [
               "new FileAssetParameters (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\private\\asset-parameters.js:16:35)",
               "LegacyStackSynthesizer.doAddFileAsset (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\stack-synthesizers\\legacy.js:162:22)",
@@ -215,10 +215,10 @@
             ]
           }
         ],
-        "/test/AssetParameters/b42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566d/ArtifactHash": [
+        "/test/AssetParameters/7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373/ArtifactHash": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AssetParametersb42c60e5b3bc676fd6aee19eace05ab3ae4468b6cbd9f0db426359858cdc566dArtifactHash5BA6DE8A",
+            "data": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373ArtifactHash55841879",
             "trace": [
               "new FileAssetParameters (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\private\\asset-parameters.js:20:38)",
               "LegacyStackSynthesizer.doAddFileAsset (C:\\Users\\yehta\\softchef\\aws\\cdk-iot-security\\node_modules\\@aws-cdk\\core\\lib\\stack-synthesizers\\legacy.js:162:22)",
