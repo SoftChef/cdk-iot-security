@@ -5,7 +5,6 @@ export { JustInTimeRegistration } from './just-in-time-registration';
 export { VerifiersFetcher } from './components/verifiers-fetcher';
 export { Vault, VaultProps } from './components/vault';
 export { ReviewReceptor, ReviewAcceptionRole, JitrTopicRule } from './components/review-receptor';
-export { JitpRole } from './components/jitp-role';
+export { JitpRole, FleetProvisionRole } from './components/provision-role';
 export { FleetProvision } from './fleet-provision';
 export { FleetGenerator } from './components/fleet-generator';
-export { FleetProvisionRole } from './components/fleet-provision-role';

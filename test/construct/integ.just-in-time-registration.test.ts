@@ -43,12 +43,12 @@ describe('Test index.ts importation', () => {
     new ReviewAcceptionRole(reviewReceptor, 'testReviewAcceptionRole', 'iot.amazonaws.com');
     new JitrTopicRule(reviewReceptor, 'testJitrTopicRule');
     new JitpRole(stack, 'testJitpRole');
-    new FleetProvisionRole(stack, 'testFleetProvisionRole');
     new FleetGenerator(stack, 'testFleetGenerator', {
       vault: {
         bucket: bucket,
         prefix: 'test',
       },
+      fleetProvisionRole: new FleetProvisionRole(stack, 'testFleetProvisionRole'),
     });
     new JustInTimeRegistration(stack, 'testJustInTimeRegistration', {
       vault: {

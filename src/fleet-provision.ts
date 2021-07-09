@@ -1,6 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import { FleetGenerator } from './components/fleet-generator';
-import { FleetProvisionRole } from './components/fleet-provision-role';
+import { FleetProvisionRole } from './components/provision-role';
 import { VaultProps } from './components/vault';
 
 export module FleetProvision {
@@ -21,7 +21,7 @@ export class FleetProvision extends cdk.Construct {
     this.fleetProvisionRole = new FleetProvisionRole(this, id);
     this.fleetGenerator = new FleetGenerator(this, id, {
       vault: props.vault,
+      fleetProvisionRole: this.fleetProvisionRole,
     });
-    this.fleetGenerator.addEnvironment('PROVISIONING_ROLE_ARN', this.fleetProvisionRole.roleArn);
   }
 }

@@ -1,6 +1,6 @@
 import { Construct } from '@aws-cdk/core';
 import { CaRegistrator } from './components/ca-registrator';
-import { JitpRole } from './components/jitp-role';
+import { JitpRole } from './components/provision-role';
 import { VaultProps } from './components/vault';
 
 export module JustInTimeProvision {

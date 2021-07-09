@@ -8,7 +8,7 @@ import {
   Construct,
   Duration,
 } from '@aws-cdk/core';
-import { JitpRole } from './jitp-role';
+import { JitpRole } from './provision-role';
 import { VaultProps } from './vault';
 import { VerifiersFetcher } from './verifiers-fetcher';
 
