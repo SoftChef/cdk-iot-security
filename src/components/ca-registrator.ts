@@ -3,7 +3,8 @@ import {
   Effect,
   Policy,
 } from '@aws-cdk/aws-iam';
-import * as lambda from '@aws-cdk/aws-lambda';
+// import * as lambda from '@aws-cdk/aws-lambda';
+import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import {
   Construct,
   Duration,
@@ -29,7 +30,7 @@ export module CaRegistrator {
     readonly jitpRole?: JitpRole;
   }
 }
-export class CaRegistrator extends lambda.Function {
+export class CaRegistrator extends NodejsFunction {
   /**
    * Initialize the CA Registrator Function.
    * @param scope
@@ -38,14 +39,12 @@ export class CaRegistrator extends lambda.Function {
    */
   constructor(scope: Construct, id: string, props: CaRegistrator.Props) {
     super(scope, `CaRegistrator-${id}`, {
-      code: lambda.Code.fromAsset(`${__dirname}/../../lambda-assets/ca-registrator`),
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'app.handler',
+      entry: `${__dirname}/../lambda-assets/ca-registrator/app.ts`,
       timeout: Duration.seconds(10),
       memorySize: 256,
     });
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
-    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix);
+    this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
     this.addEnvironment('JITP', props.jitpRole? 'true' : 'false');
     this.addEnvironment('JITP_ROLE_ARN', props.jitpRole?.roleArn || '');
     this.addEnvironment('VERIFIERS', JSON.stringify(

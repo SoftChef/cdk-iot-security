@@ -12,5 +12,5 @@ export interface VaultProps {
   /**
      * The specified prefix to save the file.
      */
-  readonly prefix: string;
+  readonly prefix?: string;
 }
