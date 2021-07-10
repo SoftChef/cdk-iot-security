@@ -19,7 +19,7 @@ import {
 import * as Joi from 'joi';
 import {
   CertificateGenerator,
-} from '../ca-registrator/certificate-generator';
+} from '../certificate-generator';
 import {
   InformationNotFoundError,
   VerificationError,

@@ -32,7 +32,7 @@ export class JustInTimeProvision extends Construct {
     super(scope, `JustInTimeProvision-${id}`);
     this.registrationConfigRole = new RegistrationConfigRole(this, id);
     this.caRegistrator = new CaRegistrator(this, id, {
-      role: this.registrationConfigRole,
+      registrationConfigRole: this.registrationConfigRole,
       vault: props.vault,
     });
     this.deviceCertificateGenerator = new DeviceCertificateGenerator(this, id, {

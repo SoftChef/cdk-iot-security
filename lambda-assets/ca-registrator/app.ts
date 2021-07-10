@@ -13,12 +13,12 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
+import { CertificateGenerator } from '../certificate-generator';
 import {
   VerifierError,
   InputError,
   InformationNotFoundError,
 } from '../errors';
-import { CertificateGenerator } from './certificate-generator';
 
 /**
  * event examples

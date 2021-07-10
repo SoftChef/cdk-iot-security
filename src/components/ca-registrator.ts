@@ -26,7 +26,7 @@ export module CaRegistrator {
     /**
      * The Role for JITP.
      */
-    readonly role?: RegistrationConfigRole;
+    readonly registrationConfigRole?: RegistrationConfigRole;
   }
 }
 export class CaRegistrator extends NodejsFunction {
@@ -45,8 +45,8 @@ export class CaRegistrator extends NodejsFunction {
     props.vault.bucket.grantReadWrite(this);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
-    if (props.role) {
-      this.addEnvironment('REGISTRATION_CONFIG_ROLE_ARN', props.role.roleArn);
+    if (props.registrationConfigRole) {
+      this.addEnvironment('REGISTRATION_CONFIG_ROLE_ARN', props.registrationConfigRole.roleArn);
     }
     this.addEnvironment('VERIFIERS', JSON.stringify(
       props.verifiers?.map(verifier => verifier.functionName) || '[]',
