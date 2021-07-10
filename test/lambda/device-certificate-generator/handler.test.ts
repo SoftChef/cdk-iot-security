@@ -14,7 +14,7 @@ import {
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
-import { CertificateGenerator } from '../../../lambda-assets/ca-registrator/certificate-generator';
+import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
 import { handler } from '../../../lambda-assets/device-certificate-generator/app';
 import {
   InformationNotFoundError,
