@@ -33,23 +33,19 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const caCertificateId: string = request.input('caCertificateId');
   const deviceInfo: string = request.input('deviceInfo');
   try {
-    const caCertificates = await verify(
-      caCertificateId,
-      deviceInfo,
-      bucketName,
-      bucketPrefix,
-    );
+    await verify(caCertificateId, deviceInfo);
+    const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates);
     deviceCertificates.certificate += caCertificates.certificate;
     return response.json({
       deviceCertificates,
     });
   } catch (error) {
-    return response.error(error);
+    return response.error(error.stack, error.code);
   }
 };
 
-async function verify(caCertificateId: string, deviceInfo: string, bucketName: string, bucketPrefix: string) {
+async function verify(caCertificateId: string, deviceInfo: string) {
   const iotClient = new IoTClient({});
   const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
     new DescribeCACertificateCommand({
@@ -106,6 +102,8 @@ async function verify(caCertificateId: string, deviceInfo: string, bucketName: s
         throw new VerificationError(error.message);
       });
   }
+}
+async function getCaCertificate(caCertificateId: string, bucketName: string, bucketPrefix: string) {
   const key = path.join(bucketPrefix, caCertificateId, 'ca-certificate.json');
   const { Body: fileStream } = await new S3Client({}).send(
     new GetObjectCommand({
@@ -113,7 +111,6 @@ async function verify(caCertificateId: string, deviceInfo: string, bucketName: s
       Key: key,
     }),
   );
-
   const streamToString = (stream: any): Promise<string> =>
     new Promise((resolve, reject) => {
       const chunks: any[] = [];

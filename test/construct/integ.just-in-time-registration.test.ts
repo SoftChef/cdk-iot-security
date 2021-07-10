@@ -18,6 +18,7 @@ import {
   ReviewAcceptionRole,
   JitrTopicRule,
   RegistrationConfigRole,
+  DeviceCertificateGenerator,
 } from '../../src/index';
 
 describe('Test index.ts importation', () => {
@@ -34,6 +35,11 @@ describe('Test index.ts importation', () => {
       vault: {
         bucket: bucket,
         prefix: 'test',
+      },
+    });
+    new DeviceCertificateGenerator(stack, 'testDeviceCertificateGenerator', {
+      vault: {
+        bucket: bucket,
       },
     });
     const reviewReceptor = new ReviewReceptor(stack, 'testReviewReceptor');
@@ -86,7 +92,6 @@ describe('Test JustInTimeRegistration', () => {
         bucket: bucket,
       },
     });
-
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
     expect(stack).toCountResources('AWS::Lambda::Function', 3);
     expect(stack).toCountResources('AWS::IAM::Role', 4);
@@ -109,9 +114,8 @@ describe('Test JustInTimeProvision', () => {
         prefix: 'test',
       },
     });
-
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 1);
-    expect(stack).toCountResources('AWS::IAM::Role', 2);
+    expect(stack).toCountResources('AWS::Lambda::Function', 2);
+    expect(stack).toCountResources('AWS::IAM::Role', 3);
   });
 });
