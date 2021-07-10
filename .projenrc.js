@@ -48,7 +48,7 @@ const project = new AwsCdkConstructLibrary({
     },
   },
   gitignore: [
-    '/cdk.out',
+    'cdk.out',
   ],
 });
 project.synth();

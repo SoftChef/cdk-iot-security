@@ -15,9 +15,9 @@
 
 ## Just-in-Time Registration
 
-![](./doc/JITR-AWS.png)
+![](./doc/jitr/JITR-AWS.png)
 
-![](./doc/JITR.png)
+![](./doc/jitr/JITR.png)
 
 ### Basic Usage
 
@@ -50,6 +50,8 @@
     });
 
 ## Just-in-Time Provision
+
+![](./doc/jitp/JITP.png)
 
 ### Example
 

@@ -11,14 +11,14 @@
 .jsii
 .nyc_output
 .yarn-integrity
-/cdk.out
 /coverage
 /dist
-/dist/changelog.md
-/dist/version.txt
+/dist\changelog.md
+/dist\version.txt
 /lib
 /test-reports/
 build/Release
+cdk.out
 coverage
 jspm_packages/
 junit.xml
