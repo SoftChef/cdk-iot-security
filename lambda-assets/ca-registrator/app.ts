@@ -19,7 +19,7 @@ import {
   InputError,
   InformationNotFoundError,
 } from '../errors';
-import deafultTemplateBody from './deafult-template.json';
+import deafultTemplateBody from './default-template.json';
 
 /**
  * event examples
