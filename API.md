@@ -6,6 +6,7 @@ Name|Description
 ----|-----------
 [CaRegistrator](#softchef-cdk-iot-security-caregistrator)|*No description*
 [DeviceActivator](#softchef-cdk-iot-security-deviceactivator)|*No description*
+[DeviceCertificateGenerator](#softchef-cdk-iot-security-devicecertificategenerator)|*No description*
 [JitrTopicRule](#softchef-cdk-iot-security-jitrtopicrule)|*No description*
 [JustInTimeProvision](#softchef-cdk-iot-security-justintimeprovision)|*No description*
 [JustInTimeRegistration](#softchef-cdk-iot-security-justintimeregistration)|*No description*
@@ -20,6 +21,7 @@ Name|Description
 Name|Description
 ----|-----------
 [CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)|*No description*
+[DeviceCertificateGenerator.Props](#softchef-cdk-iot-security-devicecertificategenerator-props)|*No description*
 [JustInTimeProvision.Props](#softchef-cdk-iot-security-justintimeprovision-props)|*No description*
 [JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)|*No description*
 [VaultProps](#softchef-cdk-iot-security-vaultprops)|*No description*
@@ -71,6 +73,30 @@ new DeviceActivator(scope: Construct, id: string)
 
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
+
+
+
+
+## class DeviceCertificateGenerator  <a id="softchef-cdk-iot-security-devicecertificategenerator"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+
+### Initializer
+
+
+
+
+```ts
+new DeviceCertificateGenerator(scope: Construct, id: string, props: Props)
+```
+
+* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+* **props** (<code>[DeviceCertificateGenerator.Props](#softchef-cdk-iot-security-devicecertificategenerator-props)</code>)  *No description*
+  * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
 
 
 
@@ -128,6 +154,7 @@ new JustInTimeProvision(scope: Construct, id: string, props: Props)
 Name | Type | Description 
 -----|------|-------------
 **caRegistrator** | <code>[CaRegistrator](#softchef-cdk-iot-security-caregistrator)</code> | <span></span>
+**deviceCertificateGenerator** | <code>[DeviceCertificateGenerator](#softchef-cdk-iot-security-devicecertificategenerator)</code> | <span></span>
 **registrationConfigRole** | <code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code> | <span></span>
 
 
@@ -292,6 +319,19 @@ Name | Type | Description
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **role**? | <code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code> | The Role for JITP.<br/>__*Optional*__
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
+
+
+
+## struct Props  <a id="softchef-cdk-iot-security-devicecertificategenerator-props"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 
 
 

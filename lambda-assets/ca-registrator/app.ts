@@ -54,10 +54,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const region: string | undefined = process.env.AWS_REGION;
-  const jitpRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
-  const registrationConfig: {[key:string]: any} = jitpRoleArn? {
+  const registrationRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
+  const registrationConfig: {[key:string]: any} = registrationRoleArn? {
     templateBody: request.input('templateBody', deafultTemplateBody),
-    roleArn: process.env.JITP_ROLE_ARN,
+    roleArn: registrationRoleArn,
   } : {};
 
   const iotClient: IoTClient = new IoTClient({ region: region });
