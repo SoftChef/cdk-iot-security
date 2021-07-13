@@ -286,8 +286,14 @@ Object {
           "Statement": Array [
             Object {
               "Action": Array [
+                "iot:DescribeCertificate",
                 "iot:DescribeCACertificate",
                 "iot:ListTagsForResource",
+                "iot:CreateThing",
+                "iot:CreatePolicy",
+                "iot:AttachPolicy",
+                "iot:AttachThingPrincipal",
+                "iot:UpdateCertificate",
                 "lambda:InvokeFunction",
                 "lambda:InvokeAsync",
               ],
