@@ -115,7 +115,7 @@ describe('Test JustInTimeProvision', () => {
       },
     });
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 2);
-    expect(stack).toCountResources('AWS::IAM::Role', 3);
+    expect(stack).toCountResources('AWS::Lambda::Function', 3);
+    expect(stack).toCountResources('AWS::IAM::Role', 4);
   });
 });

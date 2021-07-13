@@ -51,6 +51,8 @@
 
 ## Just-in-Time Provision
 
+![](./doc/jitp/JITP-AWS.png)
+
 ![](./doc/jitp/JITP.png)
 
 ### Example

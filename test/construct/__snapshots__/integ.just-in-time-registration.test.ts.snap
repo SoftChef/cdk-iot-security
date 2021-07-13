@@ -27,6 +27,18 @@ Object {
       "Description": "S3 key for asset version \\"d618db21e948c07ae10a21037a555ee8565256b995245ac66a02d65940f5d693\\"",
       "Type": "String",
     },
+    "AssetParameterse235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbddArtifactHashA956A01A": Object {
+      "Description": "Artifact hash for asset \\"e235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbdd\\"",
+      "Type": "String",
+    },
+    "AssetParameterse235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbddS3Bucket063ABB8E": Object {
+      "Description": "S3 bucket for asset \\"e235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbdd\\"",
+      "Type": "String",
+    },
+    "AssetParameterse235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbddS3VersionKey172C11F5": Object {
+      "Description": "S3 key for asset version \\"e235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbdd\\"",
+      "Type": "String",
+    },
   },
   "Resources": Object {
     "JustInTimeProvisiontestcaseCaRegistratortestcase21FFC435": Object {
@@ -394,6 +406,97 @@ Object {
           },
         ],
         "RoleName": "JitpRoleName-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "JustInTimeProvisiontestcaseVerifiersFetchertestcase669A84BA": Object {
+      "DependsOn": Array [
+        "JustInTimeProvisiontestcaseVerifiersFetchertestcaseServiceRole9B13C41F",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameterse235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbddS3Bucket063ABB8E",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameterse235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbddS3VersionKey172C11F5",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameterse235c5333d695d9b8adc161c63cb38e1a8b38c79d71d1e2577459d12af70fbddS3VersionKey172C11F5",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "VERIFIERS": "\\"[]\\"",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "JustInTimeProvisiontestcaseVerifiersFetchertestcaseServiceRole9B13C41F",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "JustInTimeProvisiontestcaseVerifiersFetchertestcaseServiceRole9B13C41F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
       },
       "Type": "AWS::IAM::Role",
     },
