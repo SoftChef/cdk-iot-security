@@ -101,6 +101,7 @@ async function verify(caCertificateId: string, deviceInfo: string) {
       });
   }
 }
+
 async function getCaCertificate(caCertificateId: string, bucketName: string, bucketPrefix: string) {
   const key = path.join(bucketPrefix, caCertificateId, 'ca-certificate.json');
   const { Body: fileStream } = await new S3Client({}).send(
