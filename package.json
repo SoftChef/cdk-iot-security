@@ -87,7 +87,9 @@
     "@softchef/lambda-events": "^0.0.8",
     "@types/node": "15.12.4",
     "@types/node-forge": "^0.10.1",
+    "@types/ws": "^7.4.6",
     "joi": "^17.4.0",
+    "mqtt": "^4.2.8",
     "node-forge": "^0.10.0"
   },
   "bundledDependencies": [
@@ -97,7 +99,9 @@
     "@softchef/lambda-events",
     "@types/node-forge",
     "@types/node",
+    "@types/ws",
     "joi",
+    "mqtt",
     "node-forge"
   ],
   "keywords": [
