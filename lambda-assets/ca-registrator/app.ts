@@ -13,12 +13,13 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
+import { CertificateGenerator } from '../certificate-generator';
 import {
   VerifierError,
   InputError,
   InformationNotFoundError,
 } from '../errors';
-import { CertificateGenerator } from './certificate-generator';
+import deafultTemplateBody from './default-template.json';
 
 /**
  * event examples
@@ -40,8 +41,6 @@ import { CertificateGenerator } from './certificate-generator';
  * }
  */
 
-const deafultTemplateBody: string = '{ "Parameters" : { "AWS::IoT::Certificate::Country" : { "Type" : "String" }, "AWS::IoT::Certificate::Id" : { "Type" : "String" } }, "Resources" : { "thing" : { "Type" : "AWS::IoT::Thing", "Properties" : { "ThingName" : {"Ref" : "AWS::IoT::Certificate::Id"}, "AttributePayload" : { "version" : "v1", "country" : {"Ref" : "AWS::IoT::Certificate::Country"}} } }, "certificate" : { "Type" : "AWS::IoT::Certificate", "Properties" : { "CertificateId": {"Ref" : "AWS::IoT::Certificate::Id"}, "Status" : "ACTIVE" } }, "policy" : {"Type" : "AWS::IoT::Policy", "Properties" : { "PolicyDocument" : "{\\"Version\\": \\"2012-10-17\\",\\"Statement\\": [{\\"Effect\\":\\"Allow\\",\\"Action\\": [\\"iot:Connect\\",\\"iot:Publish\\"],\\"Resource\\" : [\\"*\\"]}]}" } } } }';
-
 /**
  * The lambda function handler for register CA.
  * @param event The HTTP request from the API gateway.
@@ -54,10 +53,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const region: string | undefined = process.env.AWS_REGION;
-  const jitpRoleArn: string | undefined = process.env.JITP_ROLE_ARN;
-  const registrationConfig: {[key:string]: any} = jitpRoleArn? {
-    templateBody: request.input('templateBody', deafultTemplateBody),
-    roleArn: process.env.JITP_ROLE_ARN,
+  const registrationRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
+  const registrationConfig: {[key:string]: any} = registrationRoleArn? {
+    templateBody: request.input('templateBody', JSON.stringify(deafultTemplateBody)),
+    roleArn: registrationRoleArn,
   } : {};
 
   const iotClient: IoTClient = new IoTClient({ region: region });
@@ -142,9 +141,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
         ),
       }),
     );
-    if (jitpRoleArn) {
-      return response.json(results);
-    }
     return response.json({ certificateId: certificateId });
   } catch (error) {
     return response.error(error, error.code);

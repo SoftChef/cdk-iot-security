@@ -17,10 +17,11 @@ import {
   ReviewReceptor,
   ReviewAcceptionRole,
   JitrTopicRule,
-  JitpRole,
   FleetGenerator,
   FleetProvision,
   FleetProvisionRole,
+  RegistrationConfigRole,
+  DeviceCertificateGenerator,
 } from '../../src/index';
 
 describe('Test index.ts importation', () => {
@@ -39,10 +40,14 @@ describe('Test index.ts importation', () => {
         prefix: 'test',
       },
     });
+    new DeviceCertificateGenerator(stack, 'testDeviceCertificateGenerator', {
+      vault: {
+        bucket: bucket,
+      },
+    });
     const reviewReceptor = new ReviewReceptor(stack, 'testReviewReceptor');
     new ReviewAcceptionRole(reviewReceptor, 'testReviewAcceptionRole', 'iot.amazonaws.com');
     new JitrTopicRule(reviewReceptor, 'testJitrTopicRule');
-    new JitpRole(stack, 'testJitpRole');
     new FleetGenerator(stack, 'testFleetGenerator', {
       vault: {
         bucket: bucket,
@@ -60,6 +65,7 @@ describe('Test index.ts importation', () => {
         bucket: bucket,
       },
     });
+    new RegistrationConfigRole(stack, 'testJitpRole');
   });
 });
 
@@ -126,7 +132,7 @@ describe('Integration test', () => {
       },
     });
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 1);
-    expect(stack).toCountResources('AWS::IAM::Role', 2);
+    expect(stack).toCountResources('AWS::Lambda::Function', 2);
+    expect(stack).toCountResources('AWS::IAM::Role', 3);
   });
 });

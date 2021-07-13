@@ -36,13 +36,20 @@ const project = new AwsCdkConstructLibrary({
     'esbuild',
   ],
   tsconfig: {
+    include: [
+      'lambda-assets',
+    ],
     compilerOptions: {
       target: 'ES6',
       lib: [
         'DOM',
         'ES2020',
       ],
+      esModuleInterop: true,
     },
   },
+  gitignore: [
+    'cdk.out',
+  ],
 });
 project.synth();

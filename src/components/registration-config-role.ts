@@ -5,7 +5,11 @@ import {
 } from '@aws-cdk/aws-iam';
 import { Construct } from '@aws-cdk/core';
 
+<<<<<<< HEAD:src/components/provision-role.ts
 export class ProvisionRole extends Role {
+=======
+export class RegistrationConfigRole extends Role {
+>>>>>>> jitp:src/components/registration-config-role.ts
   constructor(scope: Construct, id: string) {
     super(scope, `ProvisionRole-${id}`, {
       roleName: `ProvisionRoleName-${id}`,
@@ -17,6 +21,6 @@ export class ProvisionRole extends Role {
   }
 }
 
-export class RegistrationConfigRole extends ProvisionRole {}
+export class JitpRole extends ProvisionRole {}
 
 export class FleetProvisionRole extends ProvisionRole {}

@@ -15,9 +15,9 @@
 
 ## Just-in-Time Registration
 
-![](./doc/JITR-AWS.png)
+![](./doc/jitr/JITR-AWS.png)
 
-![](./doc/JITR.png)
+![](./doc/jitr/JITR.png)
 
 ### Basic Usage
 
@@ -49,36 +49,46 @@
         ]
     });
 
-## Roadmap
-
 ## Just-in-Time Provision
 
-### Demonstration
+![](./doc/jitp/JITP.png)
 
-#### Construct Deployment
+### Example
+
+JITP work flow is usually applied in a situation that the device is not able to generate their own certificate. This example simulate the situation with the following steps: the service provider deploy the JITP construct and provide the API; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connet to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
+
+First, deploy the JITP construct with demo file. Two AWS lambda functions, CA Registrator and Device Certificate Generator, will be deployed for further use.
 
     git clone https://github.com/SoftChef/cdk-iot-security.git
     cd cdk-iot-security
     npx projen build
     cdk deploy --app 'node lib/demo/jitp/deploy'
 
-After deploying the construct, an URL returned from the console as the following format:
+After deploying the construct, an URL returned from the console as the following format. In the following steps, we will use this URL to access the API.
 
     https://<prefix>.execute-api.<region>.amazonaws.com/prod/
 
-#### Create CA Certificate
+Call the API with the following command. The API will invoke the CA Registrator and return an ID belongs to a CA certificate registered on AWS IoT. Save the CA ID for later use. In this POST request, you can also send your own provision template. You can design your own way to use the CA Registrator.
 
-Call API with this command.
+    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
 
-    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister > lib/demo/jitp/ca-certificate.json
+Call the API with the following command. The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Notice that the device certificate is not registered on AWS IoT yet.
 
-The registered CA certificate ID will be returned and saved in the file ```ca-certificate.json```.
+    curl -X POST -d '{caCertificateId:"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
 
-#### Simulate the Work FLow
+You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
 
-    node lib/demo/jitp/example-flow.js
+The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
+
+    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > lib/demo/jitp/AmazonRootCA1.pem
+
+Finally, the device use the certificate to connect to the AWS IoT through MQTT connection. We simulate this process with the demostration file.
+
+    node lib/demo/jitp/connect.js
 
 A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
+
+## Roadmap
 
 ### JITP
 

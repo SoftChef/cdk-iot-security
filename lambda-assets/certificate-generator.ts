@@ -1,5 +1,4 @@
-import * as forge from 'node-forge';
-import { pki } from 'node-forge';
+import { pki, md } from 'node-forge';
 
 export class CertificateGenerator {
 
@@ -15,22 +14,22 @@ export class CertificateGenerator {
      * @returns
      */
   public static getCaRegistrationCertificates(csrSubjects: CertificateGenerator.CsrSubjects = {}) {
-    const caKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
+    const caKeys: pki.KeyPair = pki.rsa.generateKeyPair(2048);
     const caCertificate: pki.Certificate = this.generateCACertificate(
       caKeys.publicKey, caKeys.privateKey, csrSubjects);
-    const verificationKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
+    const verificationKeys: pki.KeyPair = pki.rsa.generateKeyPair(2048);
     const verificationCertificate: pki.Certificate = this.generateCaSignedCertificate(
       caKeys.privateKey, caCertificate, verificationKeys);
     const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = {
       ca: {
-        publicKey: forge.pki.publicKeyToPem(caKeys.publicKey),
-        privateKey: forge.pki.privateKeyToPem(caKeys.privateKey),
-        certificate: forge.pki.certificateToPem(caCertificate),
+        publicKey: pki.publicKeyToPem(caKeys.publicKey),
+        privateKey: pki.privateKeyToPem(caKeys.privateKey),
+        certificate: pki.certificateToPem(caCertificate),
       },
       verification: {
-        publicKey: forge.pki.publicKeyToPem(verificationKeys.publicKey),
-        privateKey: forge.pki.privateKeyToPem(verificationKeys.privateKey),
-        certificate: forge.pki.certificateToPem(verificationCertificate),
+        publicKey: pki.publicKeyToPem(verificationKeys.publicKey),
+        privateKey: pki.privateKeyToPem(verificationKeys.privateKey),
+        certificate: pki.certificateToPem(verificationCertificate),
       },
     };
     return certificates;
@@ -43,13 +42,13 @@ export class CertificateGenerator {
     };
     const caCertificate: pki.Certificate = pki.certificateFromPem(caCertificates.certificate);
 
-    const deviceKeys: pki.KeyPair = forge.pki.rsa.generateKeyPair(2048);
+    const deviceKeys: pki.KeyPair = pki.rsa.generateKeyPair(2048);
     const deviceCertificate: pki.Certificate = this.generateCaSignedCertificate(
       caKeys.privateKey, caCertificate, deviceKeys);
     const certificateSet: CertificateGenerator.CertificateSet = {
-      publicKey: forge.pki.publicKeyToPem(deviceKeys.publicKey),
-      privateKey: forge.pki.privateKeyToPem(deviceKeys.privateKey),
-      certificate: forge.pki.certificateToPem(deviceCertificate),
+      publicKey: pki.publicKeyToPem(deviceKeys.publicKey),
+      privateKey: pki.privateKeyToPem(deviceKeys.privateKey),
+      certificate: pki.certificateToPem(deviceCertificate),
     };
     return certificateSet;
   }
@@ -62,7 +61,7 @@ export class CertificateGenerator {
      * @returns The certificate template.
      */
   private static generateCertificateTemplate(attr: pki.CertificateField[], years: number): pki.Certificate {
-    let certificate: pki.Certificate = forge.pki.createCertificate();
+    let certificate: pki.Certificate = pki.createCertificate();
     certificate.setSubject(attr);
     certificate.setIssuer(attr);
     certificate.validity.notBefore = new Date();
@@ -119,7 +118,7 @@ export class CertificateGenerator {
     let attrs: pki.CertificateField[] = caCertificate.subject.attributes;
     let certificate: pki.Certificate = this.generateCertificateTemplate(attrs, years);
     certificate.publicKey = verificationKeys.publicKey;
-    certificate.sign(caPrivateKey, forge.md.sha256.create());
+    certificate.sign(caPrivateKey, md.sha256.create());
     return certificate;
   }
 
