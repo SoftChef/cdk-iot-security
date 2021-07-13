@@ -16,7 +16,7 @@ restApi.root
   .addResource('caRegister')
   .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.caRegistrator));
 restApi.root
-  .addResource('verifiersName')
+  .addResource('verifiersFetch')
   .addMethod('GET', new apigateway.LambdaIntegration(justInTimeProvision.verifiersFetcher));
 restApi.root
   .addResource('deviceCertificateGenerate')
