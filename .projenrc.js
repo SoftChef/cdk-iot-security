@@ -36,9 +36,6 @@ const project = new AwsCdkConstructLibrary({
     'esbuild',
   ],
   tsconfig: {
-    include: [
-      'lambda-assets',
-    ],
     compilerOptions: {
       target: 'ES6',
       lib: [
@@ -48,8 +45,5 @@ const project = new AwsCdkConstructLibrary({
       esModuleInterop: true,
     },
   },
-  gitignore: [
-    'cdk.out',
-  ],
 });
 project.synth();
