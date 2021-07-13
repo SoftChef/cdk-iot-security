@@ -1,5 +1,5 @@
 import * as forge from 'node-forge';
-import { CertificateGenerator as cg } from '../../../lambda-assets/certificate-generator';
+import { CertificateGenerator as cg } from '../../lambda-assets/certificate-generator';
 
 const csrSubjects = {
   commonName: 'SoftChef',
