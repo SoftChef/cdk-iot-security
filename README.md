@@ -88,6 +88,26 @@ Finally, the device use the certificate to connect to the AWS IoT through MQTT c
 
 A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
 
+## Fleet Provision
+
+### Example
+
+First, deploy the Fleet Provision Construct with demo file.
+
+    git clone https://github.com/SoftChef/cdk-iot-security.git
+    cd cdk-iot-security
+    npx projen build
+    cdk deploy --app 'node lib/demo/fleet-provision/deploy'
+
+After deploying the construct, an URL returned from the console as the following format. In the following steps, we will use this URL to access the API.
+
+    https://<prefix>.execute-api.<region>.amazonaws.com/prod/
+
+
+Call the API with the following command. The API will invoke the Fleet Generator and return the information, including ID, ARN, keys, and certificate, of the provisioning claim certificate registered on AWS IoT. Save the information for later use. Note that in this POST request, you can also send your own provision template. You can design your own way to use the Fleet Generator.
+
+    curl -X POST -d '{templateName:"<templateName>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/fleetGenerator > fleet.json
+
 ## Roadmap
 
 ### JITP
