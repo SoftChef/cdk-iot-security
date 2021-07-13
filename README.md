@@ -74,7 +74,7 @@ Call the API with the following command. The API will invoke the CA Registrator 
 
 Call the API with the following command. The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Notice that the device certificate is not registered on AWS IoT yet.
 
-    curl -X POST -d '{caCertificateId:"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
+    curl -X POST -d '{"caCertificateId":"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
 
 You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
 
@@ -106,7 +106,7 @@ After deploying the construct, an URL returned from the console as the following
 
 Call the API with the following command. The API will invoke the Fleet Generator and return the information, including ID, ARN, keys, and certificate, of the provisioning claim certificate registered on AWS IoT. Save the information for later use. Note that in this POST request, you can also send your own provision template. You can design your own way to use the Fleet Generator.
 
-    curl -X POST -d '{templateName:"<templateName>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/fleetGenerator > fleet.json
+    curl -X POST -d '{"templateName":"<templateName>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/fleetGenerator > fleet.json
 
 ## Roadmap
 
