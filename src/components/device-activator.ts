@@ -24,6 +24,7 @@ export class DeviceActivator extends NodejsFunction {
             effect: Effect.ALLOW,
             actions: [
               'iot:DescribeCertificate',
+              'iot:DescribeCACertificate',
               'iot:CreateThing',
               'iot:CreatePolicy',
               'iot:AttachPolicy',
