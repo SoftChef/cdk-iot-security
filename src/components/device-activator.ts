@@ -25,7 +25,7 @@ export class DeviceActivator extends NodejsFunction {
             actions: [
               'iot:DescribeCertificate',
               'iot:DescribeCACertificate',
-              'iot:ListTagsForResourceCommand',
+              'iot:ListTagsForResource',
               'iot:CreateThing',
               'iot:CreatePolicy',
               'iot:AttachPolicy',
