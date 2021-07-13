@@ -292,6 +292,8 @@ Object {
             Object {
               "Action": Array [
                 "iot:DescribeCertificate",
+                "iot:DescribeCACertificate",
+                "iot:ListTagsForResource",
                 "iot:CreateThing",
                 "iot:CreatePolicy",
                 "iot:AttachPolicy",
@@ -849,6 +851,8 @@ Object {
             Object {
               "Action": Array [
                 "iot:DescribeCertificate",
+                "iot:DescribeCACertificate",
+                "iot:ListTagsForResource",
                 "iot:CreateThing",
                 "iot:CreatePolicy",
                 "iot:AttachPolicy",
@@ -1395,6 +1399,8 @@ Object {
             Object {
               "Action": Array [
                 "iot:DescribeCertificate",
+                "iot:DescribeCACertificate",
+                "iot:ListTagsForResource",
                 "iot:CreateThing",
                 "iot:CreatePolicy",
                 "iot:AttachPolicy",
