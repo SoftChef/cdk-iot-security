@@ -14,16 +14,16 @@ import {
   Request,
   Response,
 } from '@softchef/lambda-events';
+import * as Joi from 'joi';
 import {
   InputError,
 } from '../errors';
-
-const deafultTemplateBody: string = '{ "Parameters" : { "AWS::IoT::Certificate::Country" : { "Type" : "String" }, "AWS::IoT::Certificate::Id" : { "Type" : "String" } }, "Resources" : { "thing" : { "Type" : "AWS::IoT::Thing", "Properties" : { "ThingName" : {"Ref" : "AWS::IoT::Certificate::Id"}, "AttributePayload" : { "version" : "v1", "country" : {"Ref" : "AWS::IoT::Certificate::Country"}} } }, "certificate" : { "Type" : "AWS::IoT::Certificate", "Properties" : { "CertificateId": {"Ref" : "AWS::IoT::Certificate::Id"}, "Status" : "ACTIVE" } }, "policy" : {"Type" : "AWS::IoT::Policy", "Properties" : { "PolicyDocument" : "{\\"Version\\": \\"2012-10-17\\",\\"Statement\\": [{\\"Effect\\":\\"Allow\\",\\"Action\\": [\\"iot:Connect\\",\\"iot:Publish\\"],\\"Resource\\" : [\\"*\\"]}]}" } } } }';
+import deafultTemplateBody from './default-template.json';
 
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
-  const provisioningRoleArn: string = process.env.PROVISIONING_ROLE_ARN;
+  const provisioningRoleArn: string = process.env.PROVISIONING_ROLE_ARN!;
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   try {
@@ -37,7 +37,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }
     const { templateArn, templateName } = await createProvisioningTemplate(
       request.input('templateName'),
-      deafultTemplateBody,
+      JSON.stringify(deafultTemplateBody),
       provisioningRoleArn,
     );
     const provisioningClaimCertificate = await createProvisioningClaimCertificate(templateArn, templateName, bucketName, bucketPrefix);
@@ -51,13 +51,18 @@ export const handler = async (event: any = {}) : Promise <any> => {
 };
 
 async function createProvisioningTemplate(inputTemplateName: string, inputTemplateBody: string, provisioningRoleArn: string) {
-  const { templateArn, templateName } = await new IoTClient({}).send(
+  const createProvisioningTemplateOutput = await new IoTClient({}).send(
     new CreateProvisioningTemplateCommand({
       templateName: inputTemplateName,
       templateBody: inputTemplateBody,
       provisioningRoleArn: provisioningRoleArn,
     }),
   );
+  const { templateArn, templateName } = await Joi.object({
+    templateArn: Joi.string().regex(/^arn/).required(),
+    templateName: Joi.string().required(),
+  }).required().unknown(true)
+    .validateAsync(createProvisioningTemplateOutput);
   return { templateArn, templateName };
 }
 

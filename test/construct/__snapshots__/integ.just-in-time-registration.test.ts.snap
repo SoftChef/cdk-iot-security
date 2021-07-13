@@ -3,16 +3,16 @@
 exports[`Integration test FleetProvision 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373ArtifactHash55841879": Object {
-      "Description": "Artifact hash for asset \\"7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373\\"",
+    "AssetParameterseb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4eArtifactHash3E8B1B70": Object {
+      "Description": "Artifact hash for asset \\"eb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4e\\"",
       "Type": "String",
     },
-    "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3Bucket23414690": Object {
-      "Description": "S3 bucket for asset \\"7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373\\"",
+    "AssetParameterseb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4eS3Bucket1EF6C389": Object {
+      "Description": "S3 bucket for asset \\"eb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4e\\"",
       "Type": "String",
     },
-    "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3VersionKey0E0A0E63": Object {
-      "Description": "S3 key for asset version \\"7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373\\"",
+    "AssetParameterseb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4eS3VersionKeyF203FB47": Object {
+      "Description": "S3 key for asset version \\"eb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4e\\"",
       "Type": "String",
     },
   },
@@ -25,7 +25,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3Bucket23414690",
+            "Ref": "AssetParameterseb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4eS3Bucket1EF6C389",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -38,7 +38,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3VersionKey0E0A0E63",
+                          "Ref": "AssetParameterseb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4eS3VersionKeyF203FB47",
                         },
                       ],
                     },
@@ -51,7 +51,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters7f9baa7ad2d9dbe57a02ac13d96b106b829dc9ae4d96239af377e39db0af9373S3VersionKey0E0A0E63",
+                          "Ref": "AssetParameterseb4c15dda3bf0f01aafb2ec3dabb1bd82378afea11d50726743860f7be75db4eS3VersionKeyF203FB47",
                         },
                       ],
                     },
@@ -425,6 +425,169 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcase625C5945": Object {
+      "DependsOn": Array [
+        "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleDefaultPolicyB8C16E44",
+        "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleCA89F5E4",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters4af9b197674c7c18dd965f574e5c44c979d4925a75ba7738ef443b6e86112a85S3Bucket6383EA85",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters4af9b197674c7c18dd965f574e5c44c979d4925a75ba7738ef443b6e86112a85S3VersionKey479A25DF",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters4af9b197674c7c18dd965f574e5c44c979d4925a75ba7738ef443b6e86112a85S3VersionKey479A25DF",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "BUCKET_NAME": Object {
+              "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
+            },
+            "BUCKET_PREFIX": "test",
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleCA89F5E4",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 10,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcasePolicyDeviceCertificateGeneratortestcaseD0261C2C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "iot:DescribeCACertificate",
+                "iot:ListTagsForResource",
+                "lambda:InvokeFunction",
+                "lambda:InvokeAsync",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcasePolicyDeviceCertificateGeneratortestcaseD0261C2C",
+        "Roles": Array [
+          Object {
+            "Ref": "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleCA89F5E4",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleCA89F5E4": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleDefaultPolicyB8C16E44": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleDefaultPolicyB8C16E44",
+        "Roles": Array [
+          Object {
+            "Ref": "JustInTimeProvisiontestcaseDeviceCertificateGeneratortestcaseServiceRoleCA89F5E4",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "JustInTimeProvisiontestcaseProvisionRoletestcaseB34C184D": Object {
       "Properties": Object {
