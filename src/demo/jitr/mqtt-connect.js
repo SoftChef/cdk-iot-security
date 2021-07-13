@@ -8,7 +8,7 @@ const caCertificatePem = readFileSync(`${__dirname}/certs/ca.cert.pem`).toString
 const {
   devicePrivateKeyPem,
   deviceCertificatePem,
-} = getDeviceRegistrationCertificates('test_thing', caPrivateKeyPem, caCertificatePem);
+} = getDeviceRegistrationCertificates('<YourDeviceUniqueName>', caPrivateKeyPem, caCertificatePem);
 
 const options = {
   port: 8883,
