@@ -120,18 +120,60 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca.public_key.pem'),
+        Body: Buffer.from(certificates.ca.publicKey),
+      }),
+    );
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca.private_key.pem'),
+        Body: Buffer.from(certificates.ca.privateKey),
+      }),
+    );
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'ca.cert.pem'),
+        Body: Buffer.from(certificates.ca.certificate),
+      }),
+    );
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'verification.public_key.pem'),
+        Body: Buffer.from(certificates.ca.publicKey),
+      }),
+    );
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'verification.private_key.pem'),
+        Body: Buffer.from(certificates.ca.privateKey),
+      }),
+    );
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: path.join(bucketPrefix || '', certificateId!, 'verification.cert.pem'),
+        Body: Buffer.from(certificates.ca.certificate),
+      }),
+    );
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
         Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
         Body: Buffer.from(
-          JSON.stringify(
-            Object.assign(
-              {},
-              certificates,
-              {
-                certificateId: certificateId,
-                certificateArn: certificateArn,
-              },
-            ),
-          ),
+          JSON.stringify({
+            certificateId,
+            certificateArn,
+          }),
         ),
       }),
     );
