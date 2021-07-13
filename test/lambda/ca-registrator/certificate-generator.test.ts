@@ -16,12 +16,12 @@ describe('Call function getCaRegistrationCertificates', () => {
   });
 
   test('Certificates information are defined', () => {
-    expect(typeof caCertificates.ca.privateKey).toBe(typeof '');
-    expect(typeof caCertificates.ca.publicKey).toBe(typeof '');
-    expect(typeof caCertificates.ca.certificate).toBe(typeof '');
-    expect(typeof caCertificates.verification.privateKey).toBe(typeof '');
-    expect(typeof caCertificates.verification.publicKey).toBe(typeof '');
-    expect(typeof caCertificates.verification.certificate).toBe(typeof '');
+    expect(typeof caCertificates.ca.privateKey).toBe('string');
+    expect(typeof caCertificates.ca.publicKey).toBe('string');
+    expect(typeof caCertificates.ca.certificate).toBe('string');
+    expect(typeof caCertificates.verification.privateKey).toBe('string');
+    expect(typeof caCertificates.verification.publicKey).toBe('string');
+    expect(typeof caCertificates.verification.certificate).toBe('string');
   });
 
   test('Verification certificate is signed with CA certificate', () => {
@@ -60,12 +60,12 @@ describe('Call function getCaRegistrationCertificates without CSR subjects', () 
   });
 
   test('Certificates information are defined', () => {
-    expect(typeof caCertificates.ca.privateKey).toBe(typeof '');
-    expect(typeof caCertificates.ca.publicKey).toBe(typeof '');
-    expect(typeof caCertificates.ca.certificate).toBe(typeof '');
-    expect(typeof caCertificates.verification.privateKey).toBe(typeof '');
-    expect(typeof caCertificates.verification.publicKey).toBe(typeof '');
-    expect(typeof caCertificates.verification.certificate).toBe(typeof '');
+    expect(typeof caCertificates.ca.privateKey).toBe('string');
+    expect(typeof caCertificates.ca.publicKey).toBe('string');
+    expect(typeof caCertificates.ca.certificate).toBe('string');
+    expect(typeof caCertificates.verification.privateKey).toBe('string');
+    expect(typeof caCertificates.verification.publicKey).toBe('string');
+    expect(typeof caCertificates.verification.certificate).toBe('string');
   });
 
   test('Verification certificate is signed with CA certificate', () => {

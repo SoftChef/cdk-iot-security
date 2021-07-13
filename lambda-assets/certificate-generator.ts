@@ -44,7 +44,10 @@ export class CertificateGenerator {
 
     const deviceKeys: pki.KeyPair = pki.rsa.generateKeyPair(2048);
     const deviceCertificate: pki.Certificate = this.generateCaSignedCertificate(
-      caKeys.privateKey, caCertificate, deviceKeys);
+      caKeys.privateKey,
+      caCertificate,
+      deviceKeys,
+    );
     const certificateSet: CertificateGenerator.CertificateSet = {
       publicKey: pki.publicKeyToPem(deviceKeys.publicKey),
       privateKey: pki.privateKeyToPem(deviceKeys.privateKey),
