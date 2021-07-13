@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Integration test FleetProvision 1`] = `
+Object {
+  "Parameters": Object {
+    "AssetParametersfe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531ArtifactHashF36DE8A6": Object {
+      "Description": "Artifact hash for asset \\"fe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531\\"",
+      "Type": "String",
+    },
+    "AssetParametersfe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531S3Bucket1D566DA4": Object {
+      "Description": "S3 bucket for asset \\"fe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531\\"",
+      "Type": "String",
+    },
+    "AssetParametersfe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531S3VersionKeyBDC80CC6": Object {
+      "Description": "S3 key for asset version \\"fe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "testcaseFleetGeneratortestcase12A380D3": Object {
+      "DependsOn": Array [
+        "testcaseFleetGeneratortestcaseServiceRoleDefaultPolicy66DAC61D",
+        "testcaseFleetGeneratortestcaseServiceRoleF1235FE0",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParametersfe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531S3Bucket1D566DA4",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParametersfe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531S3VersionKeyBDC80CC6",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParametersfe58360eeddcece30caa1b76ddf6e7bb43e531c7ab9a03c9a29e327089961531S3VersionKeyBDC80CC6",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "BUCKET_NAME": Object {
+              "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
+            },
+            "BUCKET_PREFIX": "test",
+            "PROVISIONING_ROLE_ARN": Object {
+              "Fn::GetAtt": Array [
+                "testcaseProvisionRoletestcase9954CA34",
+                "Arn",
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "testcaseFleetGeneratortestcaseServiceRoleF1235FE0",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "testcaseFleetGeneratortestcaseCaRegistratortestcase8114D212": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "iam:PassRole",
+                "iot:CreateProvisioningTemplate",
+                "iot:CreatePolicy",
+                "iot:CreateKeysAndCertificate",
+                "iot:AttachPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "testcaseFleetGeneratortestcaseCaRegistratortestcase8114D212",
+        "Roles": Array [
+          Object {
+            "Ref": "testcaseFleetGeneratortestcaseServiceRoleF1235FE0",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "testcaseFleetGeneratortestcaseServiceRoleDefaultPolicy66DAC61D": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttuserProvidedBucket2349EF2DArnA89CCA27",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "testcaseFleetGeneratortestcaseServiceRoleDefaultPolicy66DAC61D",
+        "Roles": Array [
+          Object {
+            "Ref": "testcaseFleetGeneratortestcaseServiceRoleF1235FE0",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "testcaseFleetGeneratortestcaseServiceRoleF1235FE0": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "testcaseProvisionRoletestcase9954CA34": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "iot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSIoTThingsRegistration",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "ProvisionRoleName-test-case",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+}
+`;

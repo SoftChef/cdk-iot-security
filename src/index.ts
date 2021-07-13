@@ -5,7 +5,7 @@ export { JustInTimeRegistration } from './just-in-time-registration';
 export { VerifiersFetcher } from './components/verifiers-fetcher';
 export { Vault, VaultProps } from './components/vault';
 export { ReviewReceptor, ReviewAcceptionRole, JitrTopicRule } from './components/review-receptor';
-export { RegistrationConfigRole, FleetProvisionRole } from './components/provision-role';
+export { ProvisionRole, RegistrationConfigRole, FleetProvisionRole } from './components/provision-role';
 export { FleetProvision } from './fleet-provision';
 export { FleetGenerator } from './components/fleet-generator';
 export { DeviceCertificateGenerator } from './components/deivce-certificate-generator';

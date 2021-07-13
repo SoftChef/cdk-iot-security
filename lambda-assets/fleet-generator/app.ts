@@ -46,7 +46,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       templateName,
     });
   } catch (error) {
-    return response.error(error.stack);
+    return response.error(error.stack, error.code);
   }
 };
 
