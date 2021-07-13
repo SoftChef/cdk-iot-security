@@ -16,10 +16,16 @@ export class CertificateGenerator {
   public static getCaRegistrationCertificates(csrSubjects: CertificateGenerator.CsrSubjects = {}) {
     const caKeys: pki.KeyPair = pki.rsa.generateKeyPair(2048);
     const caCertificate: pki.Certificate = this.generateCACertificate(
-      caKeys.publicKey, caKeys.privateKey, csrSubjects);
+      caKeys.publicKey,
+      caKeys.privateKey,
+      csrSubjects,
+    );
     const verificationKeys: pki.KeyPair = pki.rsa.generateKeyPair(2048);
     const verificationCertificate: pki.Certificate = this.generateCaSignedCertificate(
-      caKeys.privateKey, caCertificate, verificationKeys);
+      caKeys.privateKey,
+      caCertificate,
+      verificationKeys,
+    );
     const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = {
       ca: {
         publicKey: pki.publicKeyToPem(caKeys.publicKey),
@@ -68,8 +74,7 @@ export class CertificateGenerator {
     certificate.setSubject(attr);
     certificate.setIssuer(attr);
     certificate.validity.notBefore = new Date();
-    certificate.validity.notAfter.setFullYear(
-      certificate.validity.notBefore.getFullYear() + years);
+    certificate.validity.notAfter.setFullYear(certificate.validity.notBefore.getFullYear() + years);
     return certificate;
   }
 
@@ -91,15 +96,19 @@ export class CertificateGenerator {
     let caCertificate: pki.Certificate = this.generateCertificateTemplate(attrs, years);
     caCertificate.publicKey = publicKey;
     caCertificate.serialNumber = '01';
-    caCertificate.setExtensions([{
-      name: 'basicConstraints',
-      cA: true,
-    }, {
-      name: 'subjectKeyIdentifier',
-    }, {
-      name: 'authorityKeyIdentifier',
-      keyIdentifier: true,
-    }]);
+    caCertificate.setExtensions([
+      {
+        name: 'basicConstraints',
+        cA: true,
+      },
+      {
+        name: 'subjectKeyIdentifier',
+      },
+      {
+        name: 'authorityKeyIdentifier',
+        keyIdentifier: true,
+      },
+    ]);
     caCertificate.sign(privateKey);
     return caCertificate;
   }
@@ -131,25 +140,32 @@ export class CertificateGenerator {
      * @returns An array with formatted subjects.
      */
   private static formattedSubjects(props: CertificateGenerator.CsrSubjects): pki.CertificateField[] {
-    return [{
-      name: 'commonName',
-      value: props.commonName || '',
-    }, {
-      name: 'countryName',
-      value: props.countryName || '',
-    }, {
-      shortName: 'ST',
-      value: props.stateName || '',
-    }, {
-      name: 'localityName',
-      value: props.localityName || '',
-    }, {
-      name: 'organizationName',
-      value: props.organizationName || '',
-    }, {
-      shortName: 'OU',
-      value: props.organizationUnitName || '',
-    }];
+    return [
+      {
+        name: 'commonName',
+        value: props.commonName || '',
+      },
+      {
+        name: 'countryName',
+        value: props.countryName || '',
+      },
+      {
+        shortName: 'ST',
+        value: props.stateName || '',
+      },
+      {
+        name: 'localityName',
+        value: props.localityName || '',
+      },
+      {
+        name: 'organizationName',
+        value: props.organizationName || '',
+      },
+      {
+        shortName: 'OU',
+        value: props.organizationUnitName || '',
+      },
+    ];
   }
 }
 
