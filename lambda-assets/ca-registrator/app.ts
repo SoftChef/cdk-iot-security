@@ -19,7 +19,8 @@ import {
   InputError,
   InformationNotFoundError,
 } from '../errors';
-// import defaultTemplateBody from './default-template.json';
+import defaultIotPolicy from './default-iot-policy.json';
+import defaultTemplateBody from './default-template.json';
 
 /**
  * event examples
@@ -41,7 +42,7 @@ import {
  * }
  */
 
-const defaultTemplateBody = '{ \"Parameters\" : { \"AWS::IoT::Certificate::Country\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::Id\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::CommonName\" : { \"Type\" : \"String\" } }, \"Resources\" : { \"thing\" : { \"Type\" : \"AWS::IoT::Thing\", \"Properties\" : { \"ThingName\" : {\"Ref\" : \"AWS::IoT::Certificate::CommonName\"}, \"AttributePayload\" : { \"version\" : \"v1\", \"country\" : {\"Ref\" : \"AWS::IoT::Certificate::Country\"}} } }, \"certificate\" : { \"Type\" : \"AWS::IoT::Certificate\", \"Properties\" : { \"CertificateId\": {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"Status\" : \"ACTIVE\" } }, \"policy\" : {\"Type\" : \"AWS::IoT::Policy\", \"Properties\" : { \"PolicyDocument\" : \"{\\\"Version\\\": \\\"2012-10-17\\\",\\\"Statement\\\": [{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\": [\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\" : [\\\"*\\\"]}]}\" } } } }';
+// const expectedTemplateBody = '{ \"Parameters\" : { \"AWS::IoT::Certificate::Country\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::Id\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::CommonName\" : { \"Type\" : \"String\" } }, \"Resources\" : { \"thing\" : { \"Type\" : \"AWS::IoT::Thing\", \"Properties\" : { \"ThingName\" : {\"Ref\" : \"AWS::IoT::Certificate::CommonName\"}, \"AttributePayload\" : { \"version\" : \"v1\", \"country\" : {\"Ref\" : \"AWS::IoT::Certificate::Country\"}} } }, \"certificate\" : { \"Type\" : \"AWS::IoT::Certificate\", \"Properties\" : { \"CertificateId\": {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"Status\" : \"ACTIVE\" } }, \"policy\" : {\"Type\" : \"AWS::IoT::Policy\", \"Properties\" : { \"PolicyDocument\" : \"{\\\"Version\\\": \\\"2012-10-17\\\",\\\"Statement\\\": [{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\": [\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\" : [\\\"*\\\"]}]}\" } } } }';
 
 /**
  * The lambda function handler for register CA.
@@ -51,13 +52,13 @@ const defaultTemplateBody = '{ \"Parameters\" : { \"AWS::IoT::Certificate::Count
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
-
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const region: string | undefined = process.env.AWS_REGION;
   const registrationRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
+  defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
   const registrationConfig: {[key:string]: any} = registrationRoleArn? {
-    templateBody: request.input('templateBody', defaultTemplateBody),
+    templateBody: request.input('templateBody', JSON.stringify(defaultTemplateBody)),
     roleArn: registrationRoleArn,
   } : {};
 

@@ -15,7 +15,7 @@ const deviceCertificates = JSON.parse(file);
  */
 const options = {
   port: 8883,
-  host: "a1r289pzzumq0y-ats.iot.us-east-1.amazonaws.com",
+  host: 'your aws iot or aws iot data endpoint',
   key: deviceCertificates.privateKey,
   cert: deviceCertificates.certificate,
   rejectUnauthorized: false,
