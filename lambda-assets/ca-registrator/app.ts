@@ -145,7 +145,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       new PutObjectCommand({
         Bucket: bucketName,
         Key: path.join(bucketPrefix || '', certificateId!, 'verification.public_key.pem'),
-        Body: Buffer.from(certificates.ca.publicKey),
+        Body: Buffer.from(certificates.verification.publicKey),
       }),
     );
 
@@ -153,7 +153,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       new PutObjectCommand({
         Bucket: bucketName,
         Key: path.join(bucketPrefix || '', certificateId!, 'verification.private_key.pem'),
-        Body: Buffer.from(certificates.ca.privateKey),
+        Body: Buffer.from(certificates.verification.privateKey),
       }),
     );
 
@@ -161,7 +161,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       new PutObjectCommand({
         Bucket: bucketName,
         Key: path.join(bucketPrefix || '', certificateId!, 'verification.cert.pem'),
-        Body: Buffer.from(certificates.ca.certificate),
+        Body: Buffer.from(certificates.verification.certificate),
       }),
     );
 

@@ -172,7 +172,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
 function getCommonName(certificatePem: string) {
   const certificate = pki.certificateFromPem(certificatePem);
-  console.log(certificate.subject.attributes);
   const commonName = certificate.subject.getField('CN').value;
   return commonName;
 }
