@@ -4,7 +4,7 @@ const { ThingRegistry } = require('@softchef/iot-just-in-time-registration');
 
 const config = {
   awsIot: {
-    endpoint: 'your aws iot endpoint',
+    endpoint: 'your aws iot data endpoint',
     port: '8883', // 8883 or 1883 is default supported with AWS IoT,
     debug: true,
   },

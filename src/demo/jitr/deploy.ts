@@ -7,18 +7,12 @@ import { JustInTimeRegistration } from '../..';
 const app = new cdk.App();
 const id = 'JitrDemo';
 const stack = new cdk.Stack(app, id);
-const myVerifier = new lambda.Function(stack, 'verifier', {
-  code: lambda.Code.fromInline('exports.handler = async (_event) => { return JSON.stringify({ verified: true }); }'),
-  handler: 'handler',
-  runtime: lambda.Runtime.NODEJS_12_X,
-});
 const jitr = new JustInTimeRegistration(stack, id, {
   vault: {
     bucket: new s3.Bucket(stack, 'myVault'),
   },
   verifiers: [
-    myVerifier,
-    new lambda.Function(stack, 'verifier2', {
+    new lambda.Function(stack, 'myVerifier', {
       code: lambda.Code.fromInline('exports.handler = async (event) => { return JSON.stringify({ verified: event? true : false }); }'),
       handler: 'handler',
       runtime: lambda.Runtime.NODEJS_12_X,
