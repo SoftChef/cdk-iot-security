@@ -4,7 +4,7 @@ import * as cdk from '@aws-cdk/core';
 import { JustInTimeProvision } from '../..';
 
 const app = new cdk.App();
-const id = 'test';
+const id = 'JitpDemo';
 const stack = new cdk.Stack(app, id);
 const justInTimeProvision = new JustInTimeProvision(stack, id, {
   vault: {
