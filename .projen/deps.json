@@ -123,6 +123,10 @@
       "type": "bundled"
     },
     {
+      "name": "@types/uuid",
+      "type": "bundled"
+    },
+    {
       "name": "@types/ws",
       "type": "bundled"
     },
@@ -136,6 +140,10 @@
     },
     {
       "name": "node-forge",
+      "type": "bundled"
+    },
+    {
+      "name": "uuid",
       "type": "bundled"
     },
     {

@@ -7,8 +7,8 @@ import { Construct } from '@aws-cdk/core';
 
 export class RegistrationConfigRole extends Role {
   constructor(scope: Construct, id: string) {
-    super(scope, `JitpRole-${id}`, {
-      roleName: `JitpRoleName-${id}`,
+    super(scope, `RegistrationConfigRole-${id}`, {
+      roleName: `RegistrationConfigRoleName-${id}`,
       assumedBy: new ServicePrincipal('iot.amazonaws.com'),
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSIoTThingsRegistration'),

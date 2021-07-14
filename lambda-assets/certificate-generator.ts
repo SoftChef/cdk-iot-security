@@ -41,7 +41,7 @@ export class CertificateGenerator {
     return certificates;
   }
 
-  public static getDeviceRegistrationCertificates(caCertificates: CertificateGenerator.CertificateSet) {
+  public static getDeviceRegistrationCertificates(caCertificates: CertificateGenerator.CertificateSet, thingName?: string) {
     const caKeys: pki.KeyPair = {
       publicKey: pki.publicKeyFromPem(caCertificates.publicKey),
       privateKey: pki.privateKeyFromPem(caCertificates.privateKey),
@@ -53,6 +53,7 @@ export class CertificateGenerator {
       caKeys.privateKey,
       caCertificate,
       deviceKeys,
+      this.formattedSubjects({ commonName: thingName }),
     );
     const certificateSet: CertificateGenerator.CertificateSet = {
       publicKey: pki.publicKeyToPem(deviceKeys.publicKey),
@@ -65,14 +66,14 @@ export class CertificateGenerator {
   /**
      * Generate a certificate template which can be further
      * used to generate a CA or a verification certificate.
-     * @param attr The formatted CSR subject.
+     * @param caAttrs The formatted CSR subject.
      * @param years The valid time interval of the generated certificate.
      * @returns The certificate template.
      */
-  private static generateCertificateTemplate(attr: pki.CertificateField[], years: number): pki.Certificate {
+  private static generateCertificateTemplate(caAttrs: pki.CertificateField[], attrs: pki.CertificateField[], years: number = 1): pki.Certificate {
     let certificate: pki.Certificate = pki.createCertificate();
-    certificate.setSubject(attr);
-    certificate.setIssuer(attr);
+    certificate.setIssuer(caAttrs);
+    certificate.setSubject(attrs);
     certificate.validity.notBefore = new Date();
     certificate.validity.notAfter.setFullYear(certificate.validity.notBefore.getFullYear() + years);
     return certificate;
@@ -93,7 +94,7 @@ export class CertificateGenerator {
     years: number = 1,
   ) {
     let attrs: pki.CertificateField[] = this.formattedSubjects(certificateSubjects);
-    let caCertificate: pki.Certificate = this.generateCertificateTemplate(attrs, years);
+    let caCertificate: pki.Certificate = this.generateCertificateTemplate(attrs, attrs, years);
     caCertificate.publicKey = publicKey;
     caCertificate.serialNumber = '01';
     caCertificate.setExtensions([
@@ -125,13 +126,24 @@ export class CertificateGenerator {
     caPrivateKey: pki.PrivateKey,
     caCertificate: pki.Certificate,
     verificationKeys: pki.KeyPair,
+    attrs?: pki.CertificateField[],
     years: number = 1,
   ) {
-    let attrs: pki.CertificateField[] = caCertificate.subject.attributes;
-    let certificate: pki.Certificate = this.generateCertificateTemplate(attrs, years);
-    certificate.publicKey = verificationKeys.publicKey;
+    let caAttrs = caCertificate.subject.attributes;
+    let csr = this.generateCsr(verificationKeys, attrs ?? caAttrs);
+    // let attrs: pki.CertificateField[] = caCertificate.subject.attributes;
+    let certificate: pki.Certificate = this.generateCertificateTemplate(caAttrs, csr.subject.attributes, years);
+    certificate.publicKey = csr.publicKey;
     certificate.sign(caPrivateKey, md.sha256.create());
     return certificate;
+  }
+
+  private static generateCsr(keyPair: pki.KeyPair, attrs?: pki.CertificateField[]) {
+    let csr = pki.createCertificationRequest();
+    csr.publicKey = keyPair.publicKey;
+    csr.setSubject(attrs);
+    csr.sign(keyPair.privateKey, md.sha256.create());
+    return csr;
   }
 
   /**

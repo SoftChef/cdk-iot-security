@@ -1,11 +1,11 @@
-const { readFileSync } = require('fs');
+const fs = require('fs');
 const { connect } = require('mqtt');
 
 /**
  * Download AWS IoT Root CA Certificate from https://www.amazontrust.com/repository/AmazonRootCA1.pem
  * and save it as root_ca.cert.pem
  */ 
-const amazonRootCA1 = readFileSync(`${__dirname}/certs/root_ca.cert.pem`).toString();
+const amazonRootCA1 = fs.readFileSync(`${__dirname}/certs/root_ca.cert.pem`).toString();
 const file = fs.readFileSync(`${__dirname}/certs/device-certificate.json`).toString();
 const deviceCertificates = JSON.parse(file);
 
@@ -15,7 +15,7 @@ const deviceCertificates = JSON.parse(file);
  */
 const options = {
   port: 8883,
-  host: 'your aws iot endpoint',
+  host: "a1r289pzzumq0y-ats.iot.us-east-1.amazonaws.com",
   key: deviceCertificates.privateKey,
   cert: deviceCertificates.certificate,
   rejectUnauthorized: false,

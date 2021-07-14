@@ -17,6 +17,7 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
+import * as uuid from 'uuid';
 import {
   CertificateGenerator,
 } from '../certificate-generator';
@@ -32,10 +33,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const caCertificateId: string = request.input('caCertificateId');
   const deviceInfo: string = request.input('deviceInfo');
+  const thingName: string = request.input('thingName', uuid.v4());
   try {
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
-    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates);
+    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, thingName);
     deviceCertificates.certificate += caCertificates.certificate;
     return response.json(deviceCertificates);
   } catch (error) {
