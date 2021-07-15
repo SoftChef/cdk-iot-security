@@ -19,7 +19,8 @@ import {
   InputError,
   InformationNotFoundError,
 } from '../errors';
-import deafultTemplateBody from './default-template.json';
+import defaultIotPolicy from './default-iot-policy.json';
+import defaultTemplateBody from './default-template.json';
 
 /**
  * event examples
@@ -41,6 +42,7 @@ import deafultTemplateBody from './default-template.json';
  * }
  */
 
+
 /**
  * The lambda function handler for register CA.
  * @param event The HTTP request from the API gateway.
@@ -49,13 +51,13 @@ import deafultTemplateBody from './default-template.json';
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
-
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const region: string | undefined = process.env.AWS_REGION;
   const registrationRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
+  defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
   const registrationConfig: {[key:string]: any} = registrationRoleArn? {
-    templateBody: request.input('templateBody', JSON.stringify(deafultTemplateBody)),
+    templateBody: request.input('templateBody', JSON.stringify(defaultTemplateBody)),
     roleArn: registrationRoleArn,
   } : {};
 
@@ -143,6 +145,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    return response.error(error, error.code);
+    return response.error(error.stack, error.code);
   }
 };

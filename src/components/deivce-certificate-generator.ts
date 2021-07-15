@@ -5,7 +5,7 @@ import {
 } from '@aws-cdk/aws-iam';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import * as cdk from '@aws-cdk/core';
-import { VaultProps } from './vault';
+import { VaultProps } from '.';
 
 export module DeviceCertificateGenerator {
   export interface Props {

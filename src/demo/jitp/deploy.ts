@@ -4,7 +4,7 @@ import * as cdk from '@aws-cdk/core';
 import { JustInTimeProvision } from '../..';
 
 const app = new cdk.App();
-const id = 'test';
+const id = 'JitpDemo';
 const stack = new cdk.Stack(app, id);
 const justInTimeProvision = new JustInTimeProvision(stack, id, {
   vault: {
@@ -15,6 +15,9 @@ const restApi = new apigateway.RestApi(stack, 'testRestApi');
 restApi.root
   .addResource('caRegister')
   .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.caRegistrator));
+restApi.root
+  .addResource('verifiersFetch')
+  .addMethod('GET', new apigateway.LambdaIntegration(justInTimeProvision.verifiersFetcher));
 restApi.root
   .addResource('deviceCertificateGenerate')
   .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.deviceCertificateGenerator));

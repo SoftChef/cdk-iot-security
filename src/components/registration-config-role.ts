@@ -17,6 +17,14 @@ export class ProvisionRole extends Role {
   }
 }
 
-export class JitpRole extends ProvisionRole {}
+export class JitpRole extends ProvisionRole {
+  constructor(scope: Construct, id: string) {
+    super(scope, `Jitp-${id}`);
+  }
+}
 
-export class FleetProvisionRole extends ProvisionRole {}
+export class FleetProvisionRole extends ProvisionRole {
+  constructor(scope: Construct, id: string) {
+    super(scope, `Fleet-${id}`);
+  }
+}

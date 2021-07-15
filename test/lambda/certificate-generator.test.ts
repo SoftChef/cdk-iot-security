@@ -98,15 +98,27 @@ describe('Call function getCaRegistrationCertificates without CSR subjects', () 
 describe('Call function getDeviceRegistrationCertificates', () => {
   let caCertificates: cg.CaRegistrationRequiredCertificates;
   let deviceCertificates: cg.CertificateSet;
+  let deviceCsrSubject: cg.CsrSubjects = {
+    commonName: 'test_thing_name',
+  };
 
   beforeEach(() => {
     caCertificates = cg.getCaRegistrationCertificates(csrSubjects);
-    deviceCertificates = cg.getDeviceRegistrationCertificates(caCertificates.ca);
   });
 
   test('Device certificate is signed with CA certificate', () => {
+    deviceCertificates = cg.getDeviceRegistrationCertificates(caCertificates.ca);
     var caCert = forge.pki.certificateFromPem(caCertificates.ca.certificate);
     var deviceCert = forge.pki.certificateFromPem(deviceCertificates.certificate);
     expect(caCert.verify(deviceCert)).toBe(true);
+  });
+
+  test('Device certificate with custom subjects and time interval', () => {
+    deviceCertificates = cg.getDeviceRegistrationCertificates(caCertificates.ca, deviceCsrSubject, 2);
+    const deviceCertificate = forge.pki.certificateFromPem(deviceCertificates.certificate);
+    Object.entries(deviceCsrSubject).forEach(([key, value]) => {
+      var subject = deviceCertificate.subject.attributes.find(x => x.name === key);
+      expect(subject.value).toEqual(value);
+    });
   });
 });
