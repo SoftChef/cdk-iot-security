@@ -4,9 +4,9 @@ import * as cdk from '@aws-cdk/core';
 import { FleetProvision } from '../..';
 
 const app = new cdk.App();
-const id = 'test';
+const id = 'FleetProvisionDemo';
 const stack = new cdk.Stack(app, id);
-const vault = new s3.Bucket(stack, 'testVault');
+const vault = new s3.Bucket(stack, 'myVault');
 const fleetProvision = new FleetProvision(stack, id, {
   vault: {
     bucket: vault,

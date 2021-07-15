@@ -18,7 +18,9 @@ import * as Joi from 'joi';
 import {
   InputError,
 } from '../errors';
-import deafultTemplateBody from './default-template.json';
+import defaultIotPolicy from './default-iot-policy.json';
+import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
+import defaultTemplateBody from './default-template.json';
 
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
@@ -35,13 +37,40 @@ export const handler = async (event: any = {}) : Promise <any> => {
     if (validated.error) {
       throw new InputError(JSON.stringify(validated.details));
     }
+    const [awsRegion, awsAccountId] = provisioningRoleArn.split(':').slice(3, 5);
+    defaultIotPolicy.Statement = defaultIotPolicy.Statement.map((statement) => {
+      statement.Resource = statement.Resource.map((resource) => {
+        resource.replace('<region>', awsRegion);
+        resource.replace('<account>', awsAccountId);
+        resource.replace('<templateName>', request.input('templateName'));
+        return resource;
+      });
+      return statement;
+    });
+    defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
     const { templateArn, templateName } = await createProvisioningTemplate(
       request.input('templateName'),
-      JSON.stringify(deafultTemplateBody),
+      JSON.stringify(defaultTemplateBody),
       provisioningRoleArn,
     );
-    const provisioningClaimCertificate = await createProvisioningClaimCertificate(templateArn, templateName, bucketName, bucketPrefix);
-    return response.json(provisioningClaimCertificate);
+    const {
+      provisionClaimCertificateArn,
+      provisionClaimCertificateId,
+      provisionClaimCertificatePem,
+      keyPair,
+    } = await createProvisioningClaimCertificate(templateArn, templateName, bucketName, bucketPrefix);
+    await uploadToVault(
+      bucketName,
+      bucketPrefix,
+      provisionClaimCertificateArn,
+      provisionClaimCertificateId,
+      provisionClaimCertificatePem,
+      keyPair,
+    );
+    return response.json({
+      provisionClaimCertificateArn,
+      provisionClaimCertificateId,
+    });
   } catch (error) {
     return response.error(error.stack, error.code);
   }
@@ -53,6 +82,7 @@ async function createProvisioningTemplate(inputTemplateName: string, inputTempla
       templateName: inputTemplateName,
       templateBody: inputTemplateBody,
       provisioningRoleArn: provisioningRoleArn,
+      enabled: true,
     }),
   );
   const { templateArn, templateName } = await Joi.object({
@@ -65,35 +95,22 @@ async function createProvisioningTemplate(inputTemplateName: string, inputTempla
 
 async function createProvisioningClaimCertificate(templateArn: string, templateName: string, bucketName: string, bucketPrefix: string) {
   const [awsRegion, awsAccountId] = templateArn.split(':').slice(3, 5);
+  defaultProvisionClaimPolicyStatements.publish.Resource = [
+    `arn:aws:iot:${awsRegion}:${awsAccountId}:topic/$aws/certificates/create/*`,
+    `arn:aws:iot:${awsRegion}:${awsAccountId}:topic/$aws/provisioning-templates/${templateName}/provision/*`,
+  ];
+  defaultProvisionClaimPolicyStatements.subscribe.Resource = [
+    `arn:aws:iot:${awsRegion}:${awsAccountId}:topicfilter/$aws/certificates/create/*`,
+    `arn:aws:iot:${awsRegion}:${awsAccountId}:topicfilter/$aws/provisioning-templates/${templateName}/provision/*`,
+  ];
   const { policyName } = await new IoTClient({}).send(
     new CreatePolicyCommand({
       policyDocument: JSON.stringify({
         Version: '2012-10-17',
         Statement: [
-          {
-            Effect: 'Allow',
-            Action: ['iot:Connect'],
-            Resource: '*',
-          },
-          {
-            Effect: 'Allow',
-            Action: [
-              'iot:Publish',
-              'iot:Receive',
-            ],
-            Resource: [
-              `arn:aws:iot:${awsRegion}:${awsAccountId}:topic/$aws/certificates/create/*`,
-              `arn:aws:iot:${awsRegion}:${awsAccountId}:topic/$aws/provisioning-templates/${templateName}/provision/*`,
-            ],
-          },
-          {
-            Effect: 'Allow',
-            Action: 'iot:Subscribe',
-            Resource: [
-              `arn:aws:iot:${awsRegion}:${awsAccountId}:topicfilter/$aws/certificates/create/*`,
-              `arn:aws:iot:${awsRegion}:${awsAccountId}:topicfilter/$aws/provisioning-templates/${templateName}/provision/*`,
-            ],
-          },
+          defaultProvisionClaimPolicyStatements.connect,
+          defaultProvisionClaimPolicyStatements.publish,
+          defaultProvisionClaimPolicyStatements.subscribe,
         ],
       }),
       policyName: `ProvisioningClaimCertificateliPolicy-${templateName}`,
@@ -101,39 +118,79 @@ async function createProvisioningClaimCertificate(templateArn: string, templateN
   );
 
   const {
-    certificateArn,
+    certificateArn: provisionClaimCertificateArn,
     keyPair,
-    certificatePem,
-    certificateId,
+    certificatePem: provisionClaimCertificatePem,
+    certificateId: provisionClaimCertificateId,
   } = await new IoTClient({}).send(
     new CreateKeysAndCertificateCommand({
       setAsActive: true,
     }),
   );
 
-  const provisioningClaimCertificate = {
-    certificateArn,
-    keyPair,
-    certificatePem,
-    certificateId,
-  };
-
   await new IoTClient({}).send(
     new AttachPolicyCommand({
       policyName: policyName,
-      target: provisioningClaimCertificate.certificateArn,
+      target: provisionClaimCertificateArn,
+    }),
+  );
+
+  return {
+    provisionClaimCertificateArn,
+    provisionClaimCertificateId,
+    provisionClaimCertificatePem,
+    keyPair,
+  };
+}
+
+async function uploadToVault(
+  bucketName: string,
+  bucketPrefix: string,
+  provisionClaimCertificateArn: string,
+  provisionClaimCertificateId: string,
+  provisionClaimCertificatePem: string,
+  keyPair: {[key:string]: string},
+) {
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.cert.pem'),
+      Body: Buffer.from(
+        provisionClaimCertificatePem,
+      ),
     }),
   );
 
   await new S3Client({}).send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
+      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.public_key.pem'),
       Body: Buffer.from(
-        JSON.stringify(provisioningClaimCertificate),
+        keyPair.PublicKey,
       ),
     }),
   );
 
-  return provisioningClaimCertificate;
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.private_key.pem'),
+      Body: Buffer.from(
+        keyPair.PrivateKey,
+      ),
+    }),
+  );
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision-claim-certificate.json'),
+      Body: Buffer.from(
+        JSON.stringify({
+          provisionClaimCertificateId,
+          provisionClaimCertificateArn,
+        }),
+      ),
+    }),
+  );
 }

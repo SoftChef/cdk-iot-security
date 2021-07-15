@@ -1,7 +1,8 @@
 { 
   "Parameters": { 
     "AWS::IoT::Certificate::Country": { "Type": "String" },
-    "AWS::IoT::Certificate::Id": { "Type": "String" }
+    "AWS::IoT::Certificate::Id": { "Type": "String" },
+    "AWS::IoT::Certificate::CommonName": { "Type": "String" }
   }, 
   "Resources": {
     "thing": {
@@ -9,8 +10,7 @@
       "Properties": { 
         "ThingName": { "Ref": "AWS::IoT::Certificate::Id" },
         "AttributePayload": { 
-          "version": "v1", 
-          "country": {"Ref": "AWS::IoT::Certificate::Country"}
+          "version": "v1"
         } 
       } 
     }, 
@@ -24,7 +24,7 @@
     "policy": {
       "Type": "AWS::IoT::Policy",
       "Properties": {
-        "PolicyDocument": "{\\\"Version\\\":\\\"2012-10-17\\\",\\\"Statement\\\":[{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\":[\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\":[\\\"*\\\"]}]}"
+        "PolicyDocument": ""
       }
     }
   }
