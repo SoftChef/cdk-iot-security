@@ -44,6 +44,7 @@ const project = new AwsCdkConstructLibrary({
         'DOM',
         'ES2020',
       ],
+      esModuleInterop: true,
     },
   },
 });

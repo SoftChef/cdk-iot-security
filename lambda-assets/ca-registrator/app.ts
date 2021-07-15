@@ -13,12 +13,14 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import * as Joi from 'joi';
-import { CertificateGenerator } from './certificate-generator';
+import { CertificateGenerator } from '../certificate-generator';
 import {
   VerifierError,
   InputError,
   InformationNotFoundError,
-} from './errors';
+} from '../errors';
+import defaultIotPolicy from './default-iot-policy.json';
+import defaultTemplateBody from './default-template.json';
 
 /**
  * event examples
@@ -35,9 +37,11 @@ import {
  *    "organizationUnitName": "web"
  *  },
  *  "verifierName": "verifier_name",
+ *  "templateBody": "{ \"Parameters\" : { \"AWS::IoT::Certificate::Country\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::Id\" : { \"Type\" : \"String\" } }, \"Resources\" : { \"thing\" : { \"Type\" : \"AWS::IoT::Thing\", \"Properties\" : { \"ThingName\" : {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"AttributePayload\" : { \"version\" : \"v1\", \"country\" : {\"Ref\" : \"AWS::IoT::Certificate::Country\"}} } }, \"certificate\" : { \"Type\" : \"AWS::IoT::Certificate\", \"Properties\" : { \"CertificateId\": {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"Status\" : \"ACTIVE\" } }, \"policy\" : {\"Type\" : \"AWS::IoT::Policy\", \"Properties\" : { \"PolicyDocument\" : \"{\\\"Version\\\": \\\"2012-10-17\\\",\\\"Statement\\\": [{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\": [\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\" : [\\\"*\\\"]}]}\" } } } }"
  *  }
  * }
  */
+
 
 /**
  * The lambda function handler for register CA.
@@ -47,10 +51,15 @@ import {
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
-
-  const bucketName: string | undefined = process.env.BUCKET_NAME;
-  const bucketPrefix: string = process.env.BUCKET_PREFIX || '';
+  const bucketName: string = process.env.BUCKET_NAME!;
+  const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const region: string | undefined = process.env.AWS_REGION;
+  const registrationRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
+  defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
+  const registrationConfig: {[key:string]: any} = registrationRoleArn? {
+    templateBody: request.input('templateBody', JSON.stringify(defaultTemplateBody)),
+    roleArn: registrationRoleArn,
+  } : {};
 
   const iotClient: IoTClient = new IoTClient({ region: region });
   const s3Client: S3Client = new S3Client({ region: region });
@@ -98,15 +107,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
 
-    const CaRegistration = await iotClient.send(
-      new RegisterCACertificateCommand({
-        caCertificate: certificates.ca.certificate,
-        verificationCertificate: certificates.verification.certificate,
-        allowAutoRegistration: true,
-        registrationConfig: {},
-        setAsActive: true,
-        tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
-      }),
+    const CaRegistration = await iotClient.send(new RegisterCACertificateCommand({
+      caCertificate: certificates.ca.certificate,
+      verificationCertificate: certificates.verification.certificate,
+      allowAutoRegistration: true,
+      registrationConfig: registrationConfig,
+      setAsActive: true,
+      tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
+    }),
     );
 
     const { certificateId, certificateArn } = await Joi.object({
@@ -117,6 +125,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
         throw new InformationNotFoundError(error.message);
       });
 
+    const results = Object.assign(
+      {},
+      certificates,
+      {
+        certificateId: certificateId,
+        certificateArn: certificateArn,
+      },
+    );
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
@@ -179,6 +195,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    return response.error(error, error.code);
+    return response.error(error.stack, error.code);
   }
 };

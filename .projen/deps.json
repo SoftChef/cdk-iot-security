@@ -147,6 +147,10 @@
       "type": "bundled"
     },
     {
+      "name": "uuid",
+      "type": "bundled"
+    },
+    {
       "name": "@aws-cdk/aws-apigateway",
       "version": "^1.110.1",
       "type": "peer"
