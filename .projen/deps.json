@@ -131,6 +131,10 @@
       "type": "bundled"
     },
     {
+      "name": "@types/uuid",
+      "type": "bundled"
+    },
+    {
       "name": "@types/ws",
       "type": "bundled"
     },
