@@ -82,11 +82,11 @@ You can design your work flow that the user call this API to get a device certif
 
 The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
 
-    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > lib/demo/jitp/AmazonRootCA1.pem
+    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/jitp/root_ca.cert.pem
 
 Finally, the device use the certificate to connect to the AWS IoT through MQTT connection. We simulate this process with the demostration file.
 
-    node lib/demo/jitp/connect.js
+    node src/demo/jitp/device.js
 
 A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
 
