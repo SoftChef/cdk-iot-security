@@ -70,7 +70,7 @@ Object {
             "BUCKET_PREFIX": "test",
             "PROVISIONING_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "testcaseProvisionRoletestcase9954CA34",
+                "testcaseProvisionRoleFleettestcase66561F6A",
                 "Arn",
               ],
             },
@@ -188,7 +188,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testcaseProvisionRoletestcase9954CA34": Object {
+    "testcaseProvisionRoleFleettestcase66561F6A": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -216,7 +216,7 @@ Object {
             ],
           },
         ],
-        "RoleName": "ProvisionRoleName-test-case",
+        "RoleName": "ProvisionRoleName-Fleet-test-case",
       },
       "Type": "AWS::IAM::Role",
     },

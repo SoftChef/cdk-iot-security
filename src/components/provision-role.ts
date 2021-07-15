@@ -17,6 +17,15 @@ export class ProvisionRole extends Role {
   }
 }
 
-export class RegistrationConfigRole extends ProvisionRole {}
 
-export class FleetProvisionRole extends ProvisionRole {}
+export class RegistrationConfigRole extends ProvisionRole {
+  constructor(scope: Construct, id: string) {
+    super(scope, `RegistrationConfig-${id}`);
+  }
+}
+
+export class FleetProvisionRole extends ProvisionRole {
+  constructor(scope: Construct, id: string) {
+    super(scope, `Fleet-${id}`);
+  }
+}
