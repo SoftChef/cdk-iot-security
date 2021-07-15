@@ -8,9 +8,11 @@ import {
   Construct,
   Duration,
 } from '@aws-cdk/core';
-import { VaultProps } from '../vault';
-import { RegistrationConfigRole } from './registration-config-role';
-import { VerifiersFetcher } from './verifiers-fetcher';
+import {
+  RegistrationConfigRole,
+  VaultProps,
+  VerifiersFetcher,
+} from '.';
 
 export module CaRegistrator {
   export interface Props {

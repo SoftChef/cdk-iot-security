@@ -37,7 +37,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
   try {
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
-    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, thingName);
+    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, {
+      commonName: thingName,
+    });
     deviceCertificates.certificate += caCertificates.certificate;
     return response.json(deviceCertificates);
   } catch (error) {

@@ -1,9 +1,11 @@
 import { Construct } from '@aws-cdk/core';
-import { CaRegistrator } from './components/ca-registrator';
-import { DeviceCertificateGenerator } from './components/deivce-certificate-generator';
-import { RegistrationConfigRole } from './components/registration-config-role';
-import { VerifiersFetcher } from './components/verifiers-fetcher';
-import { VaultProps } from './vault';
+import {
+  CaRegistrator,
+  DeviceCertificateGenerator,
+  RegistrationConfigRole,
+  VaultProps,
+  VerifiersFetcher,
+} from './components';
 
 export module JustInTimeProvision {
   export interface Props {

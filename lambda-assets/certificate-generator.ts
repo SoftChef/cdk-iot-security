@@ -47,7 +47,11 @@ export class CertificateGenerator {
    * @param commonName The data for the common name field of this device certificate.
    * @returns The device certificate set, including the public key, private key, and the CA-signed certificate.
    */
-  public static getDeviceRegistrationCertificates(caCertificates: CertificateGenerator.CertificateSet, commonName: string = '') {
+  public static getDeviceRegistrationCertificates(
+    caCertificates: CertificateGenerator.CertificateSet,
+    csrSubjects: CertificateGenerator.CsrSubjects = {},
+    years = 1,
+  ) {
     const caKeys: pki.KeyPair = {
       publicKey: pki.publicKeyFromPem(caCertificates.publicKey),
       privateKey: pki.privateKeyFromPem(caCertificates.privateKey),
@@ -58,7 +62,8 @@ export class CertificateGenerator {
       caKeys.privateKey,
       caCertificate,
       deviceKeys,
-      this.formattedSubjects({ commonName: commonName }),
+      this.formattedSubjects(csrSubjects),
+      years,
     );
     const deviceCertificateSet: CertificateGenerator.CertificateSet = {
       publicKey: pki.publicKeyToPem(deviceKeys.publicKey),
@@ -76,7 +81,7 @@ export class CertificateGenerator {
      * @param years The valid time interval of the generated certificate.
      * @returns The certificate template.
      */
-  private static generateCertificateTemplate(caAttrs: pki.CertificateField[], attrs: pki.CertificateField[], years: number = 1): pki.Certificate {
+  private static generateCertificateTemplate(caAttrs: pki.CertificateField[], attrs: pki.CertificateField[], years: number): pki.Certificate {
     let certificate: pki.Certificate = pki.createCertificate();
     certificate.setIssuer(caAttrs);
     certificate.setSubject(attrs);
@@ -150,10 +155,10 @@ export class CertificateGenerator {
    * @param attrs The subjects of this CSR. If it is not provided, all fields would keep plain.
    * @returns A CSR.
    */
-  private static generateCsr(keyPair: pki.KeyPair, attrs?: pki.CertificateField[]) {
+  private static generateCsr(keyPair: pki.KeyPair, attrs: pki.CertificateField[]) {
     let csr = pki.createCertificationRequest();
     csr.publicKey = keyPair.publicKey;
-    csr.setSubject(attrs ?? this.formattedSubjects({}));
+    csr.setSubject(attrs);
     csr.sign(keyPair.privateKey, md.sha256.create());
     return csr;
   }

@@ -1,10 +1,12 @@
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { Construct } from '@aws-cdk/core';
-import { CaRegistrator } from './components/ca-registrator';
-import { DeviceActivator } from './components/device-activator';
-import { ReviewReceptor } from './components/review-receptor';
-import { VerifiersFetcher } from './components/verifiers-fetcher';
-import { VaultProps } from './vault';
+import {
+  CaRegistrator,
+  DeviceActivator,
+  ReviewReceptor,
+  VaultProps,
+  VerifiersFetcher,
+} from './components';
 
 export module JustInTimeRegistration {
   export interface Props {
