@@ -69,16 +69,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
 };
 
 async function createProvisioningTemplate(templateName: string, provisioningRoleArn: string, policy: {[key: string]: any}) {
-  // const [awsRegion, awsAccountId] = provisioningRoleArn.split(':').slice(3, 5);
-  // defaultIotPolicy.Statement = defaultIotPolicy.Statement.map((statement) => {
-  //   statement.Resource = statement.Resource.map((resource) => {
-  //     resource.replace('<region>', awsRegion);
-  //     resource.replace('<account>', awsAccountId);
-  //     resource.replace('<templateName>', templateName);
-  //     return resource;
-  //   });
-  //   return statement;
-  // });
   defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
 
   const { templateArn } = await new IoTClient({}).send(

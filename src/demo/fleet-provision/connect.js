@@ -54,6 +54,7 @@ async function registerThing() {
         fs.writeFileSync(keysPath.device.info, JSON.stringify({
             certificateId: response.certificateId,
             certificateOwnershipToken: response.certificateOwnershipToken,
+            thingName,
         }));
         fs.writeFileSync(keysPath.device.certificate, response.certificatePem);
         fs.writeFileSync(keysPath.device.privateKey, response.privateKey);
