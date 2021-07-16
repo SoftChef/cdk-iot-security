@@ -2,13 +2,13 @@
   "Parameters": { 
     "AWS::IoT::Certificate::Country": { "Type": "String" },
     "AWS::IoT::Certificate::Id": { "Type": "String" },
-    "AWS::IoT::Certificate::CommonName": { "Type": "String" }
+    "thingName": { "Type": "String" }
   }, 
   "Resources": {
     "thing": {
       "Type": "AWS::IoT::Thing",
       "Properties": { 
-        "ThingName": { "Ref": "AWS::IoT::Certificate::Id" },
+        "ThingName": { "Ref": "thingName" },
         "AttributePayload": { 
           "version": "v1"
         } 

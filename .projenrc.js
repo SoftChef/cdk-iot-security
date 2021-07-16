@@ -35,6 +35,7 @@ const project = new AwsCdkConstructLibrary({
   ],
   devDeps: [
     'aws-sdk-client-mock',
+    'aws-iot-device-sdk-v2',
     'esbuild',
   ],
   tsconfig: {

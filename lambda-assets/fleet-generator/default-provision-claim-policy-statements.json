@@ -11,12 +11,12 @@
           "iot:Publish",
           "iot:Receive"
         ],
-        "Resource": []
+        "Resource": [""]
     },
     "subscribe": {
         "Effect": "Allow",
         "Action": "iot:Subscribe",
-        "Resource": []
+        "Resource": [""]
     }
     
   }

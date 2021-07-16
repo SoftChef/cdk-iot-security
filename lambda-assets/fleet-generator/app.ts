@@ -53,19 +53,20 @@ export const handler = async (event: any = {}) : Promise <any> => {
       JSON.stringify(defaultTemplateBody),
       provisioningRoleArn,
     );
-    const {
+    let {
       provisionClaimCertificateArn,
       provisionClaimCertificateId,
       provisionClaimCertificatePem,
       keyPair,
-    } = await createProvisioningClaimCertificate(templateArn, templateName, bucketName, bucketPrefix);
+    } = await createProvisioningClaimCertificate(templateArn, templateName);
+
     await uploadToVault(
       bucketName,
       bucketPrefix,
-      provisionClaimCertificateArn,
-      provisionClaimCertificateId,
-      provisionClaimCertificatePem,
-      keyPair,
+      provisionClaimCertificateArn!,
+      provisionClaimCertificateId!,
+      provisionClaimCertificatePem!,
+      keyPair!,
     );
     return response.json({
       provisionClaimCertificateArn,
@@ -93,7 +94,7 @@ async function createProvisioningTemplate(inputTemplateName: string, inputTempla
   return { templateArn, templateName };
 }
 
-async function createProvisioningClaimCertificate(templateArn: string, templateName: string, bucketName: string, bucketPrefix: string) {
+async function createProvisioningClaimCertificate(templateArn: string, templateName: string) {
   const [awsRegion, awsAccountId] = templateArn.split(':').slice(3, 5);
   defaultProvisionClaimPolicyStatements.publish.Resource = [
     `arn:aws:iot:${awsRegion}:${awsAccountId}:topic/$aws/certificates/create/*`,
