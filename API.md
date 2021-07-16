@@ -35,13 +35,6 @@ Name|Description
 [VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)|*No description*
 
 
-**Enums**
-
-Name|Description
-----|-----------
-[FleetProvision.Mode](#softchef-cdk-iot-security-fleetprovision-mode)|*No description*
-
-
 
 ## class CaRegistrator  <a id="softchef-cdk-iot-security-caregistrator"></a>
 
@@ -161,7 +154,7 @@ new FleetProvision(scope: Construct, id: string, props: Props)
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[FleetProvision.Props](#softchef-cdk-iot-security-fleetprovision-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **mode** (<code>[FleetProvision.Mode](#softchef-cdk-iot-security-fleetprovision-mode)</code>)  *No description* __*Optional*__
+  * **greengrassV2** (<code>boolean</code>)  *No description* __*Optional*__
 
 
 
@@ -503,7 +496,7 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**mode**? | <code>[FleetProvision.Mode](#softchef-cdk-iot-security-fleetprovision-mode)</code> | __*Optional*__
+**greengrassV2**? | <code>boolean</code> | __*Optional*__
 
 
 
@@ -560,14 +553,5 @@ Name | Type | Description
 -----|------|-------------
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
 
-
-
-## enum Mode  <a id="softchef-cdk-iot-security-fleetprovision-mode"></a>
-
-
-
-Name | Description
------|-----
-**GREENGRASS_V2** |
 
 
