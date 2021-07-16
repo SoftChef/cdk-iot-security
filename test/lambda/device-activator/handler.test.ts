@@ -16,9 +16,8 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/device-activator/app';
 import {
   VerificationError,
-  InputError,
   InformationNotFoundError,
-} from '../../../lambda-assets/device-activator/errors';
+} from '../../../lambda-assets/errors';
 
 const expected = {
   recordContent: {
@@ -186,10 +185,4 @@ describe('Fail on the AWS SDK error returns', () => {
     iotMock.on(ListTagsForResourceCommand).resolves({});
     await expect(handler({ Records: [record] })).rejects.toThrowError(Error);
   });
-});
-
-test('Get Error Codes successfully', () => {
-  expect(new VerificationError().code).toBe(VerificationError.code);
-  expect(new InputError().code).toBe(InputError.code);
-  expect(new InformationNotFoundError().code).toBe(InformationNotFoundError.code);
 });
