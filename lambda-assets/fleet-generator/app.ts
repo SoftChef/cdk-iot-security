@@ -20,7 +20,6 @@ import {
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
 import defaultTemplateBody from './default-template.json';
-import greengrassV2IotPolicy from './greengrass-v2-iot-policy.json';
 
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
@@ -40,7 +39,18 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }
     const templateName = request.input('templateName');
 
-    const policy = greengrassTokenExchangeRoleArn? greengrassV2IotPolicy : defaultIotPolicy;
+    let policy = defaultIotPolicy;
+    if (greengrassTokenExchangeRoleArn) {
+      policy.Statement.push({
+        Effect: 'Allow',
+        Action: [
+          'iot:AssumeRoleWithCertificate',
+        ],
+        Resource: [
+          greengrassTokenExchangeRoleArn,
+        ],
+      });
+    }
 
     const templateArn = await createProvisioningTemplate(templateName, fleetProvisioningRoleArn, policy);
     const {
