@@ -10,7 +10,7 @@ import {
   ReviewAcceptionRole,
   JitrTopicRule,
   FleetGenerator,
-  FleetProvisionRole,
+  FleetProvisioningRole,
   RegistrationConfigRole,
   DeviceCertificateGenerator,
   ProvisionRole,
@@ -44,7 +44,7 @@ describe('Test index.ts exportation', () => {
       vault: {
         bucket: bucket,
       },
-      fleetProvisionRole: new FleetProvisionRole(stack, 'testFleetProvisionRole'),
+      fleetProvisionRole: new FleetProvisioningRole(stack, 'testFleetProvisionRole'),
     });
     new RegistrationConfigRole(stack, 'testJitpRole');
     new ProvisionRole(stack, 'testProvisionRole');

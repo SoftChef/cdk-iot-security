@@ -26,7 +26,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
   const greengrassTokenExchangeRoleArn = process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN ?? '';
-  const provisioningRoleArn: string = process.env.PROVISIONING_ROLE_ARN!;
+  const fleetProvisioningRoleArn: string = process.env.FLEET_PROVISIONING_ROLE_ARN!;
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   try {
@@ -42,7 +42,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     const policy = greengrassTokenExchangeRoleArn? greengrassV2IotPolicy : defaultIotPolicy;
 
-    const templateArn = await createProvisioningTemplate(templateName, provisioningRoleArn, policy);
+    const templateArn = await createProvisioningTemplate(templateName, fleetProvisioningRoleArn, policy);
     const {
       provisionClaimCertificateArn,
       provisionClaimCertificateId,

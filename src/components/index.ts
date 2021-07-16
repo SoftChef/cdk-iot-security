@@ -3,7 +3,7 @@ export { DeviceActivator } from './device-activator';
 export { DeviceCertificateGenerator } from './deivce-certificate-generator';
 export { FleetGenerator } from './fleet-generator';
 export {
-  FleetProvisionRole,
+  FleetProvisioningRole,
   RegistrationConfigRole,
   ProvisionRole,
 } from './provision-role';

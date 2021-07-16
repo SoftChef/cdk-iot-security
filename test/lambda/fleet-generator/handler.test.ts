@@ -41,7 +41,7 @@ const expected = {
 };
 
 beforeEach(() => {
-  process.env.PROVISIONING_ROLE_ARN = expected.provisioningRoleArn;
+  process.env.FLEET_PROVISIONING_ROLE_ARN = expected.provisioningRoleArn;
   process.env.BUCKET_NAME = expected.bucketName;
   process.env.BUCKET_PREFIX = expected.bucketPrefix;
   iotMock.on(CreateProvisioningTemplateCommand, {
@@ -75,7 +75,6 @@ describe('Sucessfully execute the handler', () => {
 
   test('On regular event', async () => {
     var response = await handler(event);
-    console.log(response);
     expect(response.statusCode).toBe(200);
   });
 
