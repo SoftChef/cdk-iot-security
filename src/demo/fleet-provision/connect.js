@@ -2,16 +2,18 @@ const { mqtt, io, iot, iotidentity } = require('aws-iot-device-sdk-v2');
 const fs = require('fs');
 
 /**
- * Set the template name, endpoint, and thing name before running this file.
+ * Fill in the template name, endpoint, and thing name before running this file.
  */
 const templateName = 'previously generated template name';
 const endpoint = 'your aws iot data endpoint';
-const thingName = 'your desirable thing Name';
+const thingName = 'your unique thing name';
 const clinetId = 'testClient';
 
 /**
  * Place the AWS Root CA, provision claim certificate, and provision claim private key 
  * at ./certs before running this file.
+ * Download AWS IoT Root CA Certificate from https://www.amazontrust.com/repository/AmazonRootCA1.pem
+ * and save it as root_ca.cert.pem.
  */
 const keysPath = {
   provisionClaim: {

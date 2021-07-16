@@ -11,6 +11,8 @@ const fleetProvision = new FleetProvision(stack, id, {
   vault: {
     bucket: vault,
   },
+  // Decomment the following line to apply the Greengrass V2 mode
+  // mode: FleetProvision.Mode.GREENGRASS_V2,
 });
 const restApi = new apigateway.RestApi(stack, 'testRestApi');
 restApi.root

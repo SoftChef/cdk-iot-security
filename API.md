@@ -10,6 +10,7 @@ Name|Description
 [FleetGenerator](#softchef-cdk-iot-security-fleetgenerator)|*No description*
 [FleetProvision](#softchef-cdk-iot-security-fleetprovision)|*No description*
 [FleetProvisionRole](#softchef-cdk-iot-security-fleetprovisionrole)|*No description*
+[GreenGrassV2TokenExchangeRole](#softchef-cdk-iot-security-greengrassv2tokenexchangerole)|*No description*
 [JitrTopicRule](#softchef-cdk-iot-security-jitrtopicrule)|*No description*
 [JustInTimeProvision](#softchef-cdk-iot-security-justintimeprovision)|*No description*
 [JustInTimeRegistration](#softchef-cdk-iot-security-justintimeregistration)|*No description*
@@ -32,6 +33,13 @@ Name|Description
 [JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)|*No description*
 [VaultProps](#softchef-cdk-iot-security-vaultprops)|*No description*
 [VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)|*No description*
+
+
+**Enums**
+
+Name|Description
+----|-----------
+[FleetProvision.Mode](#softchef-cdk-iot-security-fleetprovision-mode)|*No description*
 
 
 
@@ -128,6 +136,7 @@ new FleetGenerator(scope: Construct, id: string, props: Props)
 * **props** (<code>[FleetGenerator.Props](#softchef-cdk-iot-security-fleetgenerator-props)</code>)  *No description*
   * **fleetProvisionRole** (<code>[FleetProvisionRole](#softchef-cdk-iot-security-fleetprovisionrole)</code>)  The Role for Fleet Provision. 
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **greengrassV2TokenExchangeRole** (<code>[GreenGrassV2TokenExchangeRole](#softchef-cdk-iot-security-greengrassv2tokenexchangerole)</code>)  *No description* __*Optional*__
 
 
 
@@ -152,6 +161,7 @@ new FleetProvision(scope: Construct, id: string, props: Props)
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[FleetProvision.Props](#softchef-cdk-iot-security-fleetprovision-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
+  * **mode** (<code>[FleetProvision.Mode](#softchef-cdk-iot-security-fleetprovision-mode)</code>)  *No description* __*Optional*__
 
 
 
@@ -162,6 +172,7 @@ Name | Type | Description
 -----|------|-------------
 **fleetGenerator** | <code>[FleetGenerator](#softchef-cdk-iot-security-fleetgenerator)</code> | <span></span>
 **fleetProvisionRole** | <code>[FleetProvisionRole](#softchef-cdk-iot-security-fleetprovisionrole)</code> | <span></span>
+**greengrassV2TokenExchangeRole**? | <code>[GreenGrassV2TokenExchangeRole](#softchef-cdk-iot-security-greengrassv2tokenexchangerole)</code> | __*Optional*__
 
 
 
@@ -179,6 +190,28 @@ __Extends__: [ProvisionRole](#softchef-cdk-iot-security-provisionrole)
 
 ```ts
 new FleetProvisionRole(scope: Construct, id: string)
+```
+
+* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **id** (<code>string</code>)  *No description*
+
+
+
+
+## class GreenGrassV2TokenExchangeRole  <a id="softchef-cdk-iot-security-greengrassv2tokenexchangerole"></a>
+
+
+
+__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
+__Extends__: [Role](#aws-cdk-aws-iam-role)
+
+### Initializer
+
+
+
+
+```ts
+new GreenGrassV2TokenExchangeRole(scope: Construct, id: string)
 ```
 
 * **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
@@ -456,6 +489,7 @@ Name | Type | Description
 -----|------|-------------
 **fleetProvisionRole** | <code>[FleetProvisionRole](#softchef-cdk-iot-security-fleetprovisionrole)</code> | The Role for Fleet Provision.
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**greengrassV2TokenExchangeRole**? | <code>[GreenGrassV2TokenExchangeRole](#softchef-cdk-iot-security-greengrassv2tokenexchangerole)</code> | __*Optional*__
 
 
 
@@ -469,6 +503,7 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
+**mode**? | <code>[FleetProvision.Mode](#softchef-cdk-iot-security-fleetprovision-mode)</code> | __*Optional*__
 
 
 
@@ -525,5 +560,14 @@ Name | Type | Description
 -----|------|-------------
 **verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
 
+
+
+## enum Mode  <a id="softchef-cdk-iot-security-fleetprovision-mode"></a>
+
+
+
+Name | Description
+-----|-----
+**GREENGRASS_V2** |
 
 

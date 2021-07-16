@@ -17,3 +17,4 @@ export {
   VaultProps,
 } from './vault';
 export { VerifiersFetcher } from './verifiers-fetcher';
+export { GreenGrassV2TokenExchangeRole } from './greengrass-v2';

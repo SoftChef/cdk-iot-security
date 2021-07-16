@@ -14,17 +14,18 @@ import {
   Request,
   Response,
 } from '@softchef/lambda-events';
-import * as Joi from 'joi';
 import {
   InputError,
 } from '../errors';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
 import defaultTemplateBody from './default-template.json';
+import greengrassV2IotPolicy from './greengrass-v2-iot-policy.json';
 
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
+  const greengrassTokenExchangeRoleArn = process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN ?? '';
   const provisioningRoleArn: string = process.env.PROVISIONING_ROLE_ARN!;
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
@@ -37,28 +38,17 @@ export const handler = async (event: any = {}) : Promise <any> => {
     if (validated.error) {
       throw new InputError(JSON.stringify(validated.details));
     }
-    const [awsRegion, awsAccountId] = provisioningRoleArn.split(':').slice(3, 5);
-    defaultIotPolicy.Statement = defaultIotPolicy.Statement.map((statement) => {
-      statement.Resource = statement.Resource.map((resource) => {
-        resource.replace('<region>', awsRegion);
-        resource.replace('<account>', awsAccountId);
-        resource.replace('<templateName>', request.input('templateName'));
-        return resource;
-      });
-      return statement;
-    });
-    defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
-    const { templateArn, templateName } = await createProvisioningTemplate(
-      request.input('templateName'),
-      JSON.stringify(defaultTemplateBody),
-      provisioningRoleArn,
-    );
-    let {
+    const templateName = request.input('templateName');
+
+    const policy = greengrassTokenExchangeRoleArn? greengrassV2IotPolicy : defaultIotPolicy;
+
+    const templateArn = await createProvisioningTemplate(templateName, provisioningRoleArn, policy);
+    const {
       provisionClaimCertificateArn,
       provisionClaimCertificateId,
       provisionClaimCertificatePem,
       keyPair,
-    } = await createProvisioningClaimCertificate(templateArn, templateName);
+    } = await createProvisioningClaimCertificate(templateArn!, templateName);
 
     await uploadToVault(
       bucketName,
@@ -68,6 +58,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       provisionClaimCertificatePem!,
       keyPair!,
     );
+
     return response.json({
       provisionClaimCertificateArn,
       provisionClaimCertificateId,
@@ -77,21 +68,29 @@ export const handler = async (event: any = {}) : Promise <any> => {
   }
 };
 
-async function createProvisioningTemplate(inputTemplateName: string, inputTemplateBody: string, provisioningRoleArn: string) {
-  const createProvisioningTemplateOutput = await new IoTClient({}).send(
+async function createProvisioningTemplate(templateName: string, provisioningRoleArn: string, policy: {[key: string]: any}) {
+  // const [awsRegion, awsAccountId] = provisioningRoleArn.split(':').slice(3, 5);
+  // defaultIotPolicy.Statement = defaultIotPolicy.Statement.map((statement) => {
+  //   statement.Resource = statement.Resource.map((resource) => {
+  //     resource.replace('<region>', awsRegion);
+  //     resource.replace('<account>', awsAccountId);
+  //     resource.replace('<templateName>', templateName);
+  //     return resource;
+  //   });
+  //   return statement;
+  // });
+  defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
+
+  const { templateArn } = await new IoTClient({}).send(
     new CreateProvisioningTemplateCommand({
-      templateName: inputTemplateName,
-      templateBody: inputTemplateBody,
+      templateName: templateName,
+      templateBody: JSON.stringify(defaultTemplateBody),
       provisioningRoleArn: provisioningRoleArn,
       enabled: true,
     }),
   );
-  const { templateArn, templateName } = await Joi.object({
-    templateArn: Joi.string().regex(/^arn/).required(),
-    templateName: Joi.string().required(),
-  }).required().unknown(true)
-    .validateAsync(createProvisioningTemplateOutput);
-  return { templateArn, templateName };
+
+  return templateArn;
 }
 
 async function createProvisioningClaimCertificate(templateArn: string, templateName: string) {
@@ -104,7 +103,8 @@ async function createProvisioningClaimCertificate(templateArn: string, templateN
     `arn:aws:iot:${awsRegion}:${awsAccountId}:topicfilter/$aws/certificates/create/*`,
     `arn:aws:iot:${awsRegion}:${awsAccountId}:topicfilter/$aws/provisioning-templates/${templateName}/provision/*`,
   ];
-  const { policyName } = await new IoTClient({}).send(
+  const iotClient = new IoTClient({});
+  const { policyName } = await iotClient.send(
     new CreatePolicyCommand({
       policyDocument: JSON.stringify({
         Version: '2012-10-17',
@@ -114,7 +114,7 @@ async function createProvisioningClaimCertificate(templateArn: string, templateN
           defaultProvisionClaimPolicyStatements.subscribe,
         ],
       }),
-      policyName: `ProvisioningClaimCertificateliPolicy-${templateName}`,
+      policyName: `ProvisioningClaimCertificatePolicy-${templateName}`,
     }),
   );
 
@@ -123,13 +123,13 @@ async function createProvisioningClaimCertificate(templateArn: string, templateN
     keyPair,
     certificatePem: provisionClaimCertificatePem,
     certificateId: provisionClaimCertificateId,
-  } = await new IoTClient({}).send(
+  } = await iotClient.send(
     new CreateKeysAndCertificateCommand({
       setAsActive: true,
     }),
   );
 
-  await new IoTClient({}).send(
+  await iotClient.send(
     new AttachPolicyCommand({
       policyName: policyName,
       target: provisionClaimCertificateArn,
@@ -152,7 +152,8 @@ async function uploadToVault(
   provisionClaimCertificatePem: string,
   keyPair: {[key:string]: string},
 ) {
-  await new S3Client({}).send(
+  const s3Client = new S3Client({});
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
       Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.cert.pem'),
@@ -162,7 +163,7 @@ async function uploadToVault(
     }),
   );
 
-  await new S3Client({}).send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
       Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.public_key.pem'),
@@ -172,7 +173,7 @@ async function uploadToVault(
     }),
   );
 
-  await new S3Client({}).send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
       Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.private_key.pem'),
@@ -182,7 +183,7 @@ async function uploadToVault(
     }),
   );
 
-  await new S3Client({}).send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
       Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision-claim-certificate.json'),

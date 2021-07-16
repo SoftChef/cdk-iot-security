@@ -30,7 +30,7 @@ const expected = {
   templateName: event.body.templateName,
   templateArn: 'arn:test_template',
   provisioningRoleArn: 'arn:provisioning_role',
-  policyName: `ProvisioningClaimCertificateliPolicy-${event.body.templateName}`,
+  policyName: `ProvisioningClaimCertificatePolicy-${event.body.templateName}`,
   provisioningClaimCertificateArn: 'arn:provisioning_claim_certificate_arn',
   provisioningClaimCertificateKeyPair: {
     PrivateKey: 'provisioning_claim_certificate_private_key',
@@ -75,6 +75,7 @@ describe('Sucessfully execute the handler', () => {
 
   test('On regular event', async () => {
     var response = await handler(event);
+    console.log(response);
     expect(response.statusCode).toBe(200);
   });
 
