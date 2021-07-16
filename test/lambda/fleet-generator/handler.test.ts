@@ -85,6 +85,12 @@ describe('Sucessfully execute the handler', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test('On Greengrass V2 mode', async () => {
+    process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN = 'arn:greengrass-v2-token-exachange-arn';
+    var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+  });
+
 });
 
 describe('Fail to execute the handler', () => {

@@ -10,14 +10,15 @@ export class FleetProvision extends cdk.Construct {
   public readonly greengrassV2TokenExchangeRole?: GreenGrassV2TokenExchangeRole;
   constructor(scope: cdk.Construct, id: string, props: FleetProvision.Props) {
     super(scope, id);
+    if (props.greengrassV2) {
+      this.greengrassV2TokenExchangeRole = new GreenGrassV2TokenExchangeRole(this, id);
+    }
     this.fleetProvisionRole = new FleetProvisionRole(this, id);
     this.fleetGenerator = new FleetGenerator(this, id, {
       vault: props.vault,
       fleetProvisionRole: this.fleetProvisionRole,
+      greengrassV2TokenExchangeRole: this.greengrassV2TokenExchangeRole,
     });
-    if (props.mode === FleetProvision.Mode.GREENGRASS_V2) {
-      this.greengrassV2TokenExchangeRole = new GreenGrassV2TokenExchangeRole(this, id);
-    }
   }
 }
 
@@ -28,9 +29,6 @@ export module FleetProvision {
      * information returned from the CA Registration Function.
      */
     readonly vault: VaultProps;
-    readonly mode?: FleetProvision.Mode;
-  }
-  export enum Mode {
-    GREENGRASS_V2,
+    readonly greengrassV2?: boolean;
   }
 }

@@ -14,6 +14,7 @@ import {
   RegistrationConfigRole,
   DeviceCertificateGenerator,
   ProvisionRole,
+  GreenGrassV2TokenExchangeRole,
 } from '../../src/index';
 
 describe('Test index.ts exportation', () => {
@@ -47,5 +48,6 @@ describe('Test index.ts exportation', () => {
     });
     new RegistrationConfigRole(stack, 'testJitpRole');
     new ProvisionRole(stack, 'testProvisionRole');
+    new GreenGrassV2TokenExchangeRole(stack, 'testGreenGrassV2TokenExchangeRole');
   });
 });
