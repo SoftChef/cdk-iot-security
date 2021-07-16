@@ -126,9 +126,7 @@ A Certificate, a Thing, and an IoT Policy are set on the AWS IoT. Moreover, the 
 
 ### Greengrass V2 Mode
 
-If you have modify the file ```deploy.ts``` and deploy the Fleet Provision Construct in the Greengrass V2 mode, the returned device certificate and private key, which have the file name ```device.cert.pem``` and ```device.private_key.pem```, are able to activate a Greengrass v2 Device Core.
-
-In the following section, we assume your are deploy a Greengrass V2 Device Core to the Ubuntu 20.04 environment.
+If you have modify the file ```deploy.ts``` and deploy the Fleet Provision Construct in the Greengrass V2 mode, the returned device certificate and private key, which have the file name ```device.cert.pem``` and ```device.private_key.pem```, are able to activate a Greengrass v2 Device Core. In the following section, we assume your are going to deploy a Greengrass V2 Device Core to the Ubuntu 20.04 environment.
 
 Create the directory and set the permission.
 
