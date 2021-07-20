@@ -19,34 +19,35 @@
 
 ![](./doc/JITR.png)
 
-## Example
+### Usage
 
-First, deploy the JITR construct with demo file. Two AWS lambda functions, CA Registrator and Device Activator, will be deployed for further use.
+    import { JustInTimeRegistration } from '@softchef/cdk-iot-security';
+    import * as cdk from '@aws-cdk/core';
+    import * as s3 from '@aws-cdk/aws-s3';
+    import * as lambda from '@aws-cdk/aws-lambda';
 
-    git clone https://github.com/SoftChef/cdk-iot-security.git
-    cd cdk-iot-security
-    npx projen build
-    cdk deploy --app 'node lib/demo/jitr/deploy'
-
-After deploying the construct, an URL returned from the console as the following format. In the following steps, we will use this URL to access the API.
-
-    https://<prefix>.execute-api.<region>.amazonaws.com/prod/
-
-Call the API with the following command. The API will invoke the CA Registrator and return an ID belongs to a CA certificate registered on AWS IoT. Save the CA ID for later use. You can design your own way to use the CA Registrator.
-
-    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
-
-Go to the AWS Cloud Formation Console. Select the stack 'JitrDemo' and find the S3 Bucket under the Resources section. Go to that S3 bucket and find the folder with the name same as the CA ID. Download files ```ca.cert.pem```, ```ca.private_key.pem```, and ```ca.pubic_key.pem``` from that folder. Place these downloaded files under path ```src/demo/jitr/certs```.
-
-The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
-
-    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/jitp/certs/root_ca.cert.pem
-
-Finally, the device use the certificate to connect to the AWS IoT through MQTT connection.
-
-    node src/demo/jitr/device.js
-
-A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
+    const app = new cdk.App();
+    const id = 'JitrDemo';
+    const stack = new cdk.Stack(app, id);
+    const anotherStack = new cdk.Stack(app, 'anotherStack');
+    new JustInTimeRegistration(stack, id, {
+        vault: {
+            bucket: new s3.Bucket(anotherStack, 'myVault2'),
+            prefix: 'my/ca/path',
+        },
+        verifiers: [
+            new lambda.Function(anotherStack, 'verifier1', {
+                code: lambda.Code.fromInline('exports.handler = async (_event) => { return JSON.stringify({ verified: true }); }'),
+                handler: 'handler',
+                runtime: lambda.Runtime.NODEJS_12_X,
+            }),
+            new lambda.Function(anotherStack, 'verifier2', {
+                code: lambda.Code.fromInline('exports.handler = async (event) => { return JSON.stringify({ verified: event? true : false }); }'),
+                handler: 'handler',
+                runtime: lambda.Runtime.NODEJS_12_X,
+            })
+        ]
+    });
 
 ## Roadmap
 
