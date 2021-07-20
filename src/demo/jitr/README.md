@@ -65,4 +65,4 @@ Alternatively, instead of the ```aws-iot-device-sdk``` library, you can trigger 
 
 A Certificate, a Thing, and an IoT Policy are set on the AWS IoT for the device.
 
-Instead of placing the CA certificates in the device, the service provider can create the legal deivce certificates in the manufacture and place almost only the device certificates in the device. Mention that the CA certificate is necessary to trigger JITR, it still needs to be place in the device. Please revice the code in ```mqtt-connect.js``` for more information.
+Instead of placing the CA certificates in the device, the service provider can create the legal deivce certificates in the manufacture and place almost only the device certificates in the device. Mention that the CA certificate is necessary to trigger JITR, it still needs to be place in the device. Please read the code in ```mqtt-connect.js``` for more information.
