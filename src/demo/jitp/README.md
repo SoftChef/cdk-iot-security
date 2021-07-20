@@ -48,6 +48,10 @@ When the service provider have done the necessary preparation, the client is abl
 
     curl -X POST -d '{caCertificateId:"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
 
+You can assign you custom thing name in the POST request.
+
+    curl -X POST -d '{caCertificateId:"<caCertificateId>",thingName:"<customThingName>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
+
 The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Notice that the device certificate is not registered on AWS IoT yet.
 
 You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
