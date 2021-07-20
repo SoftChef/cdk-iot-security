@@ -2106,7 +2106,7 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@softchef/iot-just-in-time-registration@*":
+"@softchef/iot-just-in-time-registration@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@softchef/iot-just-in-time-registration/-/iot-just-in-time-registration-0.0.2.tgz#49d018685d123756faf2536ca4b6ecfecb9d664d"
   integrity sha512-xnP/D3yD4NG7zT4HQxhgcxcJi5mhSIK4l+ZqPhm4/5eBTGGfaUAGWpchyU/lev8zhg+XKykripqVRDUrPcy9Ug==

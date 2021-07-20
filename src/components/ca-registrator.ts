@@ -12,7 +12,7 @@ import {
   RegistrationConfigRole,
   VaultProps,
   VerifiersFetcher,
-} from '.';
+} from './';
 
 export module CaRegistrator {
   export interface Props {

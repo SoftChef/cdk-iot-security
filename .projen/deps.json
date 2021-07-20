@@ -6,6 +6,10 @@
       "type": "build"
     },
     {
+      "name": "@softchef/iot-just-in-time-registration",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -20,6 +24,10 @@
     },
     {
       "name": "@typescript-eslint/parser",
+      "type": "build"
+    },
+    {
+      "name": "aws-iot-device-sdk",
       "type": "build"
     },
     {
