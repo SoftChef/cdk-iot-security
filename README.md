@@ -19,7 +19,7 @@
 
 ![](./doc/jitr/JITR.png)
 
-### Basic Usage
+### Usage
 
     import { JustInTimeRegistration } from '@softchef/cdk-iot-security';
     import * as cdk from '@aws-cdk/core';
@@ -51,53 +51,39 @@
 
 ## Just-in-Time Provision
 
+JITP work flow is usually applied in a situation that the device is not able to generate their own certificate. This example simulate the situation with the following steps: the service provider deploy the JITP construct and provide the API; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connet to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
+
 ![](./doc/jitp/JITP-AWS.png)
 
 ![](./doc/jitp/JITP.png)
 
-### Example
+### Usage
 
-JITP work flow is usually applied in a situation that the device is not able to generate their own certificate. This example simulate the situation with the following steps: the service provider deploy the JITP construct and provide the API; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connet to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
+    import { JustInTimeProvision } from '@softchef/cdk-iot-security';
+    import { Bucket } from '@aws-cdk/aws-s3';
+    import * as cdk from '@aws-cdk/core';
 
-First, deploy the JITP construct with demo file. Two AWS lambda functions, CA Registrator and Device Certificate Generator, will be deployed for further use.
+    const app = new cdk.App();
+    const id = 'JitpDemo';
+    const stack = new cdk.Stack(app, id);
+    const justInTimeProvision = new JustInTimeProvision(stack, id, {
+        vault: {
+            bucket: new Bucket(stack, 'myVault'),
+        },
+    });
 
-    git clone https://github.com/SoftChef/cdk-iot-security.git
-    cd cdk-iot-security
-    npx projen build
-    cdk deploy --app 'node lib/demo/jitp/deploy'
+### Examples
 
-After deploying the construct, an URL returned from the console as the following format. In the following steps, we will use this URL to access the API.
+* JITR
 
-    https://<prefix>.execute-api.<region>.amazonaws.com/prod/
+* [JITP](./src/demo/jitp/README.md)
 
-Call the API with the following command. The API will invoke the CA Registrator and return an ID belongs to a CA certificate registered on AWS IoT. Save the CA ID for later use. In this POST request, you can also send your own provision template. You can design your own way to use the CA Registrator.
-
-    curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
-
-Call the API with the following command. The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Notice that the device certificate is not registered on AWS IoT yet.
-
-    curl -X POST -d '{caCertificateId:"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
-
-You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
-
-Manually copy and paste the public key, private key, and certificate from the file ```device-certificate.json``` to files ```device.public_key.pem```, ```device.private_key.pem```, and ```device.cert.pem```, respectively. Remember to remove the format characters such as ```\r\n``` and make those files be a legal PEM format.
-
-The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
-
-    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/jitp/root_ca.cert.pem
-
-Remember to fill up the AWS IoT Endpoint in the file ```src/demo/jitp/device.js```. You can retrieve the endpoint URL with the following command.
-
-    aws iot describe-endpoint --endpoint-type iot:Data-ATS
-
-Finally, the device use the certificate to connect to the AWS IoT through MQTT connection. We simulate this process with the demostration file.
-
-    node src/demo/jitp/device.js
-
-A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
+* Fleet-Provisioning
 
 ## Roadmap
 
 ### JITP
 
-* Directly return the generated device certificate and keys in a secure way.
+* Verify which user is calling the device certificate generator API.
+
+* Manage the thing name and user relationship.
