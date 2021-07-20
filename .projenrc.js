@@ -35,6 +35,8 @@ const project = new AwsCdkConstructLibrary({
   ],
   devDeps: [
     'aws-sdk-client-mock',
+    '@softchef/iot-just-in-time-registration',
+    'aws-iot-device-sdk',
     'esbuild',
   ],
   tsconfig: {
