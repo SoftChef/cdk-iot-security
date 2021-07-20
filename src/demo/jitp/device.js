@@ -3,12 +3,6 @@ const path = require('path');
 const awsIot = require('aws-iot-device-sdk');
 const { ThingRegistry } = require('@softchef/iot-just-in-time-registration');
 
-const file = fs.readFileSync(`${__dirname}/certs/device-certificate.json`).toString();
-const deviceCertificates = JSON.parse(file);
-fs.writeFileSync(`${__dirname}/certs/device.cert.pem`, deviceCertificates.certificate);
-fs.writeFileSync(`${__dirname}/certs/device.private_key.pem`, deviceCertificates.privateKey);
-fs.writeFileSync(`${__dirname}/certs/device.public_key.pem`, deviceCertificates.publicKey);
-
 const config = {
   awsIot: {
     endpoint: 'your aws iot data endpoint',

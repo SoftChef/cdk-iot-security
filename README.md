@@ -80,6 +80,8 @@ Call the API with the following command. The API will invoke the Device Certific
 
 You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
 
+Manually copy and paste the public key, private key, and certificate from the file ```device-certificate.json``` to files ```device.public_key.pem```, ```device.private_key.pem```, and ```device.cert.pem```, respectively. Remember to remove the format characters such as ```\r\n``` and make those files be a legal PEM format.
+
 The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
 
     curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/jitp/root_ca.cert.pem
