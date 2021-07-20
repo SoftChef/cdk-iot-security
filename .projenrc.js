@@ -30,6 +30,8 @@ const project = new AwsCdkConstructLibrary({
     '@softchef/lambda-events',
     'mqtt',
     '@types/ws',
+    'uuid',
+    '@types/uuid',
   ],
   devDeps: [
     'aws-sdk-client-mock',

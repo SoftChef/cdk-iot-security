@@ -35,6 +35,54 @@ const expected = {
     Key: 'verifierName',
     Value: 'test_verifier',
   },
+  deviceCertificates: {
+    withoutCommonName: `-----BEGIN CERTIFICATE-----
+MIIDjTCCAnWgAwIBAgIBADANBgkqhkiG9w0BAQsFADCBgjFJMEcGA1UEAxNANWM1
+Yjk3ZTRkYjEwNTRjOTBkOGU3Mzg2ZDI3MTU0ZmFjYmY3NzAwZTBiN2FiZDMzMWQ4
+MzliYWM4OGUxZjZhYzEJMAcGA1UEBhMAMQkwBwYDVQQIEwAxCTAHBgNVBAcTADEJ
+MAcGA1UEChMAMQkwBwYDVQQLEwAwHhcNMjEwNzIwMDUzNDAzWhcNNDYwNzIwMDUz
+NDAzWjBCMQkwBwYDVQQDEwAxCTAHBgNVBAYTADEJMAcGA1UECBMAMQkwBwYDVQQH
+EwAxCTAHBgNVBAoTADEJMAcGA1UECxMAMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEA0TVozcxyhk9GJPjKq9TyKjK6kwZ9M8k5D4Rmr3nuSATEyxTL5uKz
+1OZ/+Ylf+vlWsvlhD2SPLvQqSIJSCnPbFTZprompXZZpObZkEY0CbnwmXgdW3y7N
+/PTLgr3uwYPT0DcJh5adoHPkxMlTIsRQ04kQnrzfuq84Yxu0gbtPrCIyLFiwDaEc
+xIlMsSNBY41WivIV7lq+Hl0ILJ22zJX9RMe8RP/ETEqPYe038ihGvAMWWsI/TVdL
+grYAzwK0IWC4NMW1db1ETBNnXtG54m2ZwleXDamUvwY/YS5QZjIPLfKRqk18Qulz
+3a0aOnXi5APLGBpyiK3ihS9yxB79VbEb4QIDAQABo00wSzAJBgNVHRMEAjAAMB0G
+A1UdDgQWBBSIuIiSev5QdqeQnKqUnrXkqymcPDAfBgNVHSMEGDAWgBSIuIiSev5Q
+dqeQnKqUnrXkqymcPDANBgkqhkiG9w0BAQsFAAOCAQEAnglo/lxIyQbMQd0DPAKS
+d8z8mGSCMrfKEFCIU1y4TReUtM8/2ELAns8G2PUgkLp/GPJRoNUU+oLQukTIvL9K
+ujdMrIbEo5OY+1N1yAVV3nVIg9nA44I1oTHSGvQs8cbIfQNj2lawpdogUrG+mjYS
+RdNwF50ju8bvlTSHMjoV9fnJLki3bn7hP2Uv4crhup4DfDA+7b/eILm7+tkPjyiq
+o1XOKlWwFKxuovLIySrwuZhgJIyxw8NXRLUmslSD43m4tMKvs1ru2i2HtjF2cB5l
+4u7gSeJgDPOpjDm3RcvZetOXwUxd15s9sTq/0DYuy5ykV1DVvONXACXrgmK2B+uk
+rg==
+-----END CERTIFICATE-----`,
+    withCommonName: `-----BEGIN CERTIFICATE-----
+MIIDnDCCAoSgAwIBAgIBADANBgkqhkiG9w0BAQsFADCBgjFJMEcGA1UEAxNANWM1
+Yjk3ZTRkYjEwNTRjOTBkOGU3Mzg2ZDI3MTU0ZmFjYmY3NzAwZTBiN2FiZDMzMWQ4
+MzliYWM4OGUxZjZhYzEJMAcGA1UEBhMAMQkwBwYDVQQIEwAxCTAHBgNVBAcTADEJ
+MAcGA1UEChMAMQkwBwYDVQQLEwAwHhcNMjEwNzIwMDU0OTEwWhcNNDYwNzIwMDU0
+OTEwWjBRMRgwFgYDVQQDEw90ZXN0X3RoaW5nX25hbWUxCTAHBgNVBAYTADEJMAcG
+A1UECBMAMQkwBwYDVQQHEwAxCTAHBgNVBAoTADEJMAcGA1UECxMAMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvxiELOHWpUTTb6OET/nl4f0/eNrpeuOg
+EN4oIpzhe5a8jNl/H5CUFj7kV67VpeKAxvs54WOTZl1JB1it5EkxL0/N7Pwo7RPA
+jtI15ShYAf2BDgLgC6q884l6IpcYmYoeA1+/beaCSxwko5FavKAu1RSImu+xjKs6
+AeAllMSe9x4CJSaYyElTenWJLbhNnif+3wlZPiUTvOIszHzwv12Xm+RiCOgJuMjC
+A76jLtgjYg9WyUAGTf97tmFfdf+Su9bUT5i3Suzs+LMmXS3dCKSzpOMV1+6XXKOT
+96/aQGlK0nxVmsaVNCq3wDx2fCfBsWF0BiadBNjVbSVrQxvAb03CGwIDAQABo00w
+SzAJBgNVHRMEAjAAMB0GA1UdDgQWBBSvjNhpSInnnLFHqt7C/BHRql9tMTAfBgNV
+HSMEGDAWgBSvjNhpSInnnLFHqt7C/BHRql9tMTANBgkqhkiG9w0BAQsFAAOCAQEA
+F3qY5R/LVZflGU0G3fMDM8KW2ei03rZhJFut6xQ/ARjfFAipVuUZ8n+i0HVxb2pf
+yQDCkCxFyg7HiYi1pYF1By84K7kvGdOBlLwthg80/+Dop6nJ2SMryh8iNEZ5D6gn
+LRVEargJKiEeQAk/En+aXulTJkR4nXSaUI3ilAN7sPY+mtfO9coTCMtNWxwbTFgT
+gCN3K2/syvnibAIqug/gfODdP11+28y8Vl5amBbkzZwILQDAQ2S9ZBgNUTSQMtHo
+MWrZpWw5+AqquN2H+imalQ25SjfRWgbG8fkXP0lctQXpSVoqB26av2B1jJ8+XTek
+eGWeMgJ4mKHNjqEVjxl5vg==
+-----END CERTIFICATE-----`,
+  },
+  thingName: 'test_thing_name',
+  policyName: 'test_policy_name',
 };
 
 const record = {
@@ -66,7 +114,7 @@ beforeEach(() => {
       certificateId: expected.recordContent.certificateId,
       certificateArn: expected.certificateArn,
       caCertificateId: expected.recordContent.caCertificateId,
-      certificatePem: '-----BEGIN CERTIFICATE-----MIID0TCCArmgAwIBAgIBATANBgkqhkiG9w0BAQUFADCBgjFJMEcGA1UEAxNANWM1Yjk3ZTRkYjEwNTRjOTBkOGU3Mzg2ZDI3MTU0ZmFjYmY3NzAwZTBiN2FiZDMzMWQ4MzliYWM4OGUxZjZhYzEJMAcGA1UEBhMAMQkwBwYDVQQIEwAxCTAHBgNVBAcTADEJMAcGA1UEChMAMQkwBwYDVQQLEwAwHhcNMjEwNjIxMTYwNzI5WhcNMjIwNjIxMTYwNzI5WjCBgjFJMEcGA1UEAxNANWM1Yjk3ZTRkYjEwNTRjOTBkOGU3Mzg2ZDI3MTU0ZmFjYmY3NzAwZTBiN2FiZDMzMWQ4MzliYWM4OGUxZjZhYzEJMAcGA1UEBhMAMQkwBwYDVQQIEwAxCTAHBgNVBAcTADEJMAcGA1UEChMAMQkwBwYDVQQLEwAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDUtmSOWM8s0Htuqrxt/fXc17WBo5Ayc+sYi5w7X5OBYLXUooKWnErFaApt6htqZekjS0CLlpoksfZ2YqBMq2nqSiNG1h3LPp0GT/Vw130ABzt0pVZKNcxC4yThRcGCGyWg3mSLCO7B1pp+p3YXJINXb32JjJV0txrF9q4CGPi8ha51C0P21fddFe0+9mWJt0voIQY+MIi5JMixuoRwuDIjC+Lgy+4vakzPzlFcOF/YsCVKfLoy8EbjevAVQW3E/CGN5ah9l5bTd1FeKhR0iAzHorul4uYzzbGztrgavCvgTY/bL/XWUUFrClBPXGPgh76VhT0l0I4Im7PgzdQ/c2fhAgMBAAGjUDBOMAwGA1UdEwQFMAMBAf8wHQYDVR0OBBYEFD2MDQBJHdAacc3tztFxxakdXPFeMB8GA1UdIwQYMBaAFD2MDQBJHdAacc3tztFxxakdXPFeMA0GCSqGSIb3DQEBBQUAA4IBAQA4Ekvz8LOty05mcZXapgltzXXyVic1UVH01IO0Lesrch1YgiXcEZUQuoSN/5e/1I4iCFSA8hrcDF/CbST3uCbh48Hx9MjPYCzFdeoMChG57gqwLGY1Fsz3rApQPGl40I+7rFh6s2pEkdu7WXxgRTHXnA65iIyFG8BsYn04J+gSn9DVBZ0DKwVXDmTyxjKLtTTXCr30WZGVa+eQzUCik3Pmrkon/fyOGUwE/p3E1iSbgSMqqHxfGjUiy2GX9I+na+TpBTRHl2WxkwVvTYYOhmuygkpJDIHIn5XJw6R5Yhj3fM/2ntgPN26EyXCYwVt732qDti6p8ZsucackcYENT4ak-----END CERTIFICATE-----',
+      certificatePem: expected.deviceCertificates.withCommonName,
     },
   });
   iotMock.on(DescribeCACertificateCommand, {
@@ -92,10 +140,10 @@ beforeEach(() => {
     ),
   });
   iotMock.on(CreateThingCommand).resolves({
-    thingName: 'test_thing_name',
+    thingName: expected.thingName,
   });
   iotMock.on(CreatePolicyCommand).resolves({
-    policyName: 'test_policy_name',
+    policyName: expected.policyName,
   });
   iotMock.on(AttachPolicyCommand).resolves({});
   iotMock.on(UpdateCertificateCommand).resolves({});
@@ -108,6 +156,21 @@ afterEach(() => {
 
 describe('Sucessfully execute the handler', () => {
   test('On a regular event', async () => {
+    var response = await handler({ Records: [record] });
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('On a device certificate without common name', async () => {
+    iotMock.on(DescribeCertificateCommand, {
+      certificateId: expected.recordContent.certificateId,
+    }).resolves({
+      certificateDescription: {
+        certificateId: expected.recordContent.certificateId,
+        certificateArn: expected.certificateArn,
+        caCertificateId: expected.recordContent.caCertificateId,
+        certificatePem: expected.deviceCertificates.withoutCommonName,
+      },
+    });
     var response = await handler({ Records: [record] });
     expect(response.statusCode).toBe(200);
   });

@@ -120,7 +120,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'ca.public_key.pem'),
+        Key: path.join(bucketPrefix, certificateId!, 'ca.public_key.pem'),
         Body: Buffer.from(certificates.ca.publicKey),
       }),
     );
@@ -128,7 +128,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'ca.private_key.pem'),
+        Key: path.join(bucketPrefix, certificateId!, 'ca.private_key.pem'),
         Body: Buffer.from(certificates.ca.privateKey),
       }),
     );
@@ -136,7 +136,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'ca.cert.pem'),
+        Key: path.join(bucketPrefix, certificateId!, 'ca.cert.pem'),
         Body: Buffer.from(certificates.ca.certificate),
       }),
     );
@@ -144,7 +144,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'verification.public_key.pem'),
+        Key: path.join(bucketPrefix, certificateId!, 'verification.public_key.pem'),
         Body: Buffer.from(certificates.verification.publicKey),
       }),
     );
@@ -152,7 +152,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'verification.private_key.pem'),
+        Key: path.join(bucketPrefix, certificateId!, 'verification.private_key.pem'),
         Body: Buffer.from(certificates.verification.privateKey),
       }),
     );
@@ -160,7 +160,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'verification.cert.pem'),
+        Key: path.join(bucketPrefix, certificateId!, 'verification.cert.pem'),
         Body: Buffer.from(certificates.verification.certificate),
       }),
     );
@@ -168,7 +168,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: path.join(bucketPrefix || '', certificateId!, 'ca-certificate.json'),
+        Key: path.join(bucketPrefix, certificateId!, 'ca-certificate.json'),
         Body: Buffer.from(
           JSON.stringify({
             certificateId,

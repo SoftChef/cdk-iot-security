@@ -114,7 +114,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const { thingName } = await iotClient.send(
     new CreateThingCommand({
-      thingName: getCommonName(deviceCertificatePem),
+      thingName: getCommonName(deviceCertificatePem) || deviceCertificateId,
       attributePayload: {
         attributes: {
           version: 'v1',
