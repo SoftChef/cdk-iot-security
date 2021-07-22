@@ -114,7 +114,7 @@ Some details informations of those three steps are discussed in the following se
         ]
     });
 
-#### Calling the CA Registrator
+#### Call the CA Registrator
 
 You call the CA Registrator to registrate a new CA on the AWS IoT before generating a device certificate.
 
@@ -141,7 +141,7 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 
 * Verifier name specifies the verifier applied in the device verification. Verifier name is Optional.
 
-#### Calling the Verifiers Fetcher
+#### Call the Verifiers Fetcher
 
 You can checkout the names of the verifiers through the Verifiers Fetcher when you forget the names.
 
