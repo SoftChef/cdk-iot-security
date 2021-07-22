@@ -29,7 +29,7 @@ import defaultTemplateBody from './default-template.json';
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
-  const greengrassTokenExchangeRoleArn = process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN ?? '';
+  const greengrassTokenExchangeRoleArn: string = process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN ?? '';
   const fleetProvisioningRoleArn: string = process.env.FLEET_PROVISIONING_ROLE_ARN!;
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
@@ -56,8 +56,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
         ],
       });
     }
+    defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
 
-    const templateArn = await createProvisioningTemplate(templateName, fleetProvisioningRoleArn, policy);
+    const templateArn = await createProvisioningTemplate(templateName, fleetProvisioningRoleArn, defaultTemplateBody);
     const {
       provisionClaimCertificateArn,
       provisionClaimCertificateId,
@@ -83,13 +84,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
   }
 };
 
-async function createProvisioningTemplate(templateName: string, provisioningRoleArn: string, policy: {[key: string]: any}) {
-  defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
+async function createProvisioningTemplate(templateName: string, provisioningRoleArn: string, templateBody: {[key: string]: any}) {
 
   const { templateArn } = await new IoTClient({}).send(
     new CreateProvisioningTemplateCommand({
       templateName: templateName,
-      templateBody: JSON.stringify(defaultTemplateBody),
+      templateBody: JSON.stringify(templateBody),
       provisioningRoleArn: provisioningRoleArn,
       enabled: true,
     }),
