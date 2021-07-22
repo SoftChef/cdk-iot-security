@@ -92,91 +92,65 @@ A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
 
 ## Fleet Provision
 
-### Example
+### Structure
 
-First, deploy the Fleet Provision Construct with demo file.
+![]()
 
-    git clone https://github.com/SoftChef/cdk-iot-security.git
-    cd cdk-iot-security
-    npx projen build
-    cdk deploy --app 'node lib/demo/fleet-provision/deploy'
+### Flow
 
-After deploying the construct, an URL returned from the console as the following format. In the following steps, we will use this URL to access the API.
+![]()
 
-    https://<prefix>.execute-api.<region>.amazonaws.com/prod/
+### Usage
 
+#### Overview
 
-Call the API with the following command. The API will invoke the Fleet Generator and return the information, including ID, ARN, keys, and certificate, of the provisioning claim certificate registered on AWS IoT. Save the information for later use. Note that in this POST request, you can also send your own provision template. You can design your own way to use the Fleet Generator.
+The process of applying Fleet-Provision is mainly consist of the following steps:
 
-    curl -X POST -d '{"templateName":"<templateName>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/fleetGenerator > fleet.json
+1. Initialize the Fleet-Provision construct.
 
-In the file ```fleet.json```, there is a template ARN. Remember the ARN for late use.
+2. Create the Fleet-Provisioning Template and Provisioning Claim Certificate through calling the Fleet Generator.
 
-Go to the AWS Cloud Formation Console. Select the stack **FleetProvisionDemo** and find the S3 Bucket under the Resources section. Go to that S3 bucket and find the folder with the name same as the template ARN. Download files ```provision_claim.cert.pem```, ```provision_claim.private_key.pem```, and ```provision-claim-certificate.json``` from that folder. Place these downloaded files under path ```src/demo/fleet-provision/certs```.
+3. Connect the device to the AWS IoT with Provisioning Claim Certificate and save the formal device certificates in the device.
 
-The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
+Some details informations of those three steps are discussed in the following sections. For step-by-step guide, please read the [Fleet-Provision demonstration files](./src/demo/fleet-provision/README.md).
 
-    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/fleet-provision/certs/root_ca.cert.pem
+#### Initialize the Fleet-Provision Construct
 
-Finally, the script ```connect.js``` use the certificate to connect to the AWS IoT through.
+    import * as apigateway from '@aws-cdk/aws-apigateway';
+    import * as s3 from '@aws-cdk/aws-s3';
+    import * as cdk from '@aws-cdk/core';
+    import { FleetProvision } from '@softchef/cdk-iot-security';
+    
+    const app = new cdk.App();
+    const id = 'FleetProvisionDemo';
+    const stack = new cdk.Stack(app, id);
+    const vault = new s3.Bucket(stack, 'myVault');
+    const fleetProvision = new FleetProvision(stack, id, {
+        vault: {
+            bucket: vault,
+        },
+        // Decomment the following line to apply the Greengrass V2 mode
+        // greengrassV2: true,
+    });
 
-    node src/demo/fleet-provision/connect.js
+#### Call the Fleet Generator
 
-A Certificate, a Thing, and an IoT Policy are set on the AWS IoT. Moreover, the device certificate and private key are returned from the AWS IoT and write in the files under path ```./certs```. They can be used by a device for further interaction with AWS IoT.
+You call the Fleet Generator to generate a new Fleet-Provisioning Template and Provisioning Claim Certificate on the AWS IoT.
 
-### Greengrass V2 Mode
+Fleet Generator assumes receiving an event object with the following format:
 
-If you have modify the file ```deploy.ts``` and deploy the Fleet Provision Construct in the Greengrass V2 mode, the returned device certificate and private key, which have the file name ```device.cert.pem``` and ```device.private_key.pem```, are able to activate a Greengrass v2 Device Core. In the following section, we assume your are going to deploy a Greengrass V2 Device Core to the Ubuntu 20.04 environment.
+event = {
+    ...
+    "body": {
+        "templateName": "myTemplateName",
+    }
+}
 
-Create the directory and set the permission.
+Since the event is mainly a HTTP POST request, it has a body section containing attached information. The body consist of the template name.
 
-    sudo mkdir -p /greengrass/v2
-    sudo chmod 755 /greengrass
+#### Connect the Device to the AWS IoT
 
-Transfer the device certificate and private key to your device for Greengrass V2 Device Core installation, and place at path ```/greengrass/v2```.
-
-Run the following command to download the Greengrass Core.
-
-    curl -s https://d2s8p88vqu9w66.cloudfront.net/releases/greengrass-nucleus-latest.zip > greengrass-nucleus-latest.zip
-    unzip greengrass-nucleus-latest.zip -d GreengrassCore && rm greengrass-nucleus-latest.zip
-
-Run the following command to download the AWS Root CA.
-
-    curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > /greengrass/v2/root_ca.cert.pem
-
-Check the endpoints for later use.
-
-    aws iot describe-endpoint --endpoint-type iot:Data-ATS
-    aws iot describe-endpoint --endpoint-type iot:CredentialProvider
-
-Create and modify the file ```GreengrassCore/config.yaml``` as the following contents.
-		
-    ---
-    system:
-    certificateFilePath: "/greengrass/v2/device.cert.pem"
-    privateKeyPath: "/greengrass/v2/device.private_key.pem"
-    rootCaPath: "/greengrass/v2/root_ca.cert.pem"
-    rootpath: "/greengrass/v2"
-    thingName: "<the thing name previously set in connect.js script>"
-    services:
-    aws.greengrass.Nucleus:
-        componentType: "NUCLEUS"
-        version: "2.3.0"
-        configuration:
-        awsRegion: "<your desirable region>"
-        iotCredEndpoint: "<your aws iot credential endpoint>"
-        iotDataEndpoint: "<your aws iot data endpoint>"
-
-Run the following command to setup the Greengrass V2 Deivce core.
-
-    sudo -E java -Droot="/greengrass/v2" -Dlog.store=FILE \
-        -jar ./GreengrassCore/lib/Greengrass.jar \
-        --init-config ./GreengrassCore/config.yaml \
-        --component-default-user ggc_user:ggc_group \
-        --setup-system-service true \
-        --deploy-dev-tools true
-
-A Greengrass V2 Device Core is created on AWS IoT.
+To trigger the Fleet-Provision, the deivce has to send a MQTT message to the AWS IoT. You can complete this step with ```aws-iot-deivce-sdk-v2```. Please read [this file](./src/demo/fleet-provision/connect.js) for detail.
 
 ## Roadmap
 

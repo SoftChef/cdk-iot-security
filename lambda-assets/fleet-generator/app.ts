@@ -21,6 +21,11 @@ import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
 import defaultTemplateBody from './default-template.json';
 
+/**
+ * The lambda function handler generating the Fleet-Provisioning Template and the associated Provisioning Claim Certificate.
+ * @param event The HTTP request from the API gateway.
+ * @returns The HTTP response containing the activation results.
+ */
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
