@@ -180,18 +180,25 @@ Device Certificate Generator assumes receiving an event object with the followin
         ...
         body: {
             "caCertificateId": "myCaCertificateId",
-            "thingName": "myThingName",
+            "csrSubjects": {
+                "commonName": "myThingName", // data in this field would be the thing name
+                "countryName": "TW",
+                "stateName": "TP",
+                "localityName": "TW",
+                "organizationName": "Soft Chef",
+                "organizationUnitName": "web"
+            },
             "deviceInfo": {
                 ...
             },
         }        
     }
 
-Since the event is mainly a HTTP POST request, it has a body section containing attached information. The body consist of three parts, CA certificate ID, thing name, and device information.
+Since the event is mainly a HTTP POST request, it has a body section containing attached information. The body consist of three parts, CA certificate ID, CSR subjects, and device information.
 
 * CA certificate ID is the ID of the CA created by the CA Registrator. CA certificate ID is required by the Device Certificate Generator. The CA will authenticate the device certificate.
 
-* Thing name is the desirable name you give to the AWS IoT thing provisioned for the device certificate. Thing name is optional. If no thing name is specified, the thing name would be a UUID.
+* CSR subjects define the information to fill up the subject fields of the device certificate. CSR subjects are optional. If some of the fields are leaved blank, those fields will be fill up with empty string. The string data in the common name field will be set as the name of the AWS IoT Thing. Thing name is the desirable name you give to the AWS IoT thing provisioned for the device certificate. If no thing name is specified, the thing name would be an UUID.
 
 * Device information is the information provided by the device for verification. Whether it is required or not and its form depends on your configuration of the verifiers.
 

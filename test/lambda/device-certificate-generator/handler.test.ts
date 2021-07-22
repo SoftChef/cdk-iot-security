@@ -17,6 +17,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
 import { handler } from '../../../lambda-assets/device-certificate-generator/app';
 import {
+  InputError,
   InformationNotFoundError,
   VerificationError,
 } from '../../../lambda-assets/errors';
@@ -24,6 +25,9 @@ import {
 const event = {
   body: {
     caCertificateId: 'test_ca_certificate_id',
+    csrSubjects: {
+      commonName: 'myThingName',
+    },
     deviceInfo: {
       name: 'test_device',
     },
@@ -136,7 +140,7 @@ describe('Fail on the provided wrong input data', () => {
 
   test('On an empty event', async () => {
     var response = await handler();
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(InputError.code);
   });
 
   test('Fail to verify the device', async () => {

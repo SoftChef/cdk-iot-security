@@ -19,6 +19,9 @@ import {
   InputError,
   InformationNotFoundError,
 } from '../errors';
+import {
+  csrSubjectsSchema,
+} from '../schemas';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultTemplateBody from './default-template.json';
 
@@ -42,15 +45,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const iotClient: IoTClient = new IoTClient({ region: region });
   const s3Client: S3Client = new S3Client({ region: region });
-
-  const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
-    commonName: Joi.string().allow(''),
-    countryName: Joi.string().allow(''),
-    stateName: Joi.string().allow(''),
-    localityName: Joi.string().allow(''),
-    organizationName: Joi.string().allow(''),
-    organizationUnitName: Joi.string().allow(''),
-  }).unknown(true).allow({}, null);
 
   try {
     const validated = request.validate(joi => {

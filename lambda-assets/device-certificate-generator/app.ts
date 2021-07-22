@@ -22,24 +22,49 @@ import {
   CertificateGenerator,
 } from '../certificate-generator';
 import {
+  InputError,
   InformationNotFoundError,
   VerificationError,
 } from '../errors';
+import {
+  csrSubjectsSchema,
+} from '../schemas';
 
+/**
+ * The lambda function handler for generating a device certificate authenticated with a specified CA.
+ * @param event The HTTP request from the API gateway.
+ * @returns The HTTP response containing the registration result.
+ */
 export const handler = async (event: any = {}) : Promise <any> => {
   const request = new Request(event);
   const response = new Response();
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
-  const caCertificateId: string = request.input('caCertificateId');
-  const deviceInfo: string = request.input('deviceInfo');
-  const thingName: string = request.input('thingName', uuid.v4());
   try {
+    const validated = request.validate(joi => {
+      return {
+        csrSubjects: csrSubjectsSchema,
+        caCertificateId: joi.string().required(),
+        deviceInfo: joi.object().default({}),
+      };
+    });
+    if (validated.error) {
+      throw new InputError(JSON.stringify(validated.details));
+    }
+    const caCertificateId: string = request.input('caCertificateId');
+    const deviceInfo: string = request.input('deviceInfo');
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
+      commonName: uuid.v4(),
+      countryName: '',
+      stateName: '',
+      localityName: '',
+      organizationName: '',
+      organizationUnitName: '',
+    });
+
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
-    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, {
-      commonName: thingName,
-    });
+    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
     return response.json(deviceCertificates);
   } catch (error) {
