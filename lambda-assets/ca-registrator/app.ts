@@ -23,27 +23,6 @@ import defaultIotPolicy from './default-iot-policy.json';
 import defaultTemplateBody from './default-template.json';
 
 /**
- * event examples
- *
- * event = {}
- *
- * event = {
- *  "csrSubjects": {
- *    "commonName": "", // It would be replaced by the registration code, thus is unnecessary.
- *    "countryName": "TW",
- *    "stateName": "TP",
- *    "localityName": "TW",
- *    "organizationName": "Soft Chef",
- *    "organizationUnitName": "web"
- *  },
- *  "verifierName": "verifier_name",
- *  "templateBody": "{ \"Parameters\" : { \"AWS::IoT::Certificate::Country\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::Id\" : { \"Type\" : \"String\" } }, \"Resources\" : { \"thing\" : { \"Type\" : \"AWS::IoT::Thing\", \"Properties\" : { \"ThingName\" : {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"AttributePayload\" : { \"version\" : \"v1\", \"country\" : {\"Ref\" : \"AWS::IoT::Certificate::Country\"}} } }, \"certificate\" : { \"Type\" : \"AWS::IoT::Certificate\", \"Properties\" : { \"CertificateId\": {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"Status\" : \"ACTIVE\" } }, \"policy\" : {\"Type\" : \"AWS::IoT::Policy\", \"Properties\" : { \"PolicyDocument\" : \"{\\\"Version\\\": \\\"2012-10-17\\\",\\\"Statement\\\": [{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\": [\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\" : [\\\"*\\\"]}]}\" } } } }"
- *  }
- * }
- */
-
-
-/**
  * The lambda function handler for register CA.
  * @param event The HTTP request from the API gateway.
  * @returns The HTTP response containing the registration result.
