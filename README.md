@@ -51,7 +51,7 @@
 
 ## Just-in-Time Provision
 
-JITP work flow is usually applied in a situation that the device is not able to generate their own certificate. The senario would probably like the following: the service provider deploy the JITP construct and provide the API; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connect to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
+JITP work flow is usually applied in a situation that the devices are not able to generate their own certificates. The senario would probably like the following: the service provider deploy the JITP construct and provide the API; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connect to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
 
 ![](./doc/jitp/JITP-AWS.png)
 
