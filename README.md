@@ -51,9 +51,48 @@
 
 ## Just-in-Time Provision
 
-JITP work flow is usually applied in a situation that the devices are not able to generate their own certificates. The senario would probably like the following: the service provider deploies the JITP construct and provides the API for the user client; the service provider creates registered CA; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connect to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
+JITP work flow is usually applied in a situation that the devices are not able to generate their own certificates. The scenario would probably like the following: the service provider deploies the JITP construct and provides the API for the user client; the service provider creates registered CA; an user client get the generated device certificate through the API; the user client pass the device certificate to the device; the device connect to the AWS IoT through MQTT connection. Finally, the AWS IoT JITP service will be triggered and provision the expected resources.
+
+### Structure
 
 ![](./doc/jitp/JITP-AWS.png)
+
+#### Endogenous Components
+
+##### CA Registrator
+
+The NodeJS Lambda Function with the functionality of registering a CA certificate on AWS IoT.
+
+##### Verifiers Fetcher
+
+The NodeJS Lambda Function with the functionality of returning the names of the verfifiers.
+
+##### Device Certificate Generator
+
+The NodeJS Lambda Function with the functionality of generating the device certificate.
+
+#### Exogenous Components
+
+##### Vault
+
+The S3 Bucket provided by the user for storing the created CA certificate secerts, including certificate, private key, and public key, also the CA certificate ID and ARN.
+
+##### Verifiers
+
+The Lambda Function provided by the user for device verification. If must return a payload with the following format:
+
+    {
+        ...
+        "verified": "true", // or false
+    }
+
+If it returns ```{"verified": "true"}```, the Device Certificate Generator would complete the device certificate generation. Otherwise, the process is interrupted.
+
+##### API
+
+You can integrate your own API to the CA registrator, Device Certificate Generator, and Verifiers Fetcher for further utilization.
+
+### Flow
 
 ![](./doc/jitp/JITP.png)
 
@@ -68,6 +107,8 @@ The process of applying JITP is mainly consist of the following steps:
 2. Create CA through calling the CA Registrator.
 
 3. Create Device Certificate through calling the Device Certificate Generator.
+
+4. Connect the device to the AWS IoT.
 
 Some details informations of those three steps are discussed in the following sections. For step-by-step guide, please read the [JITP demonstration files](./src/demo/jitp/README.md).
 
@@ -127,7 +168,7 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 
 * Verifier name specifies the verifier applied in the device verification. Verifier name is Optional.
 
-* Template body is a string defining the resources provisioned for the device. Template body is Optional. If no template body being specified, a default template body will be applied. See more information from [here](https://docs.aws.amazon.com/iot/latest/developerguide/jit-provisioning.html).
+* Template body is a string defining the resources provisioned for the device. Template body is Optional. If no template body being specified, a default template body will be applied. See more information about defining a template body from [here](https://docs.aws.amazon.com/iot/latest/developerguide/jit-provisioning.html).
 
 #### Calling the Device Certificate Generator
 
@@ -166,6 +207,10 @@ Verifiers Fetcher assumes receiving an event object with the following format:
     }
 
 Since the event is mainly a HTTP GET request, no body content is expected. However, no matter what the request content is, the Verifiers Fetcher always return all the verifiers' name.
+
+#### Connect the Device to the AWS IoT
+
+To trigger the JITR and the provisioning of resources, the deivce has to send a MQTT message to the AWS IoT. You need to have the basic knowledge about the MQTT. You can complete this step with either a pure MQTT connection, or ```aws-iot-deivce-sdk```. For the former, please read [this file](./src/demo/jitp/mqtt-connect.js), for the later, please read [this file](./src/demo/jitp/device.js).
 
 ## Examples
 
