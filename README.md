@@ -110,7 +110,7 @@ The process of applying JITP is mainly consist of the following steps:
 
 4. Connect the device to the AWS IoT.
 
-Some details informations of those three steps are discussed in the following sections. For step-by-step guide, please read the [JITP demonstration files](./src/demo/jitp/README.md).
+Some details informations of those four steps are discussed in the following sections. For step-by-step guide, please read the [JITP demonstration files](./src/demo/jitp/README.md).
 
 #### Initialize the JITP Construct
 
