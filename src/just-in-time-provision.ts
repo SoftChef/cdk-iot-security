@@ -21,6 +21,9 @@ export module JustInTimeProvision {
   }
 }
 
+/**
+ * The CDK construct providing the funtionality of JITP.
+ */
 export class JustInTimeProvision extends Construct {
   public caRegistrator: CaRegistrator;
   public deviceCertificateGenerator: DeviceCertificateGenerator;
@@ -29,8 +32,6 @@ export class JustInTimeProvision extends Construct {
 
   /**
    * Initialize a Just-In-Time Provision Construct.
-   *
-   * This Construct is consist of a Registrator mainly registering CA.
    *
    * @param scope
    * @param id

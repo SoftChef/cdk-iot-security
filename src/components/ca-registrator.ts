@@ -35,6 +35,10 @@ export module CaRegistrator {
     readonly registrationConfigRole?: RegistrationConfigRole;
   }
 }
+
+/**
+ * The NodeJS Lambda Function having the main functionality of registering a CA on AWS IoT.
+ */
 export class CaRegistrator extends NodejsFunction {
   /**
    * Initialize the CA Registrator Function.

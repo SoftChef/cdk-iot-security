@@ -17,6 +17,9 @@ export module DeviceCertificateGenerator {
   }
 }
 
+/**
+ * The NodeJS Lambda Function having the main functionality of generating a device certificate set authenticated by a registered CA.
+ */
 export class DeviceCertificateGenerator extends NodejsFunction {
   constructor(scope: cdk.Construct, id:string, props: DeviceCertificateGenerator.Props) {
     super(scope, `DeviceCertificateGenerator-${id}`, {

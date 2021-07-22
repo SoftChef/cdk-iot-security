@@ -12,6 +12,9 @@ export module VerifiersFetcher {
   }
 }
 
+/**
+ * The NodeJS Lambda Function having the main functionality of getting all the names of the verifiers.
+ */
 export class VerifiersFetcher extends NodejsFunction {
   /**
    * The Lambda Function returning all the verifier name and ARNs.
