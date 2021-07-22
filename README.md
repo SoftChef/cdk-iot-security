@@ -59,7 +59,19 @@ JITP work flow is usually applied in a situation that the devices are not able t
 
 ### Usage
 
-#### Initialize Construct
+#### Overview
+
+The process of applying JITP is mainly consist of the following steps:
+
+1. Initialize the JITP construct.
+
+2. Create CA through calling the CA Registrator.
+
+3. Create Device Certificate through calling the Device Certificate Generator.
+
+Some details informations of those three steps are discussed in the following sections. For step-by-step guide, please read the [JITP demonstration files](./src/demo/jitp/README.md).
+
+#### Initialize the JITP Construct
 
     import { JustInTimeProvision } from '@softchef/cdk-iot-security';
     import { Bucket } from '@aws-cdk/aws-s3';
@@ -87,6 +99,8 @@ JITP work flow is usually applied in a situation that the devices are not able t
     });
 
 #### Calling the CA Registrator
+
+You call the CA Registrator to registrate a new CA on the AWS IoT before generating a device certificate.
 
 CA Registrator assumes receiving an event object with the following format:
 
@@ -117,6 +131,8 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 
 #### Calling the Device Certificate Generator
 
+You call the Device Certificate Generator to generate a device certificate after register a CA on AWS IoT.
+
 Device Certificate Generator assumes receiving an event object with the following format:
 
     event = {
@@ -139,6 +155,8 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 * Device information is the information provided by the device for verification. Whether it is required or not and its form depends on your configuration of the verifiers.
 
 #### Calling the Verifiers Fetcher
+
+You can checkout the names of the verifiers through the Verifiers Fetcher when you forget the names.
 
 Verifiers Fetcher assumes receiving an event object with the following format:
 
