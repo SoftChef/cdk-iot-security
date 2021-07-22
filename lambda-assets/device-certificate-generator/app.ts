@@ -11,6 +11,7 @@ import {
 import {
   S3Client,
   GetObjectCommand,
+  PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import {
   Request,
@@ -40,6 +41,8 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const response = new Response();
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
+  const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
+  const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
   try {
     const validated = request.validate(joi => {
       return {
@@ -66,7 +69,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
-    return response.json(deviceCertificates);
+    if (outputBucketName) {
+      await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
+      return response.json({ success: true });
+    } else {
+      return response.json(deviceCertificates);
+    }
   } catch (error) {
     return response.error(error.stack, error.code);
   }
@@ -149,4 +157,37 @@ async function getCaCertificate(caCertificateId: string, bucketName: string, buc
   const fileString = await streamToString(fileStream as any);
   const { ca: caCertificates } = JSON.parse(fileString);
   return caCertificates;
+}
+
+async function uploadDeviceCertificate(
+  deviceCertificates: CertificateGenerator.CertificateSet,
+  outputBucketName: string,
+  outputBucketPrefix: string,
+  thingName: string,
+) {
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: outputBucketName,
+      Key: path.join(outputBucketPrefix, thingName, 'device.cert.pem'),
+      Body: Buffer.from(deviceCertificates.certificate),
+    }),
+  );
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: outputBucketName,
+      Key: path.join(outputBucketPrefix, thingName, 'device.private_key.pem'),
+      Body: Buffer.from(deviceCertificates.privateKey),
+    }),
+  );
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: outputBucketName,
+      Key: path.join(outputBucketPrefix, thingName, 'device.public_key.pem'),
+      Body: Buffer.from(deviceCertificates.publicKey),
+    }),
+  );
+
 }

@@ -107,11 +107,15 @@ describe('Test JustInTimeProvision', () => {
     const stack = new Stack(app, 'test-stack');
     const name = 'test-case';
     const anotherStack = new Stack(app, 'another-stack');
-    const bucket = new Bucket(anotherStack, 'userProvidedBucket');
+    const bucket1 = new Bucket(anotherStack, 'userProvidedBucket1');
+    const bucket2 = new Bucket(anotherStack, 'userProvidedBucket2');
     new JustInTimeProvision(stack, name, {
       vault: {
-        bucket: bucket,
+        bucket: bucket1,
         prefix: 'test',
+      },
+      deviceVault: {
+        bucket: bucket2,
       },
     });
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
