@@ -139,7 +139,7 @@ Some details informations of those four steps are discussed in the following sec
         ],
     });
 
-#### Calling the CA Registrator
+#### Call the CA Registrator
 
 You call the CA Registrator to registrate a new CA on the AWS IoT before generating a device certificate.
 
@@ -170,7 +170,7 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 
 * Template body is a string defining the resources provisioned for the device. Template body is Optional. If no template body being specified, a default template body will be applied. See more information about defining a template body from [here](https://docs.aws.amazon.com/iot/latest/developerguide/jit-provisioning.html).
 
-#### Calling the Device Certificate Generator
+#### Call the Device Certificate Generator
 
 You call the Device Certificate Generator to generate a device certificate after register a CA on AWS IoT.
 
@@ -195,7 +195,7 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 
 * Device information is the information provided by the device for verification. Whether it is required or not and its form depends on your configuration of the verifiers.
 
-#### Calling the Verifiers Fetcher
+#### Call the Verifiers Fetcher
 
 You can checkout the names of the verifiers through the Verifiers Fetcher when you forget the names.
 
