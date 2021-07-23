@@ -94,11 +94,27 @@ A Certificate, Thing, and IoT Policy is set on the AWS IoT for the device.
 
 ### Structure
 
-![]()
+![](./doc/fleet-provision/Fleet-Provision-AWS.png)
+
+#### Endogenous Components
+
+##### Fleet Generator
+
+The NodeJS Lambda Function with the functionality of registering a Fleet-Provisioning Template and a Provisioning Claim Certificate on AWS IoT.
+
+#### Exogenous Components
+
+##### Vault
+
+The S3 Bucket provided by the user for storing the created Provisioning Claim Certificate secerts, including certificate, private key, and public key, also the Provisioning Claim Certificate ID and ARN.
+
+##### API
+
+You can integrate your own API to the Fleet Generator for further utilization.
 
 ### Flow
 
-![]()
+![](./doc/fleet-provision/Fleet-Provision.png)
 
 ### Usage
 
@@ -139,12 +155,12 @@ You call the Fleet Generator to generate a new Fleet-Provisioning Template and P
 
 Fleet Generator assumes receiving an event object with the following format:
 
-event = {
-    ...
-    "body": {
-        "templateName": "myTemplateName",
+    event = {
+        ...
+        "body": {
+            "templateName": "myTemplateName",
+        }
     }
-}
 
 Since the event is mainly a HTTP POST request, it has a body section containing attached information. The body consist of the template name.
 

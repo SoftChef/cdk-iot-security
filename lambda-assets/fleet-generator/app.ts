@@ -161,7 +161,7 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.cert.pem'),
+      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision_claim.cert.pem'),
       Body: Buffer.from(
         provisionClaimCertificatePem,
       ),
@@ -171,7 +171,7 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.public_key.pem'),
+      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision_claim.public_key.pem'),
       Body: Buffer.from(
         keyPair.PublicKey,
       ),
@@ -181,7 +181,7 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision_claim.private_key.pem'),
+      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision_claim.private_key.pem'),
       Body: Buffer.from(
         keyPair.PrivateKey,
       ),
@@ -191,7 +191,7 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix || '', provisionClaimCertificateId!, 'provision-claim-certificate.json'),
+      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision-claim-certificate.json'),
       Body: Buffer.from(
         JSON.stringify({
           provisionClaimCertificateId,

@@ -20,6 +20,9 @@ export module FleetGenerator {
      * The Role for Fleet Provision.
      */
     readonly fleetProvisionRole: FleetProvisioningRole;
+    /**
+     * The Role for Greeangrass V2 mode.
+     */
     readonly greengrassV2TokenExchangeRole?: GreenGrassV2TokenExchangeRole;
   }
 }

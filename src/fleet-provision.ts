@@ -29,6 +29,9 @@ export module FleetProvision {
      * information returned from the CA Registration Function.
      */
     readonly vault: VaultProps;
+    /**
+     * Apply the Greengrass V2 mode or not.
+     */
     readonly greengrassV2?: boolean;
   }
 }
