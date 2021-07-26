@@ -6,6 +6,10 @@
       "type": "build"
     },
     {
+      "name": "@softchef/iot-just-in-time-registration",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -20,6 +24,10 @@
     },
     {
       "name": "@typescript-eslint/parser",
+      "type": "build"
+    },
+    {
+      "name": "aws-iot-device-sdk",
       "type": "build"
     },
     {
@@ -123,11 +131,27 @@
       "type": "bundled"
     },
     {
+      "name": "@types/uuid",
+      "type": "bundled"
+    },
+    {
+      "name": "@types/ws",
+      "type": "bundled"
+    },
+    {
       "name": "joi",
       "type": "bundled"
     },
     {
+      "name": "mqtt",
+      "type": "bundled"
+    },
+    {
       "name": "node-forge",
+      "type": "bundled"
+    },
+    {
+      "name": "uuid",
       "type": "bundled"
     },
     {
