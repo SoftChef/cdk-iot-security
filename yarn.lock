@@ -6726,10 +6726,10 @@ progress@^2.0.0, progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.26.3:
-  version "0.26.3"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.26.3.tgz#22411a42822b83e623fe696605fbae5597627da2"
-  integrity sha512-F0we0XiXk2bLSTjGYXmCn78+hCTETvest/JkHE31xxH7pyFMXHUixpNP8YGBBuMCfLr8bEFXGBidRJ60xDe9qw==
+projen@^0.27.7:
+  version "0.27.7"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.27.7.tgz#677e15b8bb06db1684049a64788cbb391a8dc515"
+  integrity sha512-lCDuOd8XxlDcsFxSIHZYpwPs81LTFH+D6x+CM8ycQp2i/7dPJubnVNVZMo6HrxGH0r2hWXXCc+cE1JfYBBp3rg==
   dependencies:
     "@iarna/toml" "^2.2.5"
     chalk "^4.1.1"
@@ -8093,10 +8093,15 @@ ws@^3.2.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^7.4.5, ws@^7.5.0:
+ws@^7.4.5:
   version "7.5.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.2.tgz#09cc8fea3bec1bc5ed44ef51b42f945be36900f6"
   integrity sha512-lkF7AWRicoB9mAgjeKbGqVUekLnSNO4VjKVnuPHpQeOxZOErX6BPXwJk70nFslRCEEA8EVW7ZjKwXaP9N+1sKQ==
+
+ws@^7.5.0:
+  version "7.5.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.3.tgz#160835b63c7d97bfab418fc1b8a9fced2ac01a74"
+  integrity sha512-kQ/dHIzuLrS6Je9+uv81ueZomEwH0qVYstcAQ4/Z93K8zeko9gtAbttJWzoC5ukqXY1PpoouV3+VSOqEAFt5wg==
 
 xdg-basedir@^4.0.0:
   version "4.0.0"
