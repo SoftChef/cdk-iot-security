@@ -1,11 +1,14 @@
 const { AwsCdkConstructLibrary, NpmAccess, DependenciesUpgradeMechanism, AUTOMATION_TOKEN } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'SoftChef',
-  authorAddress: 'yehtarnsu@softchef.com',
+  authorEmail: 'yehtarnsu@softchef.com',
+  authorUrl: 'https://www.softchef.com',
+  authorOrganization: true,
+  npmAccess: NpmAccess.PUBLIC,
   cdkVersion: '1.95.2',
   defaultReleaseBranch: 'main',
   name: '@softchef/cdk-iot-security',
-  npmAccess: NpmAccess.PUBLIC,
+  description: 'This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.',
   repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
   cdkDependencies: [
     '@aws-cdk/core',

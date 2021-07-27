@@ -1,5 +1,6 @@
 {
   "name": "@softchef/cdk-iot-security",
+  "description": "This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.",
   "repository": {
     "type": "git",
     "url": "https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git"
@@ -29,7 +30,8 @@
   "author": {
     "name": "SoftChef",
     "email": "yehtarnsu@softchef.com",
-    "organization": false
+    "url": "https://www.softchef.com",
+    "organization": true
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.2",
