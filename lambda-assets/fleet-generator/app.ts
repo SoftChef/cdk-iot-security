@@ -47,6 +47,13 @@ export const handler = async (event: any = {}) : Promise <any> => {
     let policy = defaultIotPolicy;
     if (greengrassTokenExchangeRoleArn) {
       policy.Statement.push({
+        "Effect":"Allow",
+        "Action":[
+          "greengrass:*"
+        ],
+        "Resource":["*"]
+      })
+      policy.Statement.push({
         Effect: 'Allow',
         Action: [
           'iot:AssumeRoleWithCertificate',
