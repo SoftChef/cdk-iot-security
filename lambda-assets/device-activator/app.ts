@@ -15,6 +15,7 @@ import {
 } from '@aws-sdk/client-lambda';
 import { Response } from '@softchef/lambda-events';
 import * as Joi from 'joi';
+import { pki } from 'node-forge';
 import {
   VerificationError,
   InformationNotFoundError,
@@ -39,9 +40,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }),
   );
 
-  const { caCertificateId, certificateArn: deviceCertificateArn } = await Joi.object({
+  const {
+    caCertificateId,
+    certificateArn: deviceCertificateArn,
+    certificatePem: deviceCertificatePem,
+  } = await Joi.object({
     caCertificateId: Joi.string().required(),
     certificateArn: Joi.string().regex(/^arn/).required(),
+    certificatePem: Joi.string().required(),
   }).unknown(true)
     .validateAsync(deviceCertificateDescription).catch((error: Error) => {
       throw new InformationNotFoundError(error.message);
@@ -108,7 +114,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
   const { thingName } = await iotClient.send(
     new CreateThingCommand({
-      thingName: deviceCertificateId,
+      thingName: getCommonName(deviceCertificatePem) || deviceCertificateId,
       attributePayload: {
         attributes: {
           version: 'v1',
@@ -163,3 +169,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
   });
   return message;
 };
+
+function getCommonName(certificatePem: string) {
+  const certificate = pki.certificateFromPem(certificatePem);
+  const commonName = certificate.subject.getField('CN').value;
+  return commonName;
+}

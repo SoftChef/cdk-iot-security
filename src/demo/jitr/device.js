@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const awsIot = require('aws-iot-device-sdk');
 const { ThingRegistry } = require('@softchef/iot-just-in-time-registration');
@@ -17,6 +16,10 @@ const thingRegistry = new ThingRegistry();
 thingRegistry.setCertsPath(
   path.resolve(__dirname, './certs'),
 );
+
+if (!thingRegistry.hasDeviceCertificate) {
+  thingRegistry.generateDeviceCertificate('<YourDeviceUniqueName>');
+}
 
 let thingShadow = awsIot.thingShadow({
   ...thingRegistry.keysPath,

@@ -6,8 +6,10 @@ const { connect } = require('mqtt');
  * and save it as root_ca.cert.pem
  */ 
 const amazonRootCA1 = fs.readFileSync(`${__dirname}/certs/root_ca.cert.pem`).toString();
-const file = fs.readFileSync(`${__dirname}/certs/device-certificate.json`).toString();
-const deviceCertificates = JSON.parse(file);
+const deviceCertificates = {
+  privateKey: fs.readFileSync(`${__dirname}/certs/device.private_key.pem`).toString(),
+  certificate: fs.readFileSync(`${__dirname}/certs/device.cert.pem`).toString(),
+};
 
 /**
  * Get the endpoint URL through AWS CLI with the following command:
