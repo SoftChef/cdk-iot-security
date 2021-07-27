@@ -19,7 +19,7 @@ import { pki } from 'node-forge';
 import {
   VerificationError,
   InformationNotFoundError,
-} from './errors';
+} from '../errors';
 
 /**
  * The lambda function handler activating the client certificates.

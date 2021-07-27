@@ -30,13 +30,13 @@ const project = new AwsCdkConstructLibrary({
     '@softchef/lambda-events',
     'mqtt',
     '@types/ws',
-    'uuid',
     '@types/uuid',
+    'uuid',
   ],
   devDeps: [
     'aws-sdk-client-mock',
-    'aws-iot-device-sdk',
     '@softchef/iot-just-in-time-registration',
+    'aws-iot-device-sdk',
     'esbuild',
   ],
   tsconfig: {
@@ -46,6 +46,7 @@ const project = new AwsCdkConstructLibrary({
         'DOM',
         'ES2020',
       ],
+      esModuleInterop: true,
     },
   },
 });
