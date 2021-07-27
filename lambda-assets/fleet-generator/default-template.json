@@ -1,0 +1,31 @@
+{ 
+  "Parameters": { 
+    "AWS::IoT::Certificate::Country": { "Type": "String" },
+    "AWS::IoT::Certificate::Id": { "Type": "String" },
+    "thingName": { "Type": "String" }
+  }, 
+  "Resources": {
+    "thing": {
+      "Type": "AWS::IoT::Thing",
+      "Properties": { 
+        "ThingName": { "Ref": "thingName" },
+        "AttributePayload": { 
+          "version": "v1"
+        } 
+      } 
+    }, 
+    "certificate": { 
+      "Type": "AWS::IoT::Certificate",
+      "Properties": { 
+        "CertificateId": {"Ref": "AWS::IoT::Certificate::Id"},
+        "Status": "ACTIVE"
+      } 
+    }, 
+    "policy": {
+      "Type": "AWS::IoT::Policy",
+      "Properties": {
+        "PolicyDocument": ""
+      }
+    }
+  }
+}

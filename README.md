@@ -15,7 +15,14 @@
 ### Yarn
 
     yarn add @softchef/cdk-iot-security
-    
+
+## Examples
+
+* [JITR](./src/demo/jitr/README.md)
+
+* [JITP](./src/demo/jitp/README.md)
+
+* [Fleet-Provisioning](./src/demo/fleet-provision/README.md)
 
 ## Just-in-Time Registration
 
@@ -332,13 +339,83 @@ Since the event is mainly a HTTP GET request, no body content is expected. Howev
 
 To trigger the JITP and the provisioning of resources, the deivce has to send a MQTT message to the AWS IoT. You need to have the basic knowledge about the MQTT. You can complete this step with either a pure MQTT connection, or ```aws-iot-deivce-sdk```. For the former, please read [this file](./src/demo/jitp/mqtt-connect.js), for the later, please read [this file](./src/demo/jitp/device.js).
 
-## Examples
+## Fleet Provision
 
-* [JITR](./src/demo/jitr/README.md)
+### Structure
 
-* [JITP](./src/demo/jitp/README.md)
+![](./doc/fleet-provision/Fleet-Provision-AWS.png)
 
-* Fleet-Provisioning
+#### Endogenous Components
+
+##### Fleet Generator
+
+The NodeJS Lambda Function with the functionality of registering a Fleet-Provisioning Template and a Provisioning Claim Certificate on AWS IoT.
+
+#### Exogenous Components
+
+##### Vault
+
+The S3 Bucket provided by the user for storing the created Provisioning Claim Certificate secerts, including certificate, private key, and public key, also the Provisioning Claim Certificate ID and ARN.
+
+##### API
+
+You can integrate your own API to the Fleet Generator for further utilization.
+
+### Flow
+
+![](./doc/fleet-provision/Fleet-Provision.png)
+
+### Usage
+
+#### Overview
+
+The process of applying Fleet-Provision is mainly consist of the following steps:
+
+1. Initialize the Fleet-Provision construct.
+
+2. Create the Fleet-Provisioning Template and Provisioning Claim Certificate through calling the Fleet Generator.
+
+3. Connect the device to the AWS IoT with Provisioning Claim Certificate and save the formal device certificates in the device.
+
+Some details informations of those three steps are discussed in the following sections. For step-by-step guide, please read the [Fleet-Provision demonstration files](./src/demo/fleet-provision/README.md).
+
+#### Initialize the Fleet-Provision Construct
+
+    import * as apigateway from '@aws-cdk/aws-apigateway';
+    import * as s3 from '@aws-cdk/aws-s3';
+    import * as cdk from '@aws-cdk/core';
+    import { FleetProvision } from '@softchef/cdk-iot-security';
+    
+    const app = new cdk.App();
+    const id = 'FleetProvisionDemo';
+    const stack = new cdk.Stack(app, id);
+    const vault = new s3.Bucket(stack, 'myVault');
+    const fleetProvision = new FleetProvision(stack, id, {
+        vault: {
+            bucket: vault,
+        },
+        // Decomment the following line to apply the Greengrass V2 mode
+        // greengrassV2: true,
+    });
+
+#### Call the Fleet Generator
+
+You call the Fleet Generator to generate a new Fleet-Provisioning Template and Provisioning Claim Certificate on the AWS IoT.
+
+Fleet Generator assumes receiving an event object with the following format:
+
+    event = {
+        ...
+        "body": {
+            "templateName": "myTemplateName",
+        }
+    }
+
+Since the event is mainly a HTTP POST request, it has a body section containing attached information. The body consist of the template name.
+
+#### Connect the Device to the AWS IoT
+
+To trigger the Fleet-Provision, the deivce has to send a MQTT message to the AWS IoT. You can complete this step with ```aws-iot-deivce-sdk-v2```. Please read [this file](./src/demo/fleet-provision/connect.js) for detail.
 
 ## Roadmap
 

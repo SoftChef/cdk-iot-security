@@ -1,0 +1,22 @@
+{
+    
+    "connect": {
+        "Effect": "Allow",
+        "Action": ["iot:Connect"],
+        "Resource": "*"
+      },
+    "publish": {
+        "Effect": "Allow",
+        "Action": [
+          "iot:Publish",
+          "iot:Receive"
+        ],
+        "Resource": [""]
+    },
+    "subscribe": {
+        "Effect": "Allow",
+        "Action": "iot:Subscribe",
+        "Resource": [""]
+    }
+    
+  }

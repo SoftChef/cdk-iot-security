@@ -31,6 +31,10 @@
       "type": "build"
     },
     {
+      "name": "aws-iot-device-sdk-v2",
+      "type": "build"
+    },
+    {
       "name": "aws-sdk-client-mock",
       "type": "build"
     },
