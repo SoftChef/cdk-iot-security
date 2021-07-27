@@ -1,5 +1,9 @@
 # CDK Construct - IoT Security
 
+[![npm version](https://badge.fury.io/js/%40softchef%2Fcdk-iot-security.svg)](https://badge.fury.io/js/%40softchef%2Fcdk-restapi)
+![Release](https://github.com/SoftChef/cdk-iot-security/workflows/Release/badge.svg)
+![npm](https://img.shields.io/npm/dt/@softchef/cdk-iot-security?label=NPM%20Downloads&color=orange)
+
 `cdk-iot-security` is a project surrounding the topic of the AWS IoT Device registration. In order to utilize the AWS IoT services securely, we might need to maintain our own certificate authorities, as known as CAs, and manage the CA-signed device certificates. AWS IoT holds an organized architecture for works mentioned previously, allows us to register multiple CA and certificates to it, and provides APIs for fetching information supporting our management. This project focuses on the autherization work flows of AWS IoT, plans to provide CDK constructs which satisfy the requirements of [Just-in-time registration](https://aws.amazon.com/tw/blogs/iot/just-in-time-registration-of-device-certificates-on-aws-iot/), and also the Construct for [Just-in-time provisioning](https://aws.amazon.com/tw/blogs/iot/setting-up-just-in-time-provisioning-with-aws-iot-core/).
 
 ## Installation
