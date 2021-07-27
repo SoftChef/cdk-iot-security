@@ -97,15 +97,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       .validateAsync(CaRegistration).catch((error: Error) => {
         throw new InformationNotFoundError(error.message);
       });
-
-    const results = Object.assign(
-      {},
-      certificates,
-      {
-        certificateId: certificateId,
-        certificateArn: certificateArn,
-      },
-    );
+      
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
