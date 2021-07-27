@@ -2678,6 +2678,16 @@ aws-iot-device-sdk-v2@^1.5.4:
   dependencies:
     aws-crt "1.8.3"
 
+aws-iot-device-sdk@^2.2.10:
+  version "2.2.10"
+  resolved "https://registry.yarnpkg.com/aws-iot-device-sdk/-/aws-iot-device-sdk-2.2.10.tgz#87c0d5daad824e6aa4c7bd9365c63052c967c724"
+  integrity sha512-jg9373ABx6+b3MyFkWfkyyDsnFLlf5B20Zs1QGAP7pmxhpoqIF5DyE2UjKIzPGdLnDtEBRlIxEdE0b6eZTjNgQ==
+  dependencies:
+    crypto-js "4.0.0"
+    minimist "1.2.5"
+    mqtt "4.2.8"
+    websocket-stream "^5.5.2"
+
 aws-sdk-client-mock@^0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/aws-sdk-client-mock/-/aws-sdk-client-mock-0.5.3.tgz#e470959ef252ea9cf2db0d71d89638c3416af88f"
@@ -3463,7 +3473,7 @@ crypt@0.0.2:
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
   integrity sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=
 
-crypto-js@^4.0.0:
+crypto-js@4.0.0, crypto-js@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.0.0.tgz#2904ab2677a9d042856a2ea2ef80de92e4a36dcc"
   integrity sha512-bzHZN8Pn+gS7DQA6n+iUmBfl0hO5DJq++QP3U6uTucDtk/0iGpXd/Gg7CGR0p8tJhofJyaKoWBuJI4eAO00BBg==
@@ -8455,7 +8465,7 @@ ws@^3.2.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^7.4.5, ws@^7.5.0:
+ws@^7.4.5:
   version "7.5.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.2.tgz#09cc8fea3bec1bc5ed44ef51b42f945be36900f6"
   integrity sha512-lkF7AWRicoB9mAgjeKbGqVUekLnSNO4VjKVnuPHpQeOxZOErX6BPXwJk70nFslRCEEA8EVW7ZjKwXaP9N+1sKQ==

@@ -27,6 +27,10 @@
       "type": "build"
     },
     {
+      "name": "aws-iot-device-sdk",
+      "type": "build"
+    },
+    {
       "name": "aws-iot-device-sdk-v2",
       "type": "build"
     },

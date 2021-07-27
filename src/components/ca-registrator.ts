@@ -10,7 +10,7 @@ import {
 } from '@aws-cdk/core';
 import {
   RegistrationConfigRole,
-} from './registration-config-role';
+} from './provision-role';
 import {
   VaultProps,
 } from './vault';
