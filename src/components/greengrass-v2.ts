@@ -26,6 +26,7 @@ export class GreenGrassV2TokenExchangeRole extends Role {
                 'iot:Subscribe',
                 'iot:Receive',
                 's3:GetBucketLocation',
+                's3:GetObject',
               ],
               resources: [
                 '*',

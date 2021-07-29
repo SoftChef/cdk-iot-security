@@ -60,14 +60,15 @@ export const handler = async (event: any = {}) : Promise <any> => {
         )
       );
 
-      const greengrassPolicyStatement = defaultGreengrassV2PolicyStatements.greengrass;
-      const roleAliasPolicyStatement = defaultGreengrassV2PolicyStatements.roleAlias;
-      roleAliasPolicyStatement.Resource.push(roleAliasArn!);
+      
 
-      policy.Statement.push(
-        greengrassPolicyStatement,
-        roleAliasPolicyStatement,
-      );
+      const greengrassPolicyStatement = defaultGreengrassV2PolicyStatements.greengrass;
+      policy.Statement.push(greengrassPolicyStatement);
+
+      const roleAliasPolicyStatement = defaultGreengrassV2PolicyStatements.roleAlias;
+      roleAliasPolicyStatement.Resource = [];
+      roleAliasPolicyStatement.Resource.push(roleAliasArn!);
+      policy.Statement.push(roleAliasPolicyStatement);
 
     }
     defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
@@ -91,6 +92,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     if (greengrassTokenExchangeRoleArn) {
       return response.json({
+        templateName,
         provisionCliamCertificate: {
           provisionClaimCertificateArn,
           provisionClaimCertificateId,
@@ -102,6 +104,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       });
     } else {
       return response.json({
+        templateName,
         provisionCliamCertificate: {
           provisionClaimCertificateArn,
           provisionClaimCertificateId,
