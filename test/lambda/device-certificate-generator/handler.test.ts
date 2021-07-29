@@ -39,6 +39,10 @@ const expected = {
   caCertificateArn: 'arn:ca_certificate',
   verifierName: 'test_verifier',
   caCertificates: CertificateGenerator.getCaRegistrationCertificates(),
+  bucketName: 'bucket_name',
+  bucketPrefix: 'bucket_prefix',
+  outputBucketName: 'output_bucket_name',
+  outputBucketPrefix: 'output_bucket_prefix',
 };
 
 const iotMock = mockClient(IoTClient);
@@ -48,11 +52,11 @@ const lambdaMock = mockClient(LambdaClient);
 beforeEach(async () => {
 
   process.env.AWS_REGION = 'local';
-  process.env.BUCKET_NAME = 'bucket_name';
-  process.env.BUCKET_PREFIX = 'bucket_prefix';
+  process.env.BUCKET_NAME = expected.bucketName;
+  process.env.BUCKET_PREFIX = expected.bucketPrefix;
   process.env.BUCKET_KEY = 'bucket_key';
-  process.env.OUTPUT_BUCKET_NAME = 'output_bucket_name';
-  process.env.OUTPUT_BUCKET_PREFIX = 'output_bucket_prefix';
+  process.env.OUTPUT_BUCKET_NAME = expected.outputBucketName;
+  process.env.OUTPUT_BUCKET_PREFIX = expected.outputBucketPrefix;
 
   iotMock.on(DescribeCACertificateCommand, {
     certificateId: event.body.caCertificateId,
@@ -85,12 +89,38 @@ beforeEach(async () => {
 
   s3Mock.on(GetObjectCommand, {
     Bucket: process.env.BUCKET_NAME,
-    Key: path.join(process.env.BUCKET_PREFIX, event.body.caCertificateId, 'ca-certificate.json'),
+    Key: path.join(process.env.BUCKET_PREFIX, event.body.caCertificateId, 'ca.cert.pem'),
   }).resolves({
     Body: Readable.from([
       new Uint8Array(
         Buffer.from(
-          JSON.stringify(expected.caCertificates),
+          expected.caCertificates.ca.certificate,
+        ),
+      ),
+    ]),
+  });
+
+  s3Mock.on(GetObjectCommand, {
+    Bucket: process.env.BUCKET_NAME,
+    Key: path.join(process.env.BUCKET_PREFIX, event.body.caCertificateId, 'ca.private_key.pem'),
+  }).resolves({
+    Body: Readable.from([
+      new Uint8Array(
+        Buffer.from(
+          expected.caCertificates.ca.privateKey,
+        ),
+      ),
+    ]),
+  });
+
+  s3Mock.on(GetObjectCommand, {
+    Bucket: process.env.BUCKET_NAME,
+    Key: path.join(process.env.BUCKET_PREFIX, event.body.caCertificateId, 'ca.public_key.pem'),
+  }).resolves({
+    Body: Readable.from([
+      new Uint8Array(
+        Buffer.from(
+          expected.caCertificates.ca.publicKey,
         ),
       ),
     ]),
@@ -123,6 +153,7 @@ describe('Sucessfully execute the handler', () => {
 
   test('On a regular event', async () => {
     var response = await handler(event);
+    console.log(response);
     expect(response.statusCode).toBe(200);
   });
 

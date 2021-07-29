@@ -139,10 +139,6 @@
       "type": "bundled"
     },
     {
-      "name": "@types/ws",
-      "type": "bundled"
-    },
-    {
       "name": "joi",
       "type": "bundled"
     },
