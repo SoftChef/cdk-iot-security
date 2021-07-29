@@ -7,8 +7,7 @@
         "iot:Connect",
         "iot:Publish",
         "iot:Receive",
-        "iot:Subscribe",
-        "greengrass:*"
+        "iot:Subscribe"
       ],
       "Resource":["*"]
     }

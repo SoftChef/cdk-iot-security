@@ -1,0 +1,18 @@
+{
+    "greengrass": {
+        "Effect": "Allow",
+        "Action": [
+          "greengrass:*"
+        ],
+        "Resource": [
+          "*"
+        ]
+      },
+    "roleAlias": {
+        "Effect": "Allow",
+        "Action": [
+        "iot:AssumeRoleWithCertificate"
+        ],
+        "Resource": [""]
+    }
+}

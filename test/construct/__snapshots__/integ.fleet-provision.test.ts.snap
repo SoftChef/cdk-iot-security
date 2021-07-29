@@ -3,16 +3,16 @@
 exports[`Integration test FleetProvision 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997ArtifactHash563FECF9": Object {
-      "Description": "Artifact hash for asset \\"2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997\\"",
+    "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eArtifactHashFC9CDE45": Object {
+      "Description": "Artifact hash for asset \\"4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603e\\"",
       "Type": "String",
     },
-    "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3BucketA97B3AA2": Object {
-      "Description": "S3 bucket for asset \\"2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997\\"",
+    "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3BucketC32249B3": Object {
+      "Description": "S3 bucket for asset \\"4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603e\\"",
       "Type": "String",
     },
-    "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3VersionKey3008B299": Object {
-      "Description": "S3 key for asset version \\"2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997\\"",
+    "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3VersionKey3FB3D828": Object {
+      "Description": "S3 key for asset version \\"4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603e\\"",
       "Type": "String",
     },
   },
@@ -25,7 +25,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3BucketA97B3AA2",
+            "Ref": "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3BucketC32249B3",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -38,7 +38,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3VersionKey3008B299",
+                          "Ref": "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3VersionKey3FB3D828",
                         },
                       ],
                     },
@@ -51,7 +51,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3VersionKey3008B299",
+                          "Ref": "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3VersionKey3FB3D828",
                         },
                       ],
                     },
@@ -99,6 +99,7 @@ Object {
                 "iot:CreatePolicy",
                 "iot:CreateKeysAndCertificate",
                 "iot:AttachPolicy",
+                "iot:CreateRoleAlias",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -228,16 +229,16 @@ Object {
 exports[`Integration test FleetProvision in Greengrass V2 mode 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997ArtifactHash563FECF9": Object {
-      "Description": "Artifact hash for asset \\"2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997\\"",
+    "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eArtifactHashFC9CDE45": Object {
+      "Description": "Artifact hash for asset \\"4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603e\\"",
       "Type": "String",
     },
-    "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3BucketA97B3AA2": Object {
-      "Description": "S3 bucket for asset \\"2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997\\"",
+    "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3BucketC32249B3": Object {
+      "Description": "S3 bucket for asset \\"4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603e\\"",
       "Type": "String",
     },
-    "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3VersionKey3008B299": Object {
-      "Description": "S3 key for asset version \\"2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997\\"",
+    "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3VersionKey3FB3D828": Object {
+      "Description": "S3 key for asset version \\"4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603e\\"",
       "Type": "String",
     },
   },
@@ -250,7 +251,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3BucketA97B3AA2",
+            "Ref": "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3BucketC32249B3",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -263,7 +264,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3VersionKey3008B299",
+                          "Ref": "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3VersionKey3FB3D828",
                         },
                       ],
                     },
@@ -276,7 +277,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters2dc1c76e64c7e4df789397ae77d8193098298993b76e37163f6e7b53cac5d997S3VersionKey3008B299",
+                          "Ref": "AssetParameters4f74a118e51f9a1ee2aa79ceec8652c22057d6969ac0aa66f200a833c9d4603eS3VersionKey3FB3D828",
                         },
                       ],
                     },
@@ -329,6 +330,7 @@ Object {
                 "iot:CreatePolicy",
                 "iot:CreateKeysAndCertificate",
                 "iot:AttachPolicy",
+                "iot:CreateRoleAlias",
               ],
               "Effect": "Allow",
               "Resource": "*",

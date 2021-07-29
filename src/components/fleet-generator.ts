@@ -48,6 +48,7 @@ export class FleetGenerator extends NodejsFunction {
               'iot:CreatePolicy',
               'iot:CreateKeysAndCertificate',
               'iot:AttachPolicy',
+              'iot:CreateRoleAlias',
             ],
             resources: ['*'],
           }),
