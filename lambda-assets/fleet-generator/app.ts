@@ -60,8 +60,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
         )
       );
 
-      
-
       const greengrassPolicyStatement = defaultGreengrassV2PolicyStatements.greengrass;
       policy.Statement.push(greengrassPolicyStatement);
 
@@ -81,6 +79,22 @@ export const handler = async (event: any = {}) : Promise <any> => {
       keyPair,
     } = await createProvisioningClaimCertificate(templateArn!, templateName);
 
+    let provisionClaimCertificateInfo = {
+      templateName,
+      provisionCliamCertificate: {
+        provisionClaimCertificateArn,
+        provisionClaimCertificateId,
+      },
+    };
+    if (greengrassTokenExchangeRoleArn) {
+      provisionClaimCertificateInfo = Object.assign(provisionClaimCertificateInfo, {
+        roleAilas: {
+          roleAlias,
+          roleAliasArn,
+        },
+      });
+    }
+
     await uploadToVault(
       bucketName,
       bucketPrefix,
@@ -90,27 +104,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       keyPair!,
     );
 
-    if (greengrassTokenExchangeRoleArn) {
-      return response.json({
-        templateName,
-        provisionCliamCertificate: {
-          provisionClaimCertificateArn,
-          provisionClaimCertificateId,
-        },
-        roleAilas: {
-          roleAlias,
-          roleAliasArn,
-        },
-      });
-    } else {
-      return response.json({
-        templateName,
-        provisionCliamCertificate: {
-          provisionClaimCertificateArn,
-          provisionClaimCertificateId,
-        },
-      });
-    }
+    return response.json(provisionClaimCertificateInfo);
   } catch (error) {
     return response.error(error.stack, error.code);
   }
