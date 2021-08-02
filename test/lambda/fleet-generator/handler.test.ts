@@ -4,6 +4,7 @@ import {
   CreatePolicyCommand,
   CreateKeysAndCertificateCommand,
   AttachPolicyCommand,
+  CreateRoleAliasCommand,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -38,12 +39,21 @@ const expected = {
   },
   provisioningClaimCertificatePem: 'provisioning_claim_certificate_pem',
   provisioningClaimCertificateId: 'provisioning_claim_certificate_id',
+  greengrassTokenExchangeRoleArn: 'arn:greengrass-v2-token-exachange-arn',
+  roleAlias: 'greengrass-v2-token-exachange-role-alias',
+  roleAliasArn: 'arn:greengrass-v2-token-exachange-role-alias-arn',
 };
 
 beforeEach(() => {
   process.env.FLEET_PROVISIONING_ROLE_ARN = expected.provisioningRoleArn;
   process.env.BUCKET_NAME = expected.bucketName;
   process.env.BUCKET_PREFIX = expected.bucketPrefix;
+  iotMock.on(CreateRoleAliasCommand, {
+    roleArn: expected.greengrassTokenExchangeRoleArn,
+  }).resolves({
+    roleAlias: expected.roleAlias,
+    roleAliasArn: expected.roleAliasArn,
+  });
   iotMock.on(CreateProvisioningTemplateCommand, {
     templateName: expected.templateName,
     provisioningRoleArn: expected.provisioningRoleArn,
@@ -85,7 +95,7 @@ describe('Sucessfully execute the handler', () => {
   });
 
   test('On Greengrass V2 mode', async () => {
-    process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN = 'arn:greengrass-v2-token-exachange-arn';
+    process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN = expected.greengrassTokenExchangeRoleArn;
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });
