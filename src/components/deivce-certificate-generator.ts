@@ -31,9 +31,9 @@ export module DeviceCertificateGenerator {
 export class DeviceCertificateGenerator extends NodejsFunction {
   /**
    * Initialize the Device Certificate Generator.
-   * @param scope 
-   * @param id 
-   * @param props 
+   * @param scope
+   * @param id
+   * @param props
    */
   constructor(scope: cdk.Construct, id:string, props: DeviceCertificateGenerator.Props) {
     super(scope, `DeviceCertificateGenerator-${id}`, {

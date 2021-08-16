@@ -11,8 +11,8 @@ import { Construct } from '@aws-cdk/core';
 export class ProvisionRole extends Role {
   /**
    * Initialize a provision role.
-   * @param scope 
-   * @param id 
+   * @param scope
+   * @param id
    */
   constructor(scope: Construct, id: string) {
     super(scope, `ProvisionRole-${id}`, {
@@ -31,8 +31,8 @@ export class ProvisionRole extends Role {
 export class RegistrationConfigRole extends ProvisionRole {
   /**
    * Initialize a registration configuration role. This construct is for JITP construct.
-   * @param scope 
-   * @param id 
+   * @param scope
+   * @param id
    */
   constructor(scope: Construct, id: string) {
     super(scope, `RegistrationConfig-${id}`);
@@ -45,8 +45,8 @@ export class RegistrationConfigRole extends ProvisionRole {
 export class FleetProvisioningRole extends ProvisionRole {
   /**
    * Initialize a Fleet-Provision role. This construct is for Fleet-Provision construct.
-   * @param scope 
-   * @param id 
+   * @param scope
+   * @param id
    */
   constructor(scope: Construct, id: string) {
     super(scope, `Fleet-${id}`);

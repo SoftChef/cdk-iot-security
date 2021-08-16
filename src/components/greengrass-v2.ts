@@ -12,8 +12,8 @@ import * as cdk from '@aws-cdk/core';
 export class GreenGrassV2TokenExchangeRole extends Role {
   /**
    * Initialize the Greengrass V2 Token Exchange Role.
-   * @param scope 
-   * @param id 
+   * @param scope
+   * @param id
    */
   constructor(scope: cdk.Construct, id: string) {
     super(scope, `GreenGrassTokenExchangeRole-${id}`, {

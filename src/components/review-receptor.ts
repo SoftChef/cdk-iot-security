@@ -74,8 +74,8 @@ export class ReviewAcceptionRole extends Role {
 export class JitrTopicRule extends CfnTopicRule {
   /**
    * Initialize the topic rule for JITR work flow.
-   * @param queue 
-   * @param id 
+   * @param queue
+   * @param id
    */
   constructor(queue: ReviewReceptor, id: string) {
     super(queue, `TopicRule-${id}`, {

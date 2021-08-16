@@ -18,15 +18,15 @@ export class FleetProvision extends cdk.Construct {
   public readonly fleetGenerator: FleetGenerator;
   /**
    * The IAM Role for Greengrass V2 mode.
-   * 
+   *
    * If the Greengrass V2 mode is not specified, it would stay as undefined.
    */
   public readonly greengrassV2TokenExchangeRole?: GreenGrassV2TokenExchangeRole;
   /**
    * Initialize a Fleet-Provision Construct.
-   * @param scope 
-   * @param id 
-   * @param props 
+   * @param scope
+   * @param id
+   * @param props
    */
   constructor(scope: cdk.Construct, id: string, props: FleetProvision.Props) {
     super(scope, id);

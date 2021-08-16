@@ -36,9 +36,9 @@ export module FleetGenerator {
 export class FleetGenerator extends NodejsFunction {
   /**
    * * Inistialize the Fleet Generator.
-   * @param scope 
-   * @param id 
-   * @param props 
+   * @param scope
+   * @param id
+   * @param props
    */
   constructor(scope: cdk.Construct, id: string, props: FleetGenerator.Props) {
     super(scope, `FleetGenerator-${id}`, {
