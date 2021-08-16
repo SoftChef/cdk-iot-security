@@ -12,11 +12,13 @@ import {
 import {
   S3Client,
   GetObjectCommand,
+  PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
 import { handler } from '../../../lambda-assets/device-certificate-generator/app';
 import {
+  InputError,
   InformationNotFoundError,
   VerificationError,
 } from '../../../lambda-assets/errors';
@@ -24,6 +26,9 @@ import {
 const event = {
   body: {
     caCertificateId: 'test_ca_certificate_id',
+    csrSubjects: {
+      commonName: 'myThingName',
+    },
     deviceInfo: {
       name: 'test_device',
     },
@@ -41,10 +46,14 @@ const s3Mock = mockClient(S3Client);
 const lambdaMock = mockClient(LambdaClient);
 
 beforeEach(async () => {
+
   process.env.AWS_REGION = 'local';
   process.env.BUCKET_NAME = 'bucket_name';
   process.env.BUCKET_PREFIX = 'bucket_prefix';
   process.env.BUCKET_KEY = 'bucket_key';
+  process.env.OUTPUT_BUCKET_NAME = 'output_bucket_name';
+  process.env.OUTPUT_BUCKET_PREFIX = 'output_bucket_prefix';
+
   iotMock.on(DescribeCACertificateCommand, {
     certificateId: event.body.caCertificateId,
   }).resolves({
@@ -52,6 +61,7 @@ beforeEach(async () => {
       certificateArn: expected.caCertificateArn,
     },
   });
+
   iotMock.on(ListTagsForResourceCommand, {
     resourceArn: expected.caCertificateArn,
   }).resolves({
@@ -62,6 +72,7 @@ beforeEach(async () => {
       },
     ],
   });
+
   lambdaMock.on(InvokeCommand, {
     FunctionName: expected.verifierName,
   }).resolves({
@@ -71,6 +82,7 @@ beforeEach(async () => {
       ),
     ),
   });
+
   s3Mock.on(GetObjectCommand, {
     Bucket: process.env.BUCKET_NAME,
     Key: path.join(process.env.BUCKET_PREFIX, event.body.caCertificateId, 'ca-certificate.json'),
@@ -83,6 +95,22 @@ beforeEach(async () => {
       ),
     ]),
   });
+
+  s3Mock.on(PutObjectCommand, {
+    Bucket: process.env.OUTPUT_BUCKET_NAME,
+    Key: path.join(process.env.OUTPUT_BUCKET_PREFIX, event.body.csrSubjects.commonName, 'device.cert.pem'),
+  }).resolves({});
+
+  s3Mock.on(PutObjectCommand, {
+    Bucket: process.env.OUTPUT_BUCKET_NAME,
+    Key: path.join(process.env.OUTPUT_BUCKET_PREFIX, event.body.csrSubjects.commonName, 'device.private_key.pem'),
+  }).resolves({});
+
+  s3Mock.on(PutObjectCommand, {
+    Bucket: process.env.OUTPUT_BUCKET_NAME,
+    Key: path.join(process.env.OUTPUT_BUCKET_PREFIX, event.body.csrSubjects.commonName, 'device.public_key.pem'),
+  }).resolves({});
+
 });
 
 afterEach(() => {
@@ -104,6 +132,13 @@ describe('Sucessfully execute the handler', () => {
     }).resolves({
       tags: [],
     });
+    var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('On provide no device certificate vault', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });
@@ -130,13 +165,40 @@ describe('Fail on the AWS SDK error returns', () => {
     expect(response.statusCode).toBe(InformationNotFoundError.code);
   });
 
+  test('Fail to upload device certificate', async () => {
+    s3Mock.on(PutObjectCommand, {
+      Bucket: process.env.OUTPUT_BUCKET_NAME!,
+      Key: path.join(process.env.OUTPUT_BUCKET_PREFIX!, event.body.csrSubjects.commonName, 'device.cert.pem'),
+    }).rejects(new Error());
+    var response = await handler(event);
+    expect(response.statusCode).toBe(500);
+  });
+
+  test('Fail to upload device private key', async () => {
+    s3Mock.on(PutObjectCommand, {
+      Bucket: process.env.OUTPUT_BUCKET_NAME!,
+      Key: path.join(process.env.OUTPUT_BUCKET_PREFIX!, event.body.csrSubjects.commonName, 'device.private_key.pem'),
+    }).rejects(new Error());
+    var response = await handler(event);
+    expect(response.statusCode).toBe(500);
+  });
+
+  test('Fail to upload device public key', async () => {
+    s3Mock.on(PutObjectCommand, {
+      Bucket: process.env.OUTPUT_BUCKET_NAME!,
+      Key: path.join(process.env.OUTPUT_BUCKET_PREFIX!, event.body.csrSubjects.commonName, 'device.public_key.pem'),
+    }).rejects(new Error());
+    var response = await handler(event);
+    expect(response.statusCode).toBe(500);
+  });
+
 });
 
 describe('Fail on the provided wrong input data', () => {
 
   test('On an empty event', async () => {
     var response = await handler();
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(InputError.code);
   });
 
   test('Fail to verify the device', async () => {

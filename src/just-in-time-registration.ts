@@ -16,8 +16,8 @@ export module JustInTimeRegistration {
      */
     readonly vault: VaultProps;
     /**
-      * The verifiers to verify the client certificates.
-      */
+     * The verifiers to verify the client certificates.
+     */
     readonly verifiers?: VerifiersFetcher.Verifier[];
   }
 }

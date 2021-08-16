@@ -77,7 +77,7 @@ describe('Sucessfully execute the handler', () => {
   });
 
   test('Without providing a bucket prefix', async () => {
-    delete process.env.BUCKET_PREFIX;
+    process.env.BUCKET_PREFIX = '';
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });

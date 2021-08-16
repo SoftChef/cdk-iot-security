@@ -11,6 +11,7 @@ import {
 import {
   S3Client,
   GetObjectCommand,
+  PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import {
   Request,
@@ -22,9 +23,13 @@ import {
   CertificateGenerator,
 } from '../certificate-generator';
 import {
+  InputError,
   InformationNotFoundError,
   VerificationError,
 } from '../errors';
+import {
+  csrSubjectsSchema,
+} from '../schemas';
 
 /**
  * The lambda function handler generating the device certificates.
@@ -38,17 +43,40 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const response = new Response();
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
-  const caCertificateId: string = request.input('caCertificateId');
-  const deviceInfo: string = request.input('deviceInfo');
-  const thingName: string = request.input('thingName', uuid.v4());
+  const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
+  const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
   try {
+    const validated = request.validate(joi => {
+      return {
+        csrSubjects: csrSubjectsSchema,
+        caCertificateId: joi.string().required(),
+        deviceInfo: joi.object().default({}),
+      };
+    });
+    if (validated.error) {
+      throw new InputError(JSON.stringify(validated.details));
+    }
+    const caCertificateId: string = request.input('caCertificateId');
+    const deviceInfo: string = request.input('deviceInfo');
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
+      commonName: uuid.v4(),
+      countryName: '',
+      stateName: '',
+      localityName: '',
+      organizationName: '',
+      organizationUnitName: '',
+    });
+
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
-    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, {
-      commonName: thingName,
-    });
+    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
-    return response.json(deviceCertificates);
+    if (outputBucketName) {
+      await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
+      return response.json({ success: true });
+    } else {
+      return response.json(deviceCertificates);
+    }
   } catch (error) {
     return response.error(error.stack, error.code);
   }
@@ -143,4 +171,37 @@ async function getCaCertificate(caCertificateId: string, bucketName: string, buc
   const fileString = await streamToString(fileStream as any);
   const { ca: caCertificates } = JSON.parse(fileString);
   return caCertificates;
+}
+
+async function uploadDeviceCertificate(
+  deviceCertificates: CertificateGenerator.CertificateSet,
+  outputBucketName: string,
+  outputBucketPrefix: string,
+  thingName: string,
+) {
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: outputBucketName,
+      Key: path.join(outputBucketPrefix, thingName, 'device.cert.pem'),
+      Body: Buffer.from(deviceCertificates.certificate),
+    }),
+  );
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: outputBucketName,
+      Key: path.join(outputBucketPrefix, thingName, 'device.private_key.pem'),
+      Body: Buffer.from(deviceCertificates.privateKey),
+    }),
+  );
+
+  await new S3Client({}).send(
+    new PutObjectCommand({
+      Bucket: outputBucketName,
+      Key: path.join(outputBucketPrefix, thingName, 'device.public_key.pem'),
+      Body: Buffer.from(deviceCertificates.publicKey),
+    }),
+  );
+
 }
