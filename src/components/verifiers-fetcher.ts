@@ -7,6 +7,9 @@ export module VerifiersFetcher {
    * The verifier to verify the client certificates.
    */
   export type Verifier = lambda.Function;
+  /**
+   * The properties to initialize the Verifiers Fetcher.
+   */
   export interface Props {
     readonly verifiers?: Verifier[];
   }

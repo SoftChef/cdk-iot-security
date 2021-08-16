@@ -18,12 +18,15 @@ export class ReviewReceptor extends sqs.Queue {
    * The Role allowed to push messages into this Receptor.
    */
   public readonly acceptionRole: ReviewAcceptionRole;
+  /**
+   * The topic rule passing messages to this Review Receptor.
+   */
   public readonly jitrTopicRule: JitrTopicRule;
   /**
-     * Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
-     * @param scope
-     * @param id
-     */
+   * Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
+   * @param scope
+   * @param id
+   */
   constructor(scope: Construct, id: string) {
     super(scope, `ReviewReceptor-${id}`, {});
     this.acceptionRole = new ReviewAcceptionRole(this, id, 'iot.amazonaws.com');
@@ -69,6 +72,11 @@ export class ReviewAcceptionRole extends Role {
  * The AWS IoT topic role listening the MQTT message originating from a deivce triggered JITR event.
  */
 export class JitrTopicRule extends CfnTopicRule {
+  /**
+   * Initialize the topic rule for JITR work flow.
+   * @param queue 
+   * @param id 
+   */
   constructor(queue: ReviewReceptor, id: string) {
     super(queue, `TopicRule-${id}`, {
       topicRulePayload: {

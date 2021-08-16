@@ -11,7 +11,7 @@ import { Construct } from '@aws-cdk/core';
  */
 export class DeviceActivator extends NodejsFunction {
   /**
-   * Inistialize the Device Activator Function.
+   * Inistialize the Device Activator.
    * @param scope
    * @param id
    * @param props

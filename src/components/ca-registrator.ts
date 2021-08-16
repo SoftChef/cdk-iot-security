@@ -19,6 +19,9 @@ import {
 } from './verifiers-fetcher';
 
 export module CaRegistrator {
+  /**
+   * The properties to initialize the CA Registrator.
+   */
   export interface Props {
     /**
      * The secure AWS S3 Bucket recepting the CA registration
@@ -41,7 +44,7 @@ export module CaRegistrator {
  */
 export class CaRegistrator extends NodejsFunction {
   /**
-   * Initialize the CA Registrator Function.
+   * Initialize the CA Registrator.
    * @param scope
    * @param id
    * @param props

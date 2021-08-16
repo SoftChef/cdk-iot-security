@@ -8,6 +8,9 @@ import * as cdk from '@aws-cdk/core';
 import { VaultProps } from './vault';
 
 export module DeviceCertificateGenerator {
+  /**
+   * The properties to initialize the Device Certificate Generator.
+   */
   export interface Props {
     /**
      * The secure AWS S3 Bucket recepting the CA registration
@@ -26,6 +29,12 @@ export module DeviceCertificateGenerator {
  * The NodeJS Lambda Function having the main functionality of generating a device certificate set authenticated by a registered CA.
  */
 export class DeviceCertificateGenerator extends NodejsFunction {
+  /**
+   * Initialize the Device Certificate Generator.
+   * @param scope 
+   * @param id 
+   * @param props 
+   */
   constructor(scope: cdk.Construct, id:string, props: DeviceCertificateGenerator.Props) {
     super(scope, `DeviceCertificateGenerator-${id}`, {
       entry: `${__dirname}/../../lambda-assets/device-certificate-generator/app.ts`,

@@ -6,7 +6,15 @@ import {
 } from '@aws-cdk/aws-iam';
 import * as cdk from '@aws-cdk/core';
 
+/**
+ * The IAM Role defining the permissions for Greengrass V2 Core Device to access the sevices other than the AWS IoT through token exchanging machanism.
+ */
 export class GreenGrassV2TokenExchangeRole extends Role {
+  /**
+   * Initialize the Greengrass V2 Token Exchange Role.
+   * @param scope 
+   * @param id 
+   */
   constructor(scope: cdk.Construct, id: string) {
     super(scope, `GreenGrassTokenExchangeRole-${id}`, {
       roleName: `GreenGrassTokenExchangeRoleName-${id}`,

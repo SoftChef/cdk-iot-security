@@ -10,6 +10,9 @@ import { FleetProvisioningRole } from './provision-role';
 import { VaultProps } from './vault';
 
 export module FleetGenerator {
+  /**
+   * The properties to initialize the Fleet Generator.
+   */
   export interface Props {
     /**
      * The secure AWS S3 Bucket recepting the CA registration
@@ -27,7 +30,16 @@ export module FleetGenerator {
   }
 }
 
+/**
+ * The NodeJS Lambda Function having the main functionality of generating a fleet-provisioning template and a provision-claim certificate on AWS IoT.
+ */
 export class FleetGenerator extends NodejsFunction {
+  /**
+   * * Inistialize the Fleet Generator.
+   * @param scope 
+   * @param id 
+   * @param props 
+   */
   constructor(scope: cdk.Construct, id: string, props: FleetGenerator.Props) {
     super(scope, `FleetGenerator-${id}`, {
       entry: `${__dirname}/../../lambda-assets/fleet-generator/app.ts`,
