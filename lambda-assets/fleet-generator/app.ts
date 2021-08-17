@@ -5,6 +5,7 @@ import {
   CreatePolicyCommand,
   CreateKeysAndCertificateCommand,
   AttachPolicyCommand,
+  CreateRoleAliasCommand,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -17,6 +18,7 @@ import {
 import {
   InputError,
 } from '../errors';
+import defaultGreengrassV2PolicyStatements from './default-greengrass-v2-policy-statements.json';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
 import defaultTemplateBody from './default-template.json';
@@ -45,23 +47,27 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const templateName = request.input('templateName');
 
     let policy = defaultIotPolicy;
+    let roleAlias: string | undefined;
+    let roleAliasArn: string | undefined;
     if (greengrassTokenExchangeRoleArn) {
-      policy.Statement.push({
-        "Effect":"Allow",
-        "Action":[
-          "greengrass:*"
-        ],
-        "Resource":["*"]
-      })
-      policy.Statement.push({
-        Effect: 'Allow',
-        Action: [
-          'iot:AssumeRoleWithCertificate',
-        ],
-        Resource: [
-          greengrassTokenExchangeRoleArn,
-        ],
-      });
+
+      (
+        { roleAlias, roleAliasArn } = await new IoTClient({}).send(
+          new CreateRoleAliasCommand({
+            roleAlias: `${templateName}-GreengrassTokenExachangeRoleAlias`,
+            roleArn: greengrassTokenExchangeRoleArn,
+          }),
+        )
+      );
+
+      const greengrassPolicyStatement = defaultGreengrassV2PolicyStatements.greengrass;
+      policy.Statement.push(greengrassPolicyStatement);
+
+      const roleAliasPolicyStatement = defaultGreengrassV2PolicyStatements.roleAlias;
+      roleAliasPolicyStatement.Resource = [];
+      roleAliasPolicyStatement.Resource.push(roleAliasArn!);
+      policy.Statement.push(roleAliasPolicyStatement);
+
     }
     defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
 
@@ -73,6 +79,22 @@ export const handler = async (event: any = {}) : Promise <any> => {
       keyPair,
     } = await createProvisioningClaimCertificate(templateArn!, templateName);
 
+    let provisionClaimCertificateInfo = {
+      templateName,
+      provisionCliamCertificate: {
+        provisionClaimCertificateArn,
+        provisionClaimCertificateId,
+      },
+    };
+    if (greengrassTokenExchangeRoleArn) {
+      provisionClaimCertificateInfo = Object.assign(provisionClaimCertificateInfo, {
+        roleAilas: {
+          roleAlias,
+          roleAliasArn,
+        },
+      });
+    }
+
     await uploadToVault(
       bucketName,
       bucketPrefix,
@@ -82,10 +104,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       keyPair!,
     );
 
-    return response.json({
-      provisionClaimCertificateArn,
-      provisionClaimCertificateId,
-    });
+    return response.json(provisionClaimCertificateInfo);
   } catch (error) {
     return response.error(error.stack, error.code);
   }

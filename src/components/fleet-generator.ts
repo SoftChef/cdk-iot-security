@@ -38,7 +38,7 @@ export class FleetGenerator extends NodejsFunction {
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
     this.role!.attachInlinePolicy(
-      new Policy(this, `CaRegistrator-${id}`, {
+      new Policy(this, `FleetGenerator-${id}`, {
         statements: [
           new PolicyStatement({
             effect: Effect.ALLOW,
@@ -48,6 +48,7 @@ export class FleetGenerator extends NodejsFunction {
               'iot:CreatePolicy',
               'iot:CreateKeysAndCertificate',
               'iot:AttachPolicy',
+              'iot:CreateRoleAlias',
             ],
             resources: ['*'],
           }),
