@@ -80,6 +80,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
   }
 };
 
+/**
+ * Verify if the device is legal or not.
+ * @param caCertificateId The specified CA ID.
+ * @param deviceInfo The device information provided to the CA-specified verifier to verify the device.
+ */
 async function verify(caCertificateId: string, deviceInfo: string) {
   const iotClient = new IoTClient({});
   const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
@@ -139,6 +144,12 @@ async function verify(caCertificateId: string, deviceInfo: string) {
   }
 }
 
+/**
+ * Read the S3 file contents as a string.
+ * @param bucketName The name of the AWS S3 Bucket storing CA certificate secrets.
+ * @param key The key of the file.
+ * @returns The string representation of the file.
+ */
 async function readS3File(bucketName: string, key: string) {
   const { Body: fileStream } = await new S3Client({}).send(
     new GetObjectCommand({
@@ -157,6 +168,13 @@ async function readS3File(bucketName: string, key: string) {
   return fileString;
 }
 
+/**
+ * Get the public key, the private key, and the certificate of the specified CA.
+ * @param caCertificateId The specified AWS IoT CA certificate ID.
+ * @param bucketName The name of the AWS S3 Bucket storing CA certificate secrets.
+ * @param bucketPrefix The key prefix of the secret files.
+ * @returns The JSON object contains the PEM-formatted strings of public key, the private key, and the certificate of the specified CA
+ */
 async function getCaCertificate(caCertificateId: string, bucketName: string, bucketPrefix: string) {
 
   const prefix = path.join(bucketPrefix, caCertificateId);

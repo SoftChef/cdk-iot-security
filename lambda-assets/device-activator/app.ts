@@ -170,6 +170,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
   return message;
 };
 
+/**
+ * Get the data from the common name field of the certificate.
+ * @param certificatePem The PEM fomat string of the certificate.
+ * @returns The string of the common name.
+ */
 function getCommonName(certificatePem: string) {
   const certificate = pki.certificateFromPem(certificatePem);
   const commonName = certificate.subject.getField('CN').value;
