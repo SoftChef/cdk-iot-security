@@ -169,7 +169,27 @@ async function getCaCertificate(caCertificateId: string, bucketName: string, buc
       stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     });
   const fileString = await streamToString(fileStream as any);
-  const { ca: caCertificates } = JSON.parse(fileString);
+  return fileString;
+}
+
+async function getCaCertificate(caCertificateId: string, bucketName: string, bucketPrefix: string) {
+
+  const prefix = path.join(bucketPrefix, caCertificateId);
+  const keys = {
+    publicKey: path.join(prefix, 'ca.public_key.pem'),
+    privateKey: path.join(prefix, 'ca.private_key.pem'),
+    certificate: path.join(prefix, 'ca.cert.pem'),
+  };
+
+  const privateKey = await readS3File(bucketName, keys.privateKey);
+  const publicKey = await readS3File(bucketName, keys.publicKey);
+  const certificate = await readS3File(bucketName, keys.certificate);
+  const caCertificates = {
+    publicKey,
+    privateKey,
+    certificate,
+  };
+
   return caCertificates;
 }
 
