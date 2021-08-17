@@ -32,7 +32,6 @@ const project = new AwsCdkConstructLibrary({
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
     'mqtt',
-    '@types/ws',
     '@types/uuid',
     'uuid',
   ],
