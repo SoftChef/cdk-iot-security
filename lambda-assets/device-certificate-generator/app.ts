@@ -32,11 +32,9 @@ import {
 } from '../schemas';
 
 /**
- * The lambda function handler generating the device certificates.
- * @param event The HTTP request specifying the CA ID for authentication and the thing name for provisioning,
- * and attach the additional device information for verifying whether the device is legal or not.
- * If the thing name is not specified, a UUID is applied.
- * @returns The generated device certificates, including the certificate, the private key, and the public key.
+ * The lambda function handler for generating a device certificate authenticated with a specified CA.
+ * @param event The HTTP request from the API gateway.
+ * @returns The HTTP response containing the registration result.
  */
 export const handler = async (event: any = {}) : Promise <any> => {
   const request = new Request(event);
@@ -82,11 +80,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
   }
 };
 
-/**
- * Verify if the device is legal or not. If the device is not legal, a verification error would be thrown.
- * @param caCertificateId The ID of the CA which is specified to authenticate the generated device certificates.
- * @param deviceInfo The data to pass to the verifier.
- */
 async function verify(caCertificateId: string, deviceInfo: string) {
   const iotClient = new IoTClient({});
   const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
@@ -146,15 +139,7 @@ async function verify(caCertificateId: string, deviceInfo: string) {
   }
 }
 
-/**
- * Get the CA certificates from the vault.
- * @param caCertificateId The ID of the CA which is specified to authenticate the generated device certificates.
- * @param bucketName The name of the bucket storing CA certificates.
- * @param bucketPrefix The prefix of the path storing CA certificates.
- * @returns The CA certificates set.
- */
-async function getCaCertificate(caCertificateId: string, bucketName: string, bucketPrefix: string) {
-  const key = path.join(bucketPrefix, caCertificateId, 'ca-certificate.json');
+async function readS3File(bucketName: string, key: string) {
   const { Body: fileStream } = await new S3Client({}).send(
     new GetObjectCommand({
       Bucket: bucketName,
