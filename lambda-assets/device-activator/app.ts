@@ -23,7 +23,7 @@ import {
 
 /**
  * The lambda function handler activating the client certificates.
- * @param event The lambda function event, which is a bunch of SQS message.
+ * @param event The lambda function event, which is a bunch of SQS message. The format is handled by the SQS.
  * @returns The HTTP response containing the activation results.
  */
 export const handler = async (event: any = {}) : Promise <any> => {

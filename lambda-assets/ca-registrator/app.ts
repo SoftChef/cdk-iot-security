@@ -39,21 +39,21 @@ import defaultTemplateBody from './default-template.json';
  *
  *      "commonName": "", // It would be replaced by the registration code, thus is unnecessary.
  *
- *      "countryName": "TW",
+ *      "countryName": "\<country name\>",
  *
- *      "stateName": "TP",
+ *      "stateName": "\<state name\>",
  *
- *      "localityName": "TW",
+ *      "localityName": "\<locality name\>",
  *
- *      "organizationName": "Soft Chef",
+ *      "organizationName": "\<organization name\>",
  *
- *      "organizationUnitName": "web"
+ *      "organizationUnitName": "\<organization unit name\>"
  *
  *    },
  *
- *    "verifierName": "verifier_name",
+ *    "verifierName": "\<verifier name\>",
  *
- *    "templateBody": "{ \"Parameters\" : { \"AWS::IoT::Certificate::Country\" : { \"Type\" : \"String\" }, \"AWS::IoT::Certificate::Id\" : { \"Type\" : \"String\" } }, \"Resources\" : { \"thing\" : { \"Type\" : \"AWS::IoT::Thing\", \"Properties\" : { \"ThingName\" : {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"AttributePayload\" : { \"version\" : \"v1\", \"country\" : {\"Ref\" : \"AWS::IoT::Certificate::Country\"}} } }, \"certificate\" : { \"Type\" : \"AWS::IoT::Certificate\", \"Properties\" : { \"CertificateId\": {\"Ref\" : \"AWS::IoT::Certificate::Id\"}, \"Status\" : \"ACTIVE\" } }, \"policy\" : {\"Type\" : \"AWS::IoT::Policy\", \"Properties\" : { \"PolicyDocument\" : \"{\\\"Version\\\": \\\"2012-10-17\\\",\\\"Statement\\\": [{\\\"Effect\\\":\\\"Allow\\\",\\\"Action\\\": [\\\"iot:Connect\\\",\\\"iot:Publish\\\"],\\\"Resource\\\" : [\\\"*\\\"]}]}\" } } } }"
+ *    "templateBody": "\<the stringified JSON object of the provision template\>"
  *
  *  }
  *

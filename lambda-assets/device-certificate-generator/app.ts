@@ -34,6 +34,22 @@ import {
 /**
  * The lambda function handler for generating a device certificate authenticated with a specified CA.
  * @param event The HTTP request from the API gateway.
+ *
+ * event = {
+ *
+ *  ...
+ *
+ *  "body": {
+ *
+ *    "caCertificateId": "\<AWS IoT CA Certificate ID\>"
+ *
+ *    "deviceInfo": "\<The strigified JSON object containing the information of the device\>"
+ *
+ *  }
+ *
+ *  ...
+ *
+ * }
  * @returns The HTTP response containing the registration result.
  */
 export const handler = async (event: any = {}) : Promise <any> => {
@@ -48,7 +64,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       return {
         csrSubjects: csrSubjectsSchema,
         caCertificateId: joi.string().required(),
-        deviceInfo: joi.object().default({}),
+        deviceInfo: joi.string().default("{}"),
       };
     });
     if (validated.error) {

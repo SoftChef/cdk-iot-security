@@ -26,6 +26,20 @@ import defaultTemplateBody from './default-template.json';
 /**
  * The lambda function handler generating the Fleet-Provisioning Template and the associated Provisioning Claim Certificate.
  * @param event The HTTP request from the API gateway.
+ *
+ * event = {
+ *
+ *  ...
+ *
+ *  "body": {
+ *
+ *    "templateName": "\<the desired template name\>"
+ *
+ *  }
+ *
+ *  ...
+ *
+ * }
  * @returns The HTTP response containing the activation results.
  */
 export const handler = async (event: any = {}) : Promise <any> => {
