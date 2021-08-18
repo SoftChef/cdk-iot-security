@@ -43,7 +43,7 @@ import {
  *
  *    "caCertificateId": "\<AWS IoT CA Certificate ID\>"
  *
- *    "deviceInfo": "\<The strigified JSON object containing the information of the device\>"
+ *    "deviceInfo": "\<The JSON object containing the information of the device\>"
  *
  *  }
  *
@@ -64,14 +64,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
       return {
         csrSubjects: csrSubjectsSchema,
         caCertificateId: joi.string().required(),
-        deviceInfo: joi.string().default("{}"),
+        deviceInfo: joi.object().default({}),
       };
     });
     if (validated.error) {
       throw new InputError(JSON.stringify(validated.details));
     }
     const caCertificateId: string = request.input('caCertificateId');
-    const deviceInfo: string = request.input('deviceInfo');
+    const deviceInfo: {[key: string]: any} = request.input('deviceInfo', {});
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
       commonName: uuid.v4(),
       countryName: '',
@@ -101,7 +101,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
  * @param caCertificateId The specified CA ID.
  * @param deviceInfo The device information provided to the CA-specified verifier to verify the device.
  */
-async function verify(caCertificateId: string, deviceInfo: string) {
+async function verify(caCertificateId: string, deviceInfo: {[key: string]: any}) {
   const iotClient = new IoTClient({});
   const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
     new DescribeCACertificateCommand({
