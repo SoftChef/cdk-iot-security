@@ -223,12 +223,19 @@ async function uploadDeviceCertificate(
 
 }
 
-function aesEncrypt(data: string, _key: string, _iv: string='3') {
-  let algorithm='aes-256-cbc';
-  let key = Buffer.from(_key);
-  let iv = Buffer.from(_iv);
+/**
+ * Encrypt the data with AES algorithm.
+ * @param data The data to be encrypted.
+ * @param key The key for AES encryption.
+ * @param iv The initialization vector for AES encryption.
+ * @returns The AES-encrypted data.
+ */
+function aesEncrypt(data: string, key: string, iv: string='1234567890123456') {
+  let algorithm='aes-128-cbc';
+  let keyBuffer = Buffer.from(key);
+  let ivBuffer = Buffer.from(iv);
 
-  let cipher=crypto.createCipheriv(algorithm, key, iv);
+  let cipher = crypto.createCipheriv(algorithm, keyBuffer, ivBuffer);
   cipher.update(data, 'utf8');
 
   return cipher.final('base64');
