@@ -14,14 +14,28 @@ import { mockClient } from 'aws-sdk-client-mock';
 import {
   InputError,
 } from '../../../lambda-assets/errors';
+import defaultIotPolicy from '../../../lambda-assets/fleet-generator//default-iot-policy.json';
+import defaultTemplateBody from '../../../lambda-assets/fleet-generator//default-template.json';
 import { handler } from '../../../lambda-assets/fleet-generator/app';
 
 const iotMock = mockClient(IoTClient);
 const s3Mock = mockClient(S3Client);
 
+const templateName = 'test_template_name';
+
 const event = {
   body: {
-    templateName: 'test_template_name',
+    templateName,
+  },
+};
+
+const customTemplateBody = defaultTemplateBody;
+defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
+
+const customTemplateBodyEvent = {
+  body: {
+    templateName,
+    templateBody: customTemplateBody,
   },
 };
 
@@ -97,6 +111,11 @@ describe('Sucessfully execute the handler', () => {
   test('On Greengrass V2 mode', async () => {
     process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN = expected.greengrassTokenExchangeRoleArn;
     var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('With custom template body', async () => {
+    var response = await handler(customTemplateBodyEvent);
     expect(response.statusCode).toBe(200);
   });
 

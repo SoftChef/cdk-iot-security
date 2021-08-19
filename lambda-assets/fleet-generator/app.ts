@@ -44,20 +44,39 @@ export const handler = async (event: any = {}) : Promise <any> => {
     if (validated.error) {
       throw new InputError(JSON.stringify(validated.details));
     }
-    const templateName = request.input('templateName');
+    const templateName: string = request.input('templateName');
+    const inputTemplateBody: {[key: string]: any} = request.input('templateBody', null);
 
-    let policy = defaultIotPolicy;
-    let roleAlias: string | undefined;
-    let roleAliasArn: string | undefined;
+    let provisionClaimCertificateInfo = { templateName };
+
+    let templateBody: {[key: string]: any};
+    let policy: {[key: string]: any};
+
+    if (inputTemplateBody) {
+      templateBody = inputTemplateBody;
+      policy = JSON.parse(templateBody.Resources.policy.Properties.PolicyDocument);
+    } else {
+      templateBody = defaultTemplateBody;
+      policy = defaultIotPolicy;
+    }
+
     if (greengrassTokenExchangeRoleArn) {
 
-      (
-        { roleAlias, roleAliasArn } = await new IoTClient({}).send(
-          new CreateRoleAliasCommand({
-            roleAlias: `${templateName}-GreengrassTokenExachangeRoleAlias`,
-            roleArn: greengrassTokenExchangeRoleArn,
-          }),
-        )
+      const { roleAlias, roleAliasArn } = await new IoTClient({}).send(
+        new CreateRoleAliasCommand({
+          roleAlias: `${templateName}-GreengrassTokenExachangeRoleAlias`,
+          roleArn: greengrassTokenExchangeRoleArn,
+        }),
+      );
+
+      Object.assign(
+        provisionClaimCertificateInfo,
+        {
+          roleAilas: {
+            roleAlias,
+            roleAliasArn,
+          },
+        },
       );
 
       const greengrassPolicyStatement = defaultGreengrassV2PolicyStatements.greengrass;
@@ -67,11 +86,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       roleAliasPolicyStatement.Resource = [];
       roleAliasPolicyStatement.Resource.push(roleAliasArn!);
       policy.Statement.push(roleAliasPolicyStatement);
-
     }
-    defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
 
-    const templateArn = await createProvisioningTemplate(templateName, fleetProvisioningRoleArn, defaultTemplateBody);
+    templateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(policy);
+
+    const templateArn = await createProvisioningTemplate(templateName, fleetProvisioningRoleArn, templateBody);
     const {
       provisionClaimCertificateArn,
       provisionClaimCertificateId,
@@ -79,21 +98,15 @@ export const handler = async (event: any = {}) : Promise <any> => {
       keyPair,
     } = await createProvisioningClaimCertificate(templateArn!, templateName);
 
-    let provisionClaimCertificateInfo = {
-      templateName,
-      provisionCliamCertificate: {
-        provisionClaimCertificateArn,
-        provisionClaimCertificateId,
-      },
-    };
-    if (greengrassTokenExchangeRoleArn) {
-      provisionClaimCertificateInfo = Object.assign(provisionClaimCertificateInfo, {
-        roleAilas: {
-          roleAlias,
-          roleAliasArn,
+    Object.assign(
+      provisionClaimCertificateInfo,
+      {
+        provisionCliamCertificate: {
+          provisionClaimCertificateArn,
+          provisionClaimCertificateId,
         },
-      });
-    }
+      },
+    );
 
     await uploadToVault(
       bucketName,
