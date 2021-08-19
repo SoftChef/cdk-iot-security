@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import * as path from 'path';
 import {
   IoTClient,
@@ -43,6 +44,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
   const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
+  const iv: string | undefined = process.env.IV;
   try {
     const validated = request.validate(joi => {
       return {
@@ -56,6 +58,15 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }
     const caCertificateId: string = request.input('caCertificateId');
     const deviceInfo: string = request.input('deviceInfo');
+
+    let aesKey: string;
+    if (!outputBucketName) {
+      aesKey = request.input('aesKey', null);
+      if (!aesKey) {
+        throw new InputError('Missing AES Key');
+      }
+    }
+
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
       commonName: uuid.v4(),
       countryName: '',
@@ -73,7 +84,8 @@ export const handler = async (event: any = {}) : Promise <any> => {
       await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
       return response.json({ success: true });
     } else {
-      return response.json(deviceCertificates);
+      let secrets = aesEncrypt(JSON.stringify(deviceCertificates), aesKey, iv);
+      return response.json({ secrets });
     }
   } catch (error) {
     return response.error(error.stack, error.code);
@@ -209,4 +221,15 @@ async function uploadDeviceCertificate(
     }),
   );
 
+}
+
+function aesEncrypt(data: string, _key: string, _iv: string='3') {
+  let algorithm='aes-256-cbc';
+  let key = Buffer.from(_key);
+  let iv = Buffer.from(_iv);
+
+  let cipher=crypto.createCipheriv(algorithm, key, iv);
+  cipher.update(data, 'utf8');
+
+  return cipher.final('base64');
 }
