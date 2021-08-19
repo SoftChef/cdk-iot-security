@@ -84,7 +84,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
       return response.json({ success: true });
     } else {
-      let secrets = aesEncrypt(JSON.stringify(deviceCertificates), aesKey, iv);
+      const secrets = aesEncrypt(
+        JSON.stringify(deviceCertificates),
+        aesKey,
+        iv,
+      );
       return response.json({ secrets });
     }
   } catch (error) {
