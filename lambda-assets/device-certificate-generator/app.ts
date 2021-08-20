@@ -59,14 +59,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const caCertificateId: string = request.input('caCertificateId');
     const deviceInfo: string = request.input('deviceInfo');
 
-    let aesKey: string;
-    if (!outputBucketName) {
-      aesKey = request.input('aesKey', null);
-      if (!aesKey) {
-        throw new InputError('Missing AES Key');
-      }
-    }
-
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
       commonName: uuid.v4(),
       countryName: '',
@@ -80,10 +72,15 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
+
     if (outputBucketName) {
       await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
       return response.json({ success: true });
     } else {
+      const aesKey = request.input('aesKey', null);
+      if (!aesKey) {
+        throw new InputError('Missing AES Key');
+      }
       const secrets = aesEncrypt(
         JSON.stringify(deviceCertificates),
         aesKey,
