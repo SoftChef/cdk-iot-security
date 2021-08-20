@@ -3,6 +3,9 @@ import {
   IoTClient,
   DescribeCACertificateCommand,
   ListTagsForResourceCommand,
+  DescribeThingCommand,
+  DeleteCertificateCommand,
+  DeleteThingCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -64,6 +67,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationName: '',
       organizationUnitName: '',
     });
+
+    try {
+      const thingName = csrSubjects.commonName;
+      await deletePreviousResources(thingName);
+    } catch (e) {}
 
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
@@ -209,4 +217,29 @@ async function uploadDeviceCertificate(
     }),
   );
 
+}
+
+async function deletePreviousResources(thingName: string) {
+  const client = new IoTClient({});
+  const {
+    attributes: {
+      certificateId,
+    },
+  } = await client.send(
+    new DescribeThingCommand({
+      thingName,
+    }),
+  );
+
+  await client.send(
+    new DeleteCertificateCommand({
+      certificateId,
+    }),
+  );
+
+  await client.send(
+    new DeleteThingCommand({
+      thingName,
+    }),
+  );
 }
