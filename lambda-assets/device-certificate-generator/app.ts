@@ -69,7 +69,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     });
 
     try {
-      const thingName = csrSubjects.commonName;
+      const thingName: string = csrSubjects.commonName!;
       await deletePreviousResources(thingName);
     } catch (e) {}
 
@@ -219,12 +219,15 @@ async function uploadDeviceCertificate(
 
 }
 
+/**
+ * Delete the AWS IoT resources created before for the specified thing name.
+ * @param thingName The name of the thing with is according to the common name of the CSR subjects.
+ */
 async function deletePreviousResources(thingName: string) {
   const client = new IoTClient({});
+
   const {
-    attributes: {
-      certificateId,
-    },
+    attributes,
   } = await client.send(
     new DescribeThingCommand({
       thingName,
@@ -233,7 +236,7 @@ async function deletePreviousResources(thingName: string) {
 
   await client.send(
     new DeleteCertificateCommand({
-      certificateId,
+      certificateId: attributes!.certificateId!,
     }),
   );
 
