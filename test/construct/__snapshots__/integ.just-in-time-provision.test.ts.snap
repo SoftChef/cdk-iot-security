@@ -120,7 +120,7 @@ Object {
             "BUCKET_PREFIX": "test",
             "REGISTRATION_CONFIG_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "JustInTimeProvisiontestcaseProvisionRoleRegistrationConfigtestcase7DC6C103",
+                "JustInTimeProvisiontestcaseProvisionRoleRegistrationConfigRoletestcaseE8C566C2",
                 "Arn",
               ],
             },
@@ -405,7 +405,7 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "JustInTimeProvisiontestcaseProvisionRoleRegistrationConfigtestcase7DC6C103": Object {
+    "JustInTimeProvisiontestcaseProvisionRoleRegistrationConfigRoletestcaseE8C566C2": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -433,7 +433,7 @@ Object {
             ],
           },
         ],
-        "RoleName": "ProvisionRoleName-RegistrationConfig-test-case",
+        "RoleName": "ProvisionRoleName-RegistrationConfigRole-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
