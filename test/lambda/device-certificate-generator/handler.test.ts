@@ -153,7 +153,6 @@ describe('Sucessfully execute the handler', () => {
 
   test('On a regular event', async () => {
     var response = await handler(event);
-    console.log(response);
     expect(response.statusCode).toBe(200);
   });
 
