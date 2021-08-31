@@ -3,16 +3,16 @@
 exports[`Integration test FleetProvision 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccArtifactHashFCEF1C61": Object {
-      "Description": "Artifact hash for asset \\"150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dcc\\"",
+    "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cArtifactHashD8851754": Object {
+      "Description": "Artifact hash for asset \\"61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081c\\"",
       "Type": "String",
     },
-    "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3BucketEF81F44E": Object {
-      "Description": "S3 bucket for asset \\"150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dcc\\"",
+    "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3Bucket82718081": Object {
+      "Description": "S3 bucket for asset \\"61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081c\\"",
       "Type": "String",
     },
-    "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3VersionKey04F2AD37": Object {
-      "Description": "S3 key for asset version \\"150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dcc\\"",
+    "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3VersionKeyDD740CC6": Object {
+      "Description": "S3 key for asset version \\"61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081c\\"",
       "Type": "String",
     },
   },
@@ -25,7 +25,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3BucketEF81F44E",
+            "Ref": "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3Bucket82718081",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -38,7 +38,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3VersionKey04F2AD37",
+                          "Ref": "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3VersionKeyDD740CC6",
                         },
                       ],
                     },
@@ -51,7 +51,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3VersionKey04F2AD37",
+                          "Ref": "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3VersionKeyDD740CC6",
                         },
                       ],
                     },
@@ -70,7 +70,7 @@ Object {
             "BUCKET_PREFIX": "test",
             "FLEET_PROVISIONING_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "testcaseProvisionRoleFleettestcase66561F6A",
+                "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8",
                 "Arn",
               ],
             },
@@ -190,7 +190,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testcaseProvisionRoleFleettestcase66561F6A": Object {
+    "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -218,7 +218,7 @@ Object {
             ],
           },
         ],
-        "RoleName": "ProvisionRoleName-Fleet-test-case",
+        "RoleName": "ProvisionRoleName-FleetProvisioningRole-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
@@ -229,16 +229,16 @@ Object {
 exports[`Integration test FleetProvision in Greengrass V2 mode 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccArtifactHashFCEF1C61": Object {
-      "Description": "Artifact hash for asset \\"150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dcc\\"",
+    "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cArtifactHashD8851754": Object {
+      "Description": "Artifact hash for asset \\"61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081c\\"",
       "Type": "String",
     },
-    "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3BucketEF81F44E": Object {
-      "Description": "S3 bucket for asset \\"150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dcc\\"",
+    "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3Bucket82718081": Object {
+      "Description": "S3 bucket for asset \\"61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081c\\"",
       "Type": "String",
     },
-    "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3VersionKey04F2AD37": Object {
-      "Description": "S3 key for asset version \\"150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dcc\\"",
+    "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3VersionKeyDD740CC6": Object {
+      "Description": "S3 key for asset version \\"61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081c\\"",
       "Type": "String",
     },
   },
@@ -251,7 +251,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3BucketEF81F44E",
+            "Ref": "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3Bucket82718081",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -264,7 +264,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3VersionKey04F2AD37",
+                          "Ref": "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3VersionKeyDD740CC6",
                         },
                       ],
                     },
@@ -277,7 +277,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters150ad12bc8e9e44c02809e28f75ac2b936bf9a94d73f49db48d5aa4be1b09dccS3VersionKey04F2AD37",
+                          "Ref": "AssetParameters61b3f3ee565b03eb7cc41f17f4de8ad921d43ac25d81913bf80f20f7e51e081cS3VersionKeyDD740CC6",
                         },
                       ],
                     },
@@ -296,7 +296,7 @@ Object {
             "BUCKET_PREFIX": "test",
             "FLEET_PROVISIONING_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "testcaseProvisionRoleFleettestcase66561F6A",
+                "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8",
                 "Arn",
               ],
             },
@@ -466,7 +466,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testcaseProvisionRoleFleettestcase66561F6A": Object {
+    "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -494,7 +494,7 @@ Object {
             ],
           },
         ],
-        "RoleName": "ProvisionRoleName-Fleet-test-case",
+        "RoleName": "ProvisionRoleName-FleetProvisioningRole-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
