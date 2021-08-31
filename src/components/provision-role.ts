@@ -35,7 +35,7 @@ export class RegistrationConfigRole extends ProvisionRole {
    * @param id
    */
   constructor(scope: Construct, id: string) {
-    super(scope, `RegistrationConfig-${id}`);
+    super(scope, `RegistrationConfigRole-${id}`);
   }
 }
 
@@ -49,6 +49,6 @@ export class FleetProvisioningRole extends ProvisionRole {
    * @param id
    */
   constructor(scope: Construct, id: string) {
-    super(scope, `Fleet-${id}`);
+    super(scope, `FleetProvisioningRole-${id}`);
   }
 }
