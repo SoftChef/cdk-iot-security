@@ -119,7 +119,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
 
     return response.json(provisionClaimCertificateInfo);
-  } catch (error) {
+  } catch (error: any) {
     return response.error(error.stack, error.code);
   }
 };

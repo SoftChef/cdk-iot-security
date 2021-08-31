@@ -193,7 +193,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       }),
     );
     return response.json({ certificateId: certificateId });
-  } catch (error) {
+  } catch (error: any) {
     return response.error(error.stack, error.code);
   }
 };

@@ -91,7 +91,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
     } else {
       return response.json(deviceCertificates);
     }
-  } catch (error) {
+  } catch (error: any) {
     return response.error(error.stack, error.code);
   }
 };
