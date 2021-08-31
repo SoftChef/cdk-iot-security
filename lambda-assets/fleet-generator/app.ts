@@ -17,6 +17,7 @@ import {
 } from '@softchef/lambda-events';
 import {
   InputError,
+  TemplateBodyPolicyDocumentMalformed,
 } from '../errors';
 import defaultGreengrassV2PolicyStatements from './default-greengrass-v2-policy-statements.json';
 import defaultIotPolicy from './default-iot-policy.json';
@@ -49,15 +50,18 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     let provisionClaimCertificateInfo = { templateName };
 
-    let templateBody: {[key: string]: any};
-    let policy: {[key: string]: any};
+    let templateBody: {[key: string]: any} = defaultTemplateBody;
+    let policy: {[key: string]: any} = defaultIotPolicy;
 
     if (inputTemplateBody) {
       templateBody = inputTemplateBody;
-      policy = JSON.parse(templateBody.Resources.policy.Properties.PolicyDocument);
-    } else {
-      templateBody = defaultTemplateBody;
-      policy = defaultIotPolicy;
+      try {
+        policy = JSON.parse(templateBody.Resources.policy.Properties.PolicyDocument);
+      } catch (e) {
+        if (e instanceof SyntaxError) {
+          throw new TemplateBodyPolicyDocumentMalformed();
+        }
+      }
     }
 
     if (greengrassTokenExchangeRoleArn) {

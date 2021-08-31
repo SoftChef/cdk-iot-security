@@ -22,3 +22,5 @@ export class ServerError extends Error {
 export class VerifierError extends InputError {}
 
 export class VerificationError extends ServerError {}
+
+export class TemplateBodyPolicyDocumentMalformed extends InputError {}
