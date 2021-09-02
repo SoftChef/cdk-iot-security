@@ -18,6 +18,9 @@ import {
 import {
   InputError,
 } from '../errors';
+import {
+  AwsError
+} from '../constracts';
 import defaultGreengrassV2PolicyStatements from './default-greengrass-v2-policy-statements.json';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
@@ -106,7 +109,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     return response.json(provisionClaimCertificateInfo);
   } catch (error) {
-    return response.error(error.stack, error.code);
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };
 

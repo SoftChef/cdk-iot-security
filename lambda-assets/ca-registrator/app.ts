@@ -24,6 +24,9 @@ import {
 } from '../schemas';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultTemplateBody from './default-template.json';
+import {
+  AwsError
+} from '../constracts';
 
 /**
  * The lambda function handler for register CA.
@@ -98,7 +101,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       .validateAsync(CaRegistration).catch((error: Error) => {
         throw new InformationNotFoundError(error.message);
       });
-      
+
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
@@ -161,6 +164,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    return response.error(error.stack, error.code);
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };

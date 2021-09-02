@@ -30,6 +30,9 @@ import {
 import {
   csrSubjectsSchema,
 } from '../schemas';
+import {
+  AwsError
+} from '../constracts';
 
 /**
  * The lambda function handler for generating a device certificate authenticated with a specified CA.
@@ -76,7 +79,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       return response.json(deviceCertificates);
     }
   } catch (error) {
-    return response.error(error.stack, error.code);
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };
 
