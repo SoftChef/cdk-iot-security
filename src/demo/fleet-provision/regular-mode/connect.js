@@ -28,81 +28,134 @@ const keysPath = {
   },
 };
 
-async function registerThing() {
+function connect() {
   
-  let token;
+  return new Promise(async (resolve, reject) => {
+    console.log("Set timout after 60 seconds.");
+    const timer = setTimeout(() => {}, 60 * 1000);
 
-  const timer = setTimeout(() => {}, 60 * 1000);
-  const clientBootstrap = new io.ClientBootstrap()
-  const client = new mqtt.MqttClient(clientBootstrap);
-  const config = iot.AwsIotMqttConnectionConfigBuilder
-  .new_mtls_builder_from_path(keysPath.provisionClaim.certificate, keysPath.provisionClaim.privateKey)
-  .with_certificate_authority_from_path(undefined, keysPath.awsRootCa)
-  .with_clean_session(false)
-  .with_client_id(clinetId)
-  .with_endpoint(endpoint)
-  .build();
-  const connection = client.new_connection(config);  
-  const identity = new iotidentity.IotIdentityClient(connection);  
-  await connection.connect();
+    console.log("Initialize connection.");
+    const clientBootstrap = new io.ClientBootstrap();
+    const client = new mqtt.MqttClient(clientBootstrap);
+    const config = iot.AwsIotMqttConnectionConfigBuilder
+    .new_mtls_builder_from_path(keysPath.provisionClaim.certificate, keysPath.provisionClaim.privateKey)
+    .with_certificate_authority_from_path(undefined, keysPath.awsRootCa)
+    .with_clean_session(false)
+    .with_client_id(clinetId)
+    .with_endpoint(endpoint)
+    .build();
+    const connection = client.new_connection(config);  
+    const identity = new iotidentity.IotIdentityClient(connection);
+    await connection.connect();
+
+    const token = await getOwnershipToken(identity);
+
+    await registerThing(identity, token);
   
-  await identity.subscribeToCreateKeysAndCertificateAccepted(
-    {},
-    mqtt.QoS.AtLeastOnce,
-    (error, response) => {
-      if (response) {
-        fs.writeFileSync(keysPath.device.info, JSON.stringify({
-            certificateId: response.certificateId,
-            certificateOwnershipToken: response.certificateOwnershipToken,
-            thingName,
-        }));
-        fs.writeFileSync(keysPath.device.certificate, response.certificatePem);
-        fs.writeFileSync(keysPath.device.privateKey, response.privateKey);
-        token = response.certificateOwnershipToken;
-      }
-      if (error) console.log(error);
-    }
-  );
-
-  await identity.subscribeToCreateKeysAndCertificateRejected(
-    {},
-    mqtt.QoS.AtLeastOnce,
-    (error, response) => console.log({error, response})
-  );
-
-  await identity.publishCreateKeysAndCertificate({}, mqtt.QoS.AtLeastOnce);
-  
-  await identity.subscribeToRegisterThingAccepted(
-    {templateName},
-    mqtt.QoS.AtLeastOnce,
-    (error, response) => {
-      if (response) {
-        console.log({
-          thingName: response.thingName,
-        });
-        return response.thingName;
-      }
-      if (error) console.log(error);
-    }
-  );
-
-  await identity.subscribeToRegisterThingRejected(
-    {templateName},
-    mqtt.QoS.AtLeastOnce,
-    (error, response) => console.log({error, response})
-  );
-
-  await identity.publishRegisterThing(
-    {
-      templateName,
-      certificateOwnershipToken: token,
-      parameters: { thingName }
-    },
-    mqtt.QoS.AtLeastOnce
-  );
-
-  await connection.disconnect();
-  clearTimeout(timer);
+    console.log("Disconnected")
+    await connection.disconnect();
+    clearTimeout(timer);
+    resolve();
+  });
 }
 
-registerThing();
+function getOwnershipToken(identity) {
+  return new Promise(async (resolve, reject) => {
+    let token;
+    console.log("Subscribe to CreateKeysAndCertificateAccepted.");
+    await identity.subscribeToCreateKeysAndCertificateAccepted(
+      {},
+      mqtt.QoS.AtLeastOnce,
+      (error, response) => {
+        if (response) {
+
+          console.log(`Write certificate information to ${keysPath.device.info}.`);
+          fs.writeFileSync(keysPath.device.info, JSON.stringify({
+              certificateId: response.certificateId,
+              certificateOwnershipToken: response.certificateOwnershipToken,
+              thingName,
+          }));
+          
+          console.log(`Write device certificate to ${keysPath.device.certificate}.`);
+          fs.writeFileSync(keysPath.device.certificate, response.certificatePem);
+
+          console.log(`Write device private key to ${keysPath.device.privateKey}.`);
+          fs.writeFileSync(keysPath.device.privateKey, response.privateKey);
+
+          token = response.certificateOwnershipToken;
+          console.log("Returned ownership token: ")
+          console.log({
+            certificateOwnershipToken: token,
+          });
+
+          resolve(token);
+        }
+        if (error) {
+          console.log(error);
+          reject(error);
+        };
+      }
+    );
+
+    console.log("Subscribe to CreateKeysAndCertificateRejected.");
+    await identity.subscribeToCreateKeysAndCertificateRejected(
+      {},
+      mqtt.QoS.AtLeastOnce,
+      (error, response) => {
+        console.log({error, response});
+        if (error) reject(error);
+      }
+    );
+
+    console.log("Publish to CreateKeysAndCertificate.");
+    await identity.publishCreateKeysAndCertificate({}, mqtt.QoS.AtLeastOnce);
+  });
+}
+
+function registerThing(identity, token) {
+  return new Promise(async (resolve, reject) => {
+    console.log("Subscribe to RegisterThingAccepted.");
+    await identity.subscribeToRegisterThingAccepted(
+      {templateName},
+      mqtt.QoS.AtLeastOnce,
+      (error, response) => {
+        console.log(response)
+        if (response) {
+          console.log({
+            thingName: response.thingName,
+          });
+          resolve(response.thingName);
+        }
+        if (error) {
+          console.log(error);
+          reject(error);
+        };
+      }
+    );
+
+    console.log("Subscribe to RegisterThingRejected.");
+    await identity.subscribeToRegisterThingRejected(
+      {templateName},
+      mqtt.QoS.AtLeastOnce,
+      (error, response) => {
+        console.log({error, response});
+        if (error) reject(error);
+      }
+    );
+
+    console.log("Publish to RegisterThing.");
+    await identity.publishRegisterThing(
+      {
+        templateName,
+        certificateOwnershipToken: token,
+        parameters: { thingName }
+      },
+      mqtt.QoS.AtLeastOnce
+    );
+  });
+  
+}
+
+(async () => {
+  await connect();
+})();

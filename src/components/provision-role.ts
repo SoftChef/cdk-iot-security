@@ -20,12 +20,12 @@ export class ProvisionRole extends Role {
 
 export class RegistrationConfigRole extends ProvisionRole {
   constructor(scope: Construct, id: string) {
-    super(scope, `RegistrationConfig-${id}`);
+    super(scope, `RegistrationConfigRole-${id}`);
   }
 }
 
 export class FleetProvisioningRole extends ProvisionRole {
   constructor(scope: Construct, id: string) {
-    super(scope, `Fleet-${id}`);
+    super(scope, `FleetProvisioningRole-${id}`);
   }
 }
