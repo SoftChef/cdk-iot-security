@@ -16,6 +16,7 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import {
+  AwsError,
   InputError,
 } from '../errors';
 import defaultGreengrassV2PolicyStatements from './default-greengrass-v2-policy-statements.json';
@@ -106,7 +107,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     return response.json(provisionClaimCertificateInfo);
   } catch (error) {
-    return response.error(error.stack, error.code);
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };
 
