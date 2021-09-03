@@ -15,6 +15,7 @@ import {
 import * as Joi from 'joi';
 import { CertificateGenerator } from '../certificate-generator';
 import {
+  CodedError,
   VerifierError,
   InputError,
   InformationNotFoundError,
@@ -131,7 +132,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       .validateAsync(CaRegistration).catch((error: Error) => {
         throw new InformationNotFoundError(error.message);
       });
-      
+
     await s3Client.send(
       new PutObjectCommand({
         Bucket: bucketName,
@@ -193,7 +194,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       }),
     );
     return response.json({ certificateId: certificateId });
-  } catch (error: any) {
-    return response.error(error.stack, error.code);
+  } catch (error) {
+    if (error instanceof CodedError) {
+      return response.error(error.stack, error.code);
+    } else {
+      return response.error(error);
+    }
   }
 };
