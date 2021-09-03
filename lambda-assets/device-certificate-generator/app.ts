@@ -23,7 +23,7 @@ import {
   CertificateGenerator,
 } from '../certificate-generator';
 import {
-  CodedError,
+  AwsError,
   InputError,
   InformationNotFoundError,
   VerificationError,
@@ -93,11 +93,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       return response.json(deviceCertificates);
     }
   } catch (error) {
-    if (error instanceof CodedError) {
-      return response.error(error.stack, error.code);
-    } else {
-      return response.error(error);
-    }
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };
 
