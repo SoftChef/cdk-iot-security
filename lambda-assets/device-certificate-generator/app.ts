@@ -233,7 +233,7 @@ async function uploadDeviceCertificate(
  * @returns The AES-encrypted data.
  */
 function aesEncrypt(data: string, key: string, iv: string='1234567890123456') {
-  let algorithm='aes-128-cbc';
+  let algorithm = 'aes-128-cbc'; // change to allow custom algorithm in the future
   let keyBuffer = Buffer.from(key);
   let ivBuffer = Buffer.from(iv);
 
