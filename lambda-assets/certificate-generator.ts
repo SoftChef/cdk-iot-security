@@ -199,6 +199,9 @@ export class CertificateGenerator {
 }
 
 export namespace CertificateGenerator {
+  /**
+   * The data filling the subjects fields of a certificates
+   */
   export interface CsrSubjects {
     commonName?: string;
     countryName?: string;
@@ -208,11 +211,19 @@ export namespace CertificateGenerator {
     organizationUnitName?: string;
   }
 
+  /**
+   * The required certificates for registering a AWS IoT CA.
+   * It includes two sets of certificate, private key, and public key.
+   * One set is for the CA certificate, another set is called verification certificate which is only used once for the registration.
+   */
   export interface CaRegistrationRequiredCertificates {
     ca: CertificateSet;
     verification: CertificateSet;
   }
 
+  /**
+   * The certificate set, consist of a certificate, a private key, and a public key.
+   */
   export interface CertificateSet {
     publicKey: string;
     privateKey: string;

@@ -9,6 +9,9 @@ import {
 } from './components';
 
 export module JustInTimeRegistration {
+  /**
+   * The properties to initialize the Just-in-Time Registration Construct.
+   */
   export interface Props {
     /**
      * The secure AWS S3 Bucket recepting the CA registration
@@ -22,26 +25,31 @@ export module JustInTimeRegistration {
   }
 }
 
+
+/**
+ * The CDK construct providing the funtionality of JITR.
+ */
 export class JustInTimeRegistration extends Construct {
+  /**
+   * The CA Registrator creating the AWS IoT resources for JITP work flow.
+   */
   public readonly caRegistrator: CaRegistrator;
+  /**
+   * The Device Activator activating the device certificate.
+   */
   public readonly deviceActivator: DeviceActivator;
+  /**
+   * The Review Receptor collecting and passing messages to the Device Activator.
+   */
   public readonly reviewReceptor: ReviewReceptor;
+  /**
+   * The Verifiers Fetcher returning all the listed verifiers information.
+   */
   public readonly verifiersFetcher: VerifiersFetcher;
-  public readonly vault: VaultProps;
 
   /**
    * Initialize a Just-In-Time Registration API.
    *
-   * This API is
-   * consist of three parts, a Registrator mainly
-   * registering CA, an Activator mainly activating
-   * the device certificate, and a RestApi as the
-   * entry of the Registrator.
-   *
-   * If a RestApi is provided as an input property,
-   * This Api would add a POST method to the path
-   * '/register'. Otherwise, a RestApi with the same
-   * method is created.
    * @param scope
    * @param id
    * @param props
@@ -61,7 +69,5 @@ export class JustInTimeRegistration extends Construct {
       verifiers: props.verifiers,
       vault: props.vault,
     });
-    this.vault = props.vault;
-    this.vault.bucket.grantWrite(this.caRegistrator);
   }
 }

@@ -27,6 +27,20 @@ import defaultTemplateBody from './default-template.json';
 /**
  * The lambda function handler generating the Fleet-Provisioning Template and the associated Provisioning Claim Certificate.
  * @param event The HTTP request from the API gateway.
+ *
+ * event = {
+ *
+ *  ...
+ *
+ *  "body": {
+ *
+ *    "templateName": "\<the desired template name\>"
+ *
+ *  }
+ *
+ *  ...
+ *
+ * }
  * @returns The HTTP response containing the activation results.
  */
 export const handler = async (event: any = {}) : Promise <any> => {
@@ -111,6 +125,13 @@ export const handler = async (event: any = {}) : Promise <any> => {
   }
 };
 
+/**
+ * Create a fleet-provisioning template.
+ * @param templateName The name of the fleet-provisioning template.
+ * @param provisioningRoleArn The ARN of the IAM Role created in the Fleet-Provision Construct and allowing to complete the Fleet-Provisioning Work Flow.
+ * @param templateBody The template body in JSON format.
+ * @returns The ARN of the created fleet-provisioning  template.
+ */
 async function createProvisioningTemplate(templateName: string, provisioningRoleArn: string, templateBody: {[key: string]: any}) {
 
   const { templateArn } = await new IoTClient({}).send(
@@ -125,6 +146,12 @@ async function createProvisioningTemplate(templateName: string, provisioningRole
   return templateArn;
 }
 
+/**
+ * Create the Provisioning Claim Certificate.
+ * @param templateArn The fleet-provisioning template ARN for extracting the information of region and account ID.
+ * @param templateName The name of the fleet-provisioning template
+ * @returns The JSON object contains ARN, ID, certificate, private key, and public key of the provisioning claim certificate.
+ */
 async function createProvisioningClaimCertificate(templateArn: string, templateName: string) {
   const [awsRegion, awsAccountId] = templateArn.split(':').slice(3, 5);
   defaultProvisionClaimPolicyStatements.publish.Resource = [
@@ -176,21 +203,30 @@ async function createProvisioningClaimCertificate(templateArn: string, templateN
   };
 }
 
+/**
+ * Upload the information of provision claim certificate to the Vault.
+ * @param bucketName The bucket name.
+ * @param bucketPrefix The prefix to save the files.
+ * @param provisioningClaimCertificateArn The ARN of the provisioning claim certifcate.
+ * @param provisioningClaimCertificateId The ID of the provisioning claim certifcate.
+ * @param provisioningClaimCertificatePem The PEM format string of the certificate of the provisioning claim certifcate.
+ * @param keyPair The JSON object contains the PEM format strings of the private key and public key of the provisioning claim certifcate.
+ */
 async function uploadToVault(
   bucketName: string,
   bucketPrefix: string,
-  provisionClaimCertificateArn: string,
-  provisionClaimCertificateId: string,
-  provisionClaimCertificatePem: string,
+  provisioningClaimCertificateArn: string,
+  provisioningClaimCertificateId: string,
+  provisioningClaimCertificatePem: string,
   keyPair: {[key:string]: string},
 ) {
   const s3Client = new S3Client({});
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision_claim.cert.pem'),
+      Key: path.join(bucketPrefix, provisioningClaimCertificateId!, 'provision_claim.cert.pem'),
       Body: Buffer.from(
-        provisionClaimCertificatePem,
+        provisioningClaimCertificatePem,
       ),
     }),
   );
@@ -198,7 +234,7 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision_claim.public_key.pem'),
+      Key: path.join(bucketPrefix, provisioningClaimCertificateId!, 'provision_claim.public_key.pem'),
       Body: Buffer.from(
         keyPair.PublicKey,
       ),
@@ -208,7 +244,7 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision_claim.private_key.pem'),
+      Key: path.join(bucketPrefix, provisioningClaimCertificateId!, 'provision_claim.private_key.pem'),
       Body: Buffer.from(
         keyPair.PrivateKey,
       ),
@@ -218,11 +254,11 @@ async function uploadToVault(
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
-      Key: path.join(bucketPrefix, provisionClaimCertificateId!, 'provision-claim-certificate.json'),
+      Key: path.join(bucketPrefix, provisioningClaimCertificateId!, 'provision-claim-certificate.json'),
       Body: Buffer.from(
         JSON.stringify({
-          provisionClaimCertificateId,
-          provisionClaimCertificateArn,
+          provisionClaimCertificateId: provisioningClaimCertificateId,
+          provisionClaimCertificateArn: provisioningClaimCertificateArn,
         }),
       ),
     }),

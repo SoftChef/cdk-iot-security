@@ -39,6 +39,22 @@ import {
 /**
  * The lambda function handler for generating a device certificate authenticated with a specified CA.
  * @param event The HTTP request from the API gateway.
+ *
+ * event = {
+ *
+ *  ...
+ *
+ *  "body": {
+ *
+ *    "caCertificateId": "\<AWS IoT CA Certificate ID\>"
+ *
+ *    "deviceInfo": "\<The JSON object containing the information of the device\>"
+ *
+ *  }
+ *
+ *  ...
+ *
+ * }
  * @returns The HTTP response containing the registration result.
  */
 export const handler = async (event: any = {}) : Promise <any> => {
@@ -61,8 +77,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new InputError(JSON.stringify(validated.details));
     }
     const caCertificateId: string = request.input('caCertificateId');
-    const deviceInfo: string = request.input('deviceInfo');
-
+    const deviceInfo: {[key: string]: any} = request.input('deviceInfo', {});
     let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
       commonName: uuid.v4(),
       countryName: '',
@@ -102,7 +117,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
   }
 };
 
-async function verify(caCertificateId: string, deviceInfo: string) {
+/**
+ * Verify if the device is legal or not.
+ * @param caCertificateId The specified CA ID.
+ * @param deviceInfo The device information provided to the CA-specified verifier to verify the device.
+ */
+async function verify(caCertificateId: string, deviceInfo: {[key: string]: any}) {
   const iotClient = new IoTClient({});
   const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
     new DescribeCACertificateCommand({
@@ -161,6 +181,12 @@ async function verify(caCertificateId: string, deviceInfo: string) {
   }
 }
 
+/**
+ * Read the S3 file contents as a string.
+ * @param bucketName The name of the AWS S3 Bucket storing CA certificate secrets.
+ * @param key The key of the file.
+ * @returns The string representation of the file.
+ */
 async function readS3File(bucketName: string, key: string) {
   const { Body: fileStream } = await new S3Client({}).send(
     new GetObjectCommand({
@@ -179,6 +205,13 @@ async function readS3File(bucketName: string, key: string) {
   return fileString;
 }
 
+/**
+ * Get the public key, the private key, and the certificate of the specified CA.
+ * @param caCertificateId The specified AWS IoT CA certificate ID.
+ * @param bucketName The name of the AWS S3 Bucket storing CA certificate secrets.
+ * @param bucketPrefix The key prefix of the secret files.
+ * @returns The JSON object contains the PEM-formatted strings of public key, the private key, and the certificate of the specified CA
+ */
 async function getCaCertificate(caCertificateId: string, bucketName: string, bucketPrefix: string) {
 
   const prefix = path.join(bucketPrefix, caCertificateId);
