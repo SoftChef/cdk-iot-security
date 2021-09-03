@@ -16,6 +16,7 @@ import {
   Response,
 } from '@softchef/lambda-events';
 import {
+  CodedError,
   InputError,
   TemplateBodyPolicyDocumentMalformed,
 } from '../errors';
@@ -123,7 +124,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     return response.json(provisionClaimCertificateInfo);
   } catch (error) {
-    return response.error(error.stack, error.code);
+    if (error instanceof CodedError) {
+      return response.error(error.stack, error.code);
+    } else {
+      return response.error(error);
+    }
   }
 };
 
