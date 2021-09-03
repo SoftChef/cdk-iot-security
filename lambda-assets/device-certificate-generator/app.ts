@@ -4,6 +4,9 @@ import {
   IoTClient,
   DescribeCACertificateCommand,
   ListTagsForResourceCommand,
+  DescribeThingCommand,
+  DeleteCertificateCommand,
+  DeleteThingCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -68,6 +71,11 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationName: '',
       organizationUnitName: '',
     });
+
+    try {
+      const thingName: string = csrSubjects.commonName!;
+      await deletePreviousResources(thingName);
+    } catch (e) {}
 
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
@@ -226,6 +234,34 @@ async function uploadDeviceCertificate(
 }
 
 /**
+ * Delete the AWS IoT resources created before for the specified thing name.
+ * @param thingName The name of the thing with is according to the common name of the CSR subjects.
+ */
+async function deletePreviousResources(thingName: string) {
+  const client = new IoTClient({});
+
+  const {
+    attributes,
+  } = await client.send(
+    new DescribeThingCommand({
+      thingName,
+    }),
+  );
+
+  await client.send(
+    new DeleteCertificateCommand({
+      certificateId: attributes!.certificateId!,
+    }),
+  );
+
+  await client.send(
+    new DeleteThingCommand({
+      thingName,
+    }),
+  );
+}
+
+/*
  * Encrypt the data with AES algorithm.
  * @param data The data to be encrypted.
  * @param key The key for AES encryption.

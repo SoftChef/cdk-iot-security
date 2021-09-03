@@ -11,7 +11,8 @@
         "ThingName": { "Ref": "AWS::IoT::Certificate::CommonName" },
         "AttributePayload": { 
           "version": "v1", 
-          "country": {"Ref": "AWS::IoT::Certificate::Country"}
+          "country": {"Ref": "AWS::IoT::Certificate::Country"},
+          "certificateId": {"Ref": "AWS::IoT::Certificate::Id"}
         } 
       } 
     }, 

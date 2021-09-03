@@ -4,6 +4,9 @@ import {
   IoTClient,
   DescribeCACertificateCommand,
   ListTagsForResourceCommand,
+  DescribeThingCommand,
+  DeleteThingCommand,
+  DeleteCertificateCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -43,6 +46,7 @@ const expected = {
   bucketPrefix: 'bucket_prefix',
   outputBucketName: 'output_bucket_name',
   outputBucketPrefix: 'output_bucket_prefix',
+  previousCertificateId: 'previous_certificate_id',
 };
 
 const iotMock = mockClient(IoTClient);
@@ -76,6 +80,22 @@ beforeEach(async () => {
       },
     ],
   });
+
+  iotMock.on(DescribeThingCommand, {
+    thingName: event.body.csrSubjects.commonName,
+  }).resolves({
+    attributes: {
+      certificateId: expected.previousCertificateId,
+    },
+  });
+
+  iotMock.on(DeleteCertificateCommand, {
+    certificateId: expected.previousCertificateId,
+  }).resolves({});
+
+  iotMock.on(DeleteThingCommand, {
+    thingName: event.body.csrSubjects.commonName,
+  }).resolves({});
 
   lambdaMock.on(InvokeCommand, {
     FunctionName: expected.verifierName,
