@@ -70,7 +70,7 @@ Object {
             "BUCKET_PREFIX": "test",
             "FLEET_PROVISIONING_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "testcaseProvisionRoleFleettestcase66561F6A",
+                "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8",
                 "Arn",
               ],
             },
@@ -190,7 +190,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testcaseProvisionRoleFleettestcase66561F6A": Object {
+    "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -218,7 +218,7 @@ Object {
             ],
           },
         ],
-        "RoleName": "ProvisionRoleName-Fleet-test-case",
+        "RoleName": "ProvisionRoleName-FleetProvisioningRole-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
@@ -296,7 +296,7 @@ Object {
             "BUCKET_PREFIX": "test",
             "FLEET_PROVISIONING_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
-                "testcaseProvisionRoleFleettestcase66561F6A",
+                "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8",
                 "Arn",
               ],
             },
@@ -466,7 +466,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testcaseProvisionRoleFleettestcase66561F6A": Object {
+    "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -494,7 +494,7 @@ Object {
             ],
           },
         ],
-        "RoleName": "ProvisionRoleName-Fleet-test-case",
+        "RoleName": "ProvisionRoleName-FleetProvisioningRole-test-case",
       },
       "Type": "AWS::IAM::Role",
     },

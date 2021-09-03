@@ -15,7 +15,7 @@ const clinetId = 'testClient';
  * Download AWS IoT Root CA Certificate from https://www.amazontrust.com/repository/AmazonRootCA1.pem
  * and save it as root_ca.cert.pem.
  */
- const keysPath = {
+const keysPath = {
   provisionClaim: {
     certificate: `${__dirname}/certs/provision_claim.cert.pem`,
     privateKey: `${__dirname}/certs/provision_claim.private_key.pem`,
