@@ -1,8 +1,12 @@
+import * as crypto from 'crypto';
 import * as path from 'path';
 import {
   IoTClient,
   DescribeCACertificateCommand,
   ListTagsForResourceCommand,
+  DescribeThingCommand,
+  DeleteCertificateCommand,
+  DeleteThingCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -60,6 +64,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
   const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
+  const iv: string | undefined = process.env.IV;
   try {
     const validated = request.validate(joi => {
       return {
@@ -82,15 +87,30 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationUnitName: '',
     });
 
+    try {
+      const thingName: string = csrSubjects.commonName!;
+      await deletePreviousResources(thingName);
+    } catch (e) {}
+
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
+
     if (outputBucketName) {
       await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
       return response.json({ success: true });
     } else {
-      return response.json(deviceCertificates);
+      const aesKey = request.input('aesKey', null);
+      if (!aesKey) {
+        throw new InputError('Missing AES Key');
+      }
+      const secrets = aesEncrypt(
+        JSON.stringify(deviceCertificates),
+        aesKey,
+        iv,
+      );
+      return response.json({ secrets });
     }
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
@@ -244,4 +264,50 @@ async function uploadDeviceCertificate(
     }),
   );
 
+}
+
+/**
+ * Delete the AWS IoT resources created before for the specified thing name.
+ * @param thingName The name of the thing with is according to the common name of the CSR subjects.
+ */
+async function deletePreviousResources(thingName: string) {
+  const client = new IoTClient({});
+
+  const {
+    attributes,
+  } = await client.send(
+    new DescribeThingCommand({
+      thingName,
+    }),
+  );
+
+  await client.send(
+    new DeleteCertificateCommand({
+      certificateId: attributes!.certificateId!,
+    }),
+  );
+
+  await client.send(
+    new DeleteThingCommand({
+      thingName,
+    }),
+  );
+}
+
+/*
+ * Encrypt the data with AES algorithm.
+ * @param data The data to be encrypted.
+ * @param key The key for AES encryption.
+ * @param iv The initialization vector for AES encryption.
+ * @returns The AES-encrypted data.
+ */
+function aesEncrypt(data: string, key: string, iv: string='1234567890123456') {
+  let algorithm = 'aes-128-cbc'; // change to allow custom algorithm in the future
+  let keyBuffer = Buffer.from(key);
+  let ivBuffer = Buffer.from(iv);
+
+  let cipher = crypto.createCipheriv(algorithm, keyBuffer, ivBuffer);
+  cipher.update(data, 'utf8');
+
+  return cipher.final('base64');
 }
