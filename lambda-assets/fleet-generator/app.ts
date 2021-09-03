@@ -20,6 +20,9 @@ import {
   InputError,
   TemplateBodyPolicyDocumentMalformed,
 } from '../errors';
+import {
+  AwsError
+} from '../constracts';
 import defaultGreengrassV2PolicyStatements from './default-greengrass-v2-policy-statements.json';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';

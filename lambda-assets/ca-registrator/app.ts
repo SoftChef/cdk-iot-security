@@ -25,6 +25,9 @@ import {
 } from '../schemas';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultTemplateBody from './default-template.json';
+import {
+  AwsError
+} from '../constracts';
 
 /**
  * The lambda function handler for register CA.
