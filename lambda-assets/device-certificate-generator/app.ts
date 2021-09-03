@@ -24,6 +24,7 @@ import {
   CertificateGenerator,
 } from '../certificate-generator';
 import {
+  AwsError,
   InputError,
   InformationNotFoundError,
   VerificationError,
@@ -89,7 +90,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       return response.json({ secrets });
     }
   } catch (error) {
-    return response.error(error.stack, error.code);
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };
 
