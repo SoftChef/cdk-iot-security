@@ -186,10 +186,19 @@ describe('Sucessfully execute the handler', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  test('On provide no device certificate vault', async () => {
+  test('On provide AES key', async () => {
     delete process.env.OUTPUT_BUCKET_NAME;
     delete process.env.OUTPUT_BUCKET_PREFIX;
-    var response = await handler(event);
+    const bodyWithAesKey = Object.assign(
+      {},
+      event.body,
+      {
+        aesKey: '1234567890123456',
+      },
+    );
+    var response = await handler({
+      body: bodyWithAesKey,
+    });
     expect(response.statusCode).toBe(200);
   });
 
@@ -257,6 +266,13 @@ describe('Fail on the provided wrong input data', () => {
     }).resolves({});
     var response = await handler(event);
     expect(response.statusCode).toBe(VerificationError.code);
+  });
+
+  test('On provide neither device certificate vault nor AES key', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
+    var response = await handler(event);
+    expect(response.statusCode).toBe(InputError.code);
   });
 
 });
