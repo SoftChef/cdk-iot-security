@@ -35,9 +35,6 @@ import {
 import {
   csrSubjectsSchema,
 } from '../schemas';
-import {
-  AwsError
-} from '../constracts';
 
 /**
  * The lambda function handler for generating a device certificate authenticated with a specified CA.
