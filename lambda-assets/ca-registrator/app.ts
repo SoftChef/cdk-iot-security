@@ -15,10 +15,10 @@ import {
 import * as Joi from 'joi';
 import { CertificateGenerator } from '../certificate-generator';
 import {
-  CodedError,
   VerifierError,
   InputError,
   InformationNotFoundError,
+  AwsError,
 } from '../errors';
 import {
   csrSubjectsSchema,
@@ -162,10 +162,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
     );
     return response.json({ certificateId: certificateId });
   } catch (error) {
-    if (error instanceof CodedError) {
-      return response.error(error.stack, error.code);
-    } else {
-      return response.error(error);
-    }
+    return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };

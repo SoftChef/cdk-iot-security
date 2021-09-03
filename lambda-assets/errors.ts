@@ -1,3 +1,8 @@
+export interface AwsError {
+  stack: string;
+  code: number;
+}
+
 export class CodedError extends Error {
   static code: number = 400;
   get code() {
