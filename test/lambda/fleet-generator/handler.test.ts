@@ -13,15 +13,20 @@ import {
 import { mockClient } from 'aws-sdk-client-mock';
 import {
   InputError,
+  TemplateBodyPolicyDocumentMalformed,
 } from '../../../lambda-assets/errors';
+import defaultIotPolicy from '../../../lambda-assets/fleet-generator//default-iot-policy.json';
+import defaultTemplateBody from '../../../lambda-assets/fleet-generator//default-template.json';
 import { handler } from '../../../lambda-assets/fleet-generator/app';
 
 const iotMock = mockClient(IoTClient);
 const s3Mock = mockClient(S3Client);
 
+const templateName = 'test_template_name';
+
 const event = {
   body: {
-    templateName: 'test_template_name',
+    templateName,
   },
 };
 
@@ -100,6 +105,19 @@ describe('Sucessfully execute the handler', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test('With custom template body', async () => {
+    const customTemplateBody = defaultTemplateBody;
+    customTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
+    const customTemplateBodyEvent = {
+      body: {
+        templateName,
+        templateBody: customTemplateBody,
+      },
+    };
+    var response = await handler(customTemplateBodyEvent);
+    expect(response.statusCode).toBe(200);
+  });
+
 });
 
 describe('Fail to execute the handler', () => {
@@ -107,6 +125,19 @@ describe('Fail to execute the handler', () => {
   test('On empty event', async () => {
     var response = await handler();
     expect(response.statusCode).toBe(InputError.code);
+  });
+
+  test('On malformed policy document in custom template body', async () => {
+    const customTemplateBodyWithMalformedPolicyDocument = defaultTemplateBody;
+    customTemplateBodyWithMalformedPolicyDocument.Resources.policy.Properties.PolicyDocument = '{{';
+    const customTemplateBodyEventWithMalformedPolicyDocument = {
+      body: {
+        templateName,
+        templateBody: customTemplateBodyWithMalformedPolicyDocument,
+      },
+    };
+    var response = await handler(customTemplateBodyEventWithMalformedPolicyDocument);
+    expect(response.statusCode).toBe(TemplateBodyPolicyDocumentMalformed.code);
   });
 
 });
