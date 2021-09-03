@@ -6,9 +6,12 @@ import {
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Construct } from '@aws-cdk/core';
 
+/**
+ * The NodeJS Lambda Function having the main functionality of activating the device certificate and provision the AWS IoT resources.
+ */
 export class DeviceActivator extends NodejsFunction {
   /**
-   * Inistialize the Device Activator Function.
+   * Inistialize the Device Activator.
    * @param scope
    * @param id
    * @param props

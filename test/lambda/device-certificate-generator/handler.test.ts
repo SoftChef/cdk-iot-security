@@ -4,6 +4,9 @@ import {
   IoTClient,
   DescribeCACertificateCommand,
   ListTagsForResourceCommand,
+  DescribeThingCommand,
+  DeleteThingCommand,
+  DeleteCertificateCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -43,6 +46,7 @@ const expected = {
   bucketPrefix: 'bucket_prefix',
   outputBucketName: 'output_bucket_name',
   outputBucketPrefix: 'output_bucket_prefix',
+  previousCertificateId: 'previous_certificate_id',
 };
 
 const iotMock = mockClient(IoTClient);
@@ -76,6 +80,22 @@ beforeEach(async () => {
       },
     ],
   });
+
+  iotMock.on(DescribeThingCommand, {
+    thingName: event.body.csrSubjects.commonName,
+  }).resolves({
+    attributes: {
+      certificateId: expected.previousCertificateId,
+    },
+  });
+
+  iotMock.on(DeleteCertificateCommand, {
+    certificateId: expected.previousCertificateId,
+  }).resolves({});
+
+  iotMock.on(DeleteThingCommand, {
+    thingName: event.body.csrSubjects.commonName,
+  }).resolves({});
 
   lambdaMock.on(InvokeCommand, {
     FunctionName: expected.verifierName,
@@ -166,10 +186,19 @@ describe('Sucessfully execute the handler', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  test('On provide no device certificate vault', async () => {
+  test('On provide AES key', async () => {
     delete process.env.OUTPUT_BUCKET_NAME;
     delete process.env.OUTPUT_BUCKET_PREFIX;
-    var response = await handler(event);
+    const bodyWithAesKey = Object.assign(
+      {},
+      event.body,
+      {
+        aesKey: '1234567890123456',
+      },
+    );
+    var response = await handler({
+      body: bodyWithAesKey,
+    });
     expect(response.statusCode).toBe(200);
   });
 
@@ -237,6 +266,13 @@ describe('Fail on the provided wrong input data', () => {
     }).resolves({});
     var response = await handler(event);
     expect(response.statusCode).toBe(VerificationError.code);
+  });
+
+  test('On provide neither device certificate vault nor AES key', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
+    var response = await handler(event);
+    expect(response.statusCode).toBe(InputError.code);
   });
 
 });

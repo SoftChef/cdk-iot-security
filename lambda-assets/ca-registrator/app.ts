@@ -15,10 +15,10 @@ import {
 import * as Joi from 'joi';
 import { CertificateGenerator } from '../certificate-generator';
 import {
+  AwsError,
   VerifierError,
   InputError,
   InformationNotFoundError,
-  AwsError,
 } from '../errors';
 import {
   csrSubjectsSchema,
@@ -28,7 +28,40 @@ import defaultTemplateBody from './default-template.json';
 
 /**
  * The lambda function handler for register CA.
- * @param event The HTTP request from the API gateway.
+ * @param event The HTTP request from the API gateway. It should be the following format:
+ *
+ * event = {
+ *
+ *  ...
+ *
+ *  "body": {
+ *
+ *    "csrSubjects": {
+ *
+ *      "commonName": "", // It would be replaced by the registration code, thus is unnecessary.
+ *
+ *      "countryName": "\<country name\>",
+ *
+ *      "stateName": "\<state name\>",
+ *
+ *      "localityName": "\<locality name\>",
+ *
+ *      "organizationName": "\<organization name\>",
+ *
+ *      "organizationUnitName": "\<organization unit name\>"
+ *
+ *    },
+ *
+ *    "verifierName": "\<verifier name\>",
+ *
+ *    "templateBody": "\<the stringified JSON object of the provision template\>"
+ *
+ *  }
+ *
+ *  ...
+ *
+ * }
+ *
  * @returns The HTTP response containing the registration result.
  */
 export const handler = async (event: any = {}) : Promise <any> => {
