@@ -15,7 +15,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^10.17.0",
+      "version": "^14.15.0",
       "type": "build"
     },
     {
@@ -127,11 +127,6 @@
     },
     {
       "name": "@types/node-forge",
-      "type": "bundled"
-    },
-    {
-      "name": "@types/node",
-      "version": "15.12.4",
       "type": "bundled"
     },
     {

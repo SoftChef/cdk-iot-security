@@ -10,6 +10,7 @@ const project = new AwsCdkConstructLibrary({
   name: '@softchef/cdk-iot-security',
   description: 'This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.',
   repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
+  minNodeVersion: '14.15.0',
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-lambda-nodejs',
@@ -26,7 +27,6 @@ const project = new AwsCdkConstructLibrary({
     'joi',
     'node-forge',
     '@types/node-forge',
-    '@types/node@15.12.4',
     '@aws-sdk/client-iot',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
