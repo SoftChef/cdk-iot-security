@@ -629,7 +629,7 @@
     "@aws-sdk/util-utf8-node" "3.29.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-iot@^3.30.0":
+"@aws-sdk/client-iot@^3.31.0":
   version "3.31.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-iot/-/client-iot-3.31.0.tgz#ea7be3ff8a3ff52a9b9e8964beac24f20a1c46d5"
   integrity sha512-x7HcXpAlyjBF2DXH878XudTK8Lioz8jnS7GMqEfYFDOs4Lugeg2YYgUZPyJIphJEWG4tUs8tqMkP8H/HBpSScg==
@@ -667,7 +667,7 @@
     tslib "^2.3.0"
     uuid "^8.3.2"
 
-"@aws-sdk/client-lambda@^3.30.0":
+"@aws-sdk/client-lambda@^3.31.0":
   version "3.31.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.31.0.tgz#237de2a5cd93ff22e8421ba9aa043c90552ae85f"
   integrity sha512-o1pj3gT63+4ucr1XGhiUdITCx0B3Lx0CIvJDO61E/z+198XOafFtVaE2zUs9qYm08IQpdx2utp+mTZ+P2Xi9MQ==
@@ -705,7 +705,7 @@
     "@aws-sdk/util-waiter" "3.29.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-s3@^3.30.0":
+"@aws-sdk/client-s3@^3.31.0":
   version "3.31.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.31.0.tgz#0fc290c69224b0c344ed9c9203533fc97ffa8b09"
   integrity sha512-1r0GT55Hg6j5HwIsSZRQD/UyixaqGxeslMKyriYW6EGY3hc+1DP6vV4MUSiPxmMjLsCRPpeKhxdGzAryTiWFQQ==
