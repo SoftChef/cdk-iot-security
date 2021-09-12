@@ -2548,9 +2548,9 @@ ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4:
     uri-js "^4.2.2"
 
 ajv@^8.0.1:
-  version "8.6.2"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.6.2.tgz#2fb45e0e5fcbc0813326c1c3da535d1881bb0571"
-  integrity sha512-9807RlWAgT564wT+DjeyU5OFMPjmzxVobvDFmNAhY+5zD6A2ly3jDp6sgnfyDtlIQ+7H97oc/DGCzzfu9rjw9w==
+  version "8.6.3"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.6.3.tgz#11a66527761dc3e9a3845ea775d2d3c0414e8764"
+  integrity sha512-SMJOdDP6LqTkD0Uq8qLi+gMwSt0imXLSV080qFVwJCpH9U6Mb+SUGHAXM0KNbcBPguytWyvFxcHgMLe2D2XSpw==
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
@@ -7075,10 +7075,10 @@ progress@^2.0.0, progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.27.51:
-  version "0.27.52"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.27.52.tgz#acae875219e2417cf6f4528a04dc6d7364c9edb1"
-  integrity sha512-ExWV+fMYjDfySe3Dp67Z83YTooR7pPxW3KYd/qkONZIGk1HK4DK1iAHtzdsT2hwi5U4/9uBYaVeTFGSeP90ejw==
+projen@^0.28.0:
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.28.0.tgz#f96e71a1b946240fd31313e4a87506203b7b4a85"
+  integrity sha512-GrLJiuo5iqCME7m5MqSBGTLsPTlA1V617O70n0FbWcCTzGoiwPL9PAmxnnV201ERjPaVIn+UGvqeawRIJApILg==
   dependencies:
     "@iarna/toml" "^2.2.5"
     chalk "^4.1.2"
