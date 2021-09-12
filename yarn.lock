@@ -2144,10 +2144,10 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@softchef/iot-just-in-time-registration@^0.0.47":
-  version "0.0.47"
-  resolved "https://registry.yarnpkg.com/@softchef/iot-just-in-time-registration/-/iot-just-in-time-registration-0.0.47.tgz#18b6f6e707ee2117d8a14f49120795e15d8aedd9"
-  integrity sha512-cWKVyiEop2+WsT1yrRH1280Oq9DCHTJkXaygIXUtDSpKSLtuAQNrJZ0dRI/L+swbMiEdQ7lC9aSxfHiLHWe7pA==
+"@softchef/iot-just-in-time-registration@^0.0.48":
+  version "0.0.48"
+  resolved "https://registry.yarnpkg.com/@softchef/iot-just-in-time-registration/-/iot-just-in-time-registration-0.0.48.tgz#b50a53dbbe2dc4b9b07afc5e4576ef5b64cf6935"
+  integrity sha512-XQV3e6D1BCLEE3zaVO7dTsV3+7llC3ZpLPTZhwAOaErcAKO7Fa2z1cYniEDn49idoNgKWqfIyDsoUWHE5yhBiw==
   dependencies:
     "@types/node" "16.3.1"
     "@types/node-forge" "^0.10.4"

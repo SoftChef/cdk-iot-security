@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.2",
-    "@softchef/iot-just-in-time-registration": "^0.0.47",
+    "@softchef/iot-just-in-time-registration": "^0.0.48",
     "@types/jest": "^26.0.24",
     "@types/node": "^14.15.0",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
