@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import * as path from 'path';
 import { Readable } from 'stream';
 import {
@@ -19,7 +20,10 @@ import {
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
-import { handler } from '../../../lambda-assets/device-certificate-generator/app';
+import {
+  handler,
+  aesEncrypt,
+} from '../../../lambda-assets/device-certificate-generator/app';
 import {
   InputError,
   InformationNotFoundError,
@@ -199,6 +203,7 @@ describe('Sucessfully execute the handler', () => {
     var response = await handler({
       body: bodyWithAesKey,
     });
+    console.log(response.statusCode);
     expect(response.statusCode).toBe(200);
   });
 
@@ -277,3 +282,46 @@ describe('Fail on the provided wrong input data', () => {
 
 });
 
+describe('Test device certificate encryption methods', () => {
+
+  test('AES encryption is correct', () => {
+    const {
+      ca: {
+        privateKey: caPrivateKey,
+        publicKey: caPublicKey,
+        certificate: caCertificate,
+      },
+    } = CertificateGenerator.getCaRegistrationCertificates();
+    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates({
+      privateKey: caPrivateKey,
+      publicKey: caPublicKey,
+      certificate: caCertificate,
+    });
+    deviceCertificates.certificate += caCertificate;
+
+    const aesKey = '1234567890123456';
+    const iv = '1234567890123456';
+    const algorithm = 'aes-128-cbc';
+
+    const data = JSON.stringify(deviceCertificates);
+
+    const encrypted = aesEncrypt(
+      data,
+      aesKey,
+      iv,
+      algorithm,
+    );
+
+    let cipher = crypto.createDecipheriv(
+      algorithm,
+      Buffer.from(aesKey),
+      Buffer.from(iv),
+    );
+    let decrypted = cipher.update(encrypted, 'base64', 'utf8');
+    decrypted += cipher.final('utf8');
+
+    expect(decrypted).toBe(data);
+
+  });
+
+});

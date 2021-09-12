@@ -45,7 +45,7 @@ export class DeviceCertificateGenerator extends NodejsFunction {
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
     if (props.deviceVault) {
-      props.deviceVault.bucket.grantRead(this);
+      props.deviceVault.bucket.grantReadWrite(this);
       this.addEnvironment('OUTPUT_BUCKET_NAME', props.deviceVault.bucket.bucketName);
       this.addEnvironment('OUTPUT_BUCKET_PREFIX', props.deviceVault.prefix || '');
     }

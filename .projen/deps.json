@@ -114,6 +114,10 @@
       "type": "bundled"
     },
     {
+      "name": "@aws-sdk/client-kms",
+      "type": "bundled"
+    },
+    {
       "name": "@aws-sdk/client-lambda",
       "type": "bundled"
     },
