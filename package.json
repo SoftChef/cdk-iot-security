@@ -37,7 +37,7 @@
     "@aws-cdk/assert": "^1.95.2",
     "@softchef/iot-just-in-time-registration": "^0.0.48",
     "@types/jest": "^26.0.24",
-    "@types/node": "^14.15.0",
+    "@types/node": "^14.17.0",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
     "aws-iot-device-sdk": "^2.2.11",
@@ -117,7 +117,7 @@
     "construct"
   ],
   "engines": {
-    "node": ">= 14.15.0"
+    "node": ">= 14.17.0"
   },
   "main": "lib/index.js",
   "license": "Apache-2.0",
