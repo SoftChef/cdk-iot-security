@@ -28,7 +28,6 @@ const project = new AwsCdkConstructLibrary({
     'node-forge',
     '@types/node-forge',
     '@aws-sdk/client-iot',
-    '@aws-sdk/client-kms',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',
     '@softchef/lambda-events',
