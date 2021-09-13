@@ -39,11 +39,11 @@ describe('Integration test', () => {
         bucket: bucket,
         prefix: 'test',
       },
-      greengrassV2: true,
+      enableGreengrassV2Mode: true,
     });
     expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
     expect(stack).toCountResources('AWS::Lambda::Function', 1);
-    expect(stack).toCountResources('AWS::IAM::Role', 3);
+    expect(stack).toCountResources('AWS::IAM::Role', 2);
   });
 
 });

@@ -27,6 +27,7 @@ const project = new AwsCdkConstructLibrary({
     'joi',
     'node-forge',
     '@types/node-forge',
+    '@aws-sdk/client-iam',
     '@aws-sdk/client-iot',
     '@aws-sdk/client-s3',
     '@aws-sdk/client-lambda',

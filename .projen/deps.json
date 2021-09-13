@@ -110,6 +110,10 @@
       "type": "build"
     },
     {
+      "name": "@aws-sdk/client-iam",
+      "type": "bundled"
+    },
+    {
       "name": "@aws-sdk/client-iot",
       "type": "bundled"
     },

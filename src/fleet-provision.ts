@@ -30,14 +30,11 @@ export class FleetProvision extends cdk.Construct {
    */
   constructor(scope: cdk.Construct, id: string, props: FleetProvision.Props) {
     super(scope, id);
-    if (props.greengrassV2) {
-      this.greengrassV2TokenExchangeRole = new GreenGrassV2TokenExchangeRole(this, id);
-    }
     this.fleetProvisionRole = new FleetProvisioningRole(this, id);
     this.fleetGenerator = new FleetGenerator(this, id, {
       vault: props.vault,
       fleetProvisionRole: this.fleetProvisionRole,
-      greengrassV2TokenExchangeRole: this.greengrassV2TokenExchangeRole,
+      enableGreengrassV2Mode: props.enableGreengrassV2Mode,
     });
   }
 }
@@ -55,6 +52,6 @@ export module FleetProvision {
     /**
      * Apply the Greengrass V2 mode or not.
      */
-    readonly greengrassV2?: boolean;
+    readonly enableGreengrassV2Mode?: boolean;
   }
 }

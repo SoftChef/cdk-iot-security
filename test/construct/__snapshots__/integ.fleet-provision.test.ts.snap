@@ -3,16 +3,16 @@
 exports[`Integration test FleetProvision 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943ArtifactHash275724C0": Object {
-      "Description": "Artifact hash for asset \\"3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943\\"",
+    "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1ArtifactHash26FA46E4": Object {
+      "Description": "Artifact hash for asset \\"026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1\\"",
       "Type": "String",
     },
-    "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3Bucket304236B7": Object {
-      "Description": "S3 bucket for asset \\"3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943\\"",
+    "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3Bucket35FC37F7": Object {
+      "Description": "S3 bucket for asset \\"026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1\\"",
       "Type": "String",
     },
-    "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3VersionKey87DEE423": Object {
-      "Description": "S3 key for asset version \\"3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943\\"",
+    "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3VersionKeyE8A6CDE4": Object {
+      "Description": "S3 key for asset version \\"026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1\\"",
       "Type": "String",
     },
   },
@@ -25,7 +25,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3Bucket304236B7",
+            "Ref": "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3Bucket35FC37F7",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -38,7 +38,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3VersionKey87DEE423",
+                          "Ref": "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3VersionKeyE8A6CDE4",
                         },
                       ],
                     },
@@ -51,7 +51,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3VersionKey87DEE423",
+                          "Ref": "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3VersionKeyE8A6CDE4",
                         },
                       ],
                     },
@@ -74,7 +74,6 @@ Object {
                 "Arn",
               ],
             },
-            "GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN": "",
           },
         },
         "Handler": "index.handler",
@@ -229,16 +228,16 @@ Object {
 exports[`Integration test FleetProvision in Greengrass V2 mode 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943ArtifactHash275724C0": Object {
-      "Description": "Artifact hash for asset \\"3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943\\"",
+    "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1ArtifactHash26FA46E4": Object {
+      "Description": "Artifact hash for asset \\"026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1\\"",
       "Type": "String",
     },
-    "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3Bucket304236B7": Object {
-      "Description": "S3 bucket for asset \\"3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943\\"",
+    "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3Bucket35FC37F7": Object {
+      "Description": "S3 bucket for asset \\"026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1\\"",
       "Type": "String",
     },
-    "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3VersionKey87DEE423": Object {
-      "Description": "S3 key for asset version \\"3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943\\"",
+    "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3VersionKeyE8A6CDE4": Object {
+      "Description": "S3 key for asset version \\"026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1\\"",
       "Type": "String",
     },
   },
@@ -251,7 +250,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3Bucket304236B7",
+            "Ref": "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3Bucket35FC37F7",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -264,7 +263,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3VersionKey87DEE423",
+                          "Ref": "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3VersionKeyE8A6CDE4",
                         },
                       ],
                     },
@@ -277,7 +276,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters3323a9970aee68e57d4a4f6cd9f9028f4420297bdc4fe5874bb4b8a4b83b8943S3VersionKey87DEE423",
+                          "Ref": "AssetParameters026a76b1882046c99a754c8568a6b563eb7eae9db898de2032a96bba28dfc9a1S3VersionKeyE8A6CDE4",
                         },
                       ],
                     },
@@ -294,15 +293,10 @@ Object {
               "Fn::ImportValue": "another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6",
             },
             "BUCKET_PREFIX": "test",
+            "ENABLE_GREENGRASS_V2_MODE": "true",
             "FLEET_PROVISIONING_ROLE_ARN": Object {
               "Fn::GetAtt": Array [
                 "testcaseProvisionRoleFleetProvisioningRoletestcase678B85F8",
-                "Arn",
-              ],
-            },
-            "GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN": Object {
-              "Fn::GetAtt": Array [
-                "testcaseGreenGrassTokenExchangeRoletestcaseB8BB7F57",
                 "Arn",
               ],
             },
@@ -418,51 +412,6 @@ Object {
             ],
           },
         ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "testcaseGreenGrassTokenExchangeRoletestcaseB8BB7F57": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "credentials.iot.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
-                    "iot:DescribeCertificate",
-                    "logs:CreateLogGroup",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                    "logs:DescribeLogStreams",
-                    "iot:Connect",
-                    "iot:Publish",
-                    "iot:Subscribe",
-                    "iot:Receive",
-                    "s3:GetBucketLocation",
-                    "s3:GetObject",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "tokenExchangePolicy",
-          },
-        ],
-        "RoleName": "GreenGrassTokenExchangeRoleName-test-case",
       },
       "Type": "AWS::IAM::Role",
     },
