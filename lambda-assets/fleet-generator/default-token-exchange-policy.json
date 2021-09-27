@@ -1,0 +1,30 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Sid": "VisualEditor0",
+          "Effect": "Allow",
+          "Action": [
+              "iot:Connect",
+              "iot:Publish",
+              "iot:Receive",
+              "iot:Subscribe",
+              "iot:DescribeCertificate",
+              "iot:ListNamedShadowsForThing",
+              "iot:GetThingShadow",
+              "iot:UpdateThingShadow",
+              "iot:DeleteThingShadow",
+              "s3:GetObject",
+              "s3:GetBucketLocation",
+              "logs:DescribeLogStreams",
+              "logs:CreateLogGroup",
+              "logs:PutLogEvents",
+              "logs:CreateLogStream",
+              "ecr:GetAuthorizationToken",
+              "ecr:BatchGetImage",
+              "ecr:GetDownloadUrlForLayer"
+          ],
+          "Resource": "*"
+      }
+  ]
+}

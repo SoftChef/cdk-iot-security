@@ -11,7 +11,7 @@ const fleetProvision = new FleetProvision(stack, id, {
   vault: {
     bucket: vault,
   },
-  greengrassV2: true,
+  enableGreengrassV2Mode: true,
 });
 const restApi = new apigateway.RestApi(stack, 'testRestApi');
 restApi.root
