@@ -34,6 +34,7 @@ import {
 } from '../errors';
 import {
   csrSubjectsSchema,
+  encryptionSchema,
 } from '../schemas';
 
 /**
@@ -70,6 +71,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
         csrSubjects: csrSubjectsSchema,
         caCertificateId: joi.string().required(),
         deviceInfo: joi.object().default({}),
+        encryption: outputBucketName? encryptionSchema.allow(null) : encryptionSchema,
       };
     });
     if (validated.error) {
@@ -102,15 +104,16 @@ export const handler = async (event: any = {}) : Promise <any> => {
         thingName,
       });
     } else {
-      const aesKey = request.input('aesKey', null);
-      if (!aesKey) {
-        throw new InputError('Missing AES Key');
-      }
-      const iv = request.input('iv', '1234567890123456');
-      const algorithm = request.input('algorithm', 'aes-128-cbc');
+
+      const {
+        algorithm,
+        iv,
+        key,
+      } = request.input('encryption');
+      
       const secrets = aesEncrypt(
         JSON.stringify(deviceCertificates),
-        aesKey,
+        key,
         iv,
         algorithm,
       );
