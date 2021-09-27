@@ -5,7 +5,6 @@ import {
 } from '@aws-cdk/aws-iam';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import * as cdk from '@aws-cdk/core';
-import { GreenGrassV2TokenExchangeRole } from './greengrass-v2';
 import { FleetProvisioningRole } from './provision-role';
 import { VaultProps } from './vault';
 
@@ -24,9 +23,9 @@ export module FleetGenerator {
      */
     readonly fleetProvisionRole: FleetProvisioningRole;
     /**
-     * The Role for Greeangrass V2 mode.
+     * Enable the Greengrass V2 mode.
      */
-    readonly greengrassV2TokenExchangeRole?: GreenGrassV2TokenExchangeRole;
+    readonly enableGreengrassV2Mode?: boolean;
   }
 }
 
@@ -44,11 +43,13 @@ export class FleetGenerator extends NodejsFunction {
     super(scope, `FleetGenerator-${id}`, {
       entry: `${__dirname}/../../lambda-assets/fleet-generator/app.ts`,
     });
-    this.addEnvironment('GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN', props.greengrassV2TokenExchangeRole?.roleArn ?? '');
     this.addEnvironment('FLEET_PROVISIONING_ROLE_ARN', props.fleetProvisionRole.roleArn);
     props.vault.bucket.grantReadWrite(this);
     this.addEnvironment('BUCKET_NAME', props.vault.bucket.bucketName);
     this.addEnvironment('BUCKET_PREFIX', props.vault.prefix || '');
+    if (props.enableGreengrassV2Mode) {
+      this.addEnvironment('ENABLE_GREENGRASS_V2_MODE', 'true');
+    }
     this.role!.attachInlinePolicy(
       new Policy(this, `FleetGenerator-${id}`, {
         statements: [

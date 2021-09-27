@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as iam from '@aws-sdk/client-iam';
 import {
   IoTClient,
   CreateProvisioningTemplateCommand,
@@ -24,6 +25,8 @@ import defaultGreengrassV2PolicyStatements from './default-greengrass-v2-policy-
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultProvisionClaimPolicyStatements from './default-provision-claim-policy-statements.json';
 import defaultTemplateBody from './default-template.json';
+import defaultTokenExchangePolicyDocument from './default-token-exchange-policy.json';
+import TokenExchangeAssumeRolePolicy from './token-exchange-assume-role-policy.json';
 
 /**
  * The lambda function handler generating the Fleet-Provisioning Template and the associated Provisioning Claim Certificate.
@@ -47,10 +50,13 @@ import defaultTemplateBody from './default-template.json';
 export const handler = async (event: any = {}) : Promise <any> => {
   const request: Request = new Request(event);
   const response: Response = new Response();
-  const greengrassTokenExchangeRoleArn: string = process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN ?? '';
+
+  const enableGreengrassV2Mode: boolean = process.env.ENABLE_GREENGRASS_V2_MODE == 'true';
+
   const fleetProvisioningRoleArn: string = process.env.FLEET_PROVISIONING_ROLE_ARN!;
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
+
   try {
     const validated = request.validate(joi => {
       return {
@@ -79,12 +85,18 @@ export const handler = async (event: any = {}) : Promise <any> => {
       }
     }
 
-    if (greengrassTokenExchangeRoleArn) {
+    if (enableGreengrassV2Mode) {
+
+      const inputTokenExchangePolicyDocument = request.input('tokenExchangePolicyDocument', undefined);
+
+      const tokenExchangePolicyDocument = inputTokenExchangePolicyDocument ?? defaultTokenExchangePolicyDocument;
+
+      const tokenExchangeRole = await createTokenExchangeRole(templateName, tokenExchangePolicyDocument);
 
       const { roleAlias, roleAliasArn } = await new IoTClient({}).send(
         new CreateRoleAliasCommand({
           roleAlias: `${templateName}-GreengrassTokenExachangeRoleAlias`,
-          roleArn: greengrassTokenExchangeRoleArn,
+          roleArn: tokenExchangeRole!.Arn,
         }),
       );
 
@@ -140,6 +152,53 @@ export const handler = async (event: any = {}) : Promise <any> => {
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
   }
+};
+
+/**
+ * Create the token exchange service role for the fleet-provision template.
+ * @param templateName The desirable name of the fleet-provision template.
+ * @param tokenExchangePolicyDocument The policy for the token exchange service role.
+ * @returns The token exchange service role.
+ */
+async function createTokenExchangeRole(templateName: string, tokenExchangePolicyDocument: {[key: string]: any}) {
+  const iamClient = new iam.IAMClient({});
+
+  const {
+    Policy: tokenExchangePolicy,
+  } = await iamClient.send(
+    new iam.CreatePolicyCommand({
+      PolicyName: `GreenGrassTokenExchangePolicy-${templateName}`,
+      PolicyDocument: JSON.stringify(tokenExchangePolicyDocument),
+      Description: `A Greengrass V2 token exchange service policy for fleet-provision template ${templateName}`,
+    }),
+  );
+
+  const {
+    Role: tokenExchangeRole,
+  } = await new iam.IAMClient({}).send(
+    new iam.CreateRoleCommand({
+      AssumeRolePolicyDocument: JSON.stringify(TokenExchangeAssumeRolePolicy),
+      RoleName: `GreenGrassTokenExchangeRole-${templateName}`,
+      PermissionsBoundary: tokenExchangePolicy!.Arn!,
+      Description: `A Greengrass V2 token exchange role for the fleet-provision template ${templateName}`,
+      Tags: [
+        {
+          Key: 'GreengrassV2',
+          Value: '',
+        },
+        {
+          Key: 'FleetProvision',
+          Value: '',
+        },
+        {
+          Key: 'TokenExchange',
+          Value: '',
+        },
+      ],
+    }),
+  );
+
+  return tokenExchangeRole;
 };
 
 /**

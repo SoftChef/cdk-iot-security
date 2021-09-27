@@ -130,7 +130,7 @@ new FleetGenerator(scope: Construct, id: string, props: Props)
 * **props** (<code>[FleetGenerator.Props](#softchef-cdk-iot-security-fleetgenerator-props)</code>)  *No description*
   * **fleetProvisionRole** (<code>[FleetProvisioningRole](#softchef-cdk-iot-security-fleetprovisioningrole)</code>)  The Role for Fleet Provision. 
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **greengrassV2TokenExchangeRole** (<code>[GreenGrassV2TokenExchangeRole](#softchef-cdk-iot-security-greengrassv2tokenexchangerole)</code>)  The Role for Greeangrass V2 mode. __*Optional*__
+  * **enableGreengrassV2Mode** (<code>boolean</code>)  Enable the Greengrass V2 mode. __*Optional*__
 
 
 
@@ -155,7 +155,7 @@ new FleetProvision(scope: Construct, id: string, props: Props)
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[FleetProvision.Props](#softchef-cdk-iot-security-fleetprovision-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **greengrassV2** (<code>boolean</code>)  Apply the Greengrass V2 mode or not. __*Optional*__
+  * **enableGreengrassV2Mode** (<code>boolean</code>)  Apply the Greengrass V2 mode or not. __*Optional*__
 
 
 
@@ -475,7 +475,7 @@ Name | Type | Description
 -----|------|-------------
 **fleetProvisionRole** | <code>[FleetProvisioningRole](#softchef-cdk-iot-security-fleetprovisioningrole)</code> | The Role for Fleet Provision.
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**greengrassV2TokenExchangeRole**? | <code>[GreenGrassV2TokenExchangeRole](#softchef-cdk-iot-security-greengrassv2tokenexchangerole)</code> | The Role for Greeangrass V2 mode.<br/>__*Optional*__
+**enableGreengrassV2Mode**? | <code>boolean</code> | Enable the Greengrass V2 mode.<br/>__*Optional*__
 
 
 
@@ -489,7 +489,7 @@ The properties to initialize the Fleet-Provision Construct.
 Name | Type | Description 
 -----|------|-------------
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**greengrassV2**? | <code>boolean</code> | Apply the Greengrass V2 mode or not.<br/>__*Optional*__
+**enableGreengrassV2Mode**? | <code>boolean</code> | Apply the Greengrass V2 mode or not.<br/>__*Optional*__
 
 
 

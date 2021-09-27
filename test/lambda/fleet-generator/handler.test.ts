@@ -1,3 +1,4 @@
+import * as iam from '@aws-sdk/client-iam';
 import {
   IoTClient,
   CreateProvisioningTemplateCommand,
@@ -15,12 +16,14 @@ import {
   InputError,
   TemplateBodyPolicyDocumentMalformed,
 } from '../../../lambda-assets/errors';
-import defaultIotPolicy from '../../../lambda-assets/fleet-generator//default-iot-policy.json';
-import defaultTemplateBody from '../../../lambda-assets/fleet-generator//default-template.json';
 import { handler } from '../../../lambda-assets/fleet-generator/app';
+import defaultIotPolicy from '../../../lambda-assets/fleet-generator/default-iot-policy.json';
+import defaultTemplateBody from '../../../lambda-assets/fleet-generator/default-template.json';
+import defaultTokenExchangePolicyDocument from '../../../lambda-assets/fleet-generator/default-token-exchange-policy.json';
 
 const iotMock = mockClient(IoTClient);
 const s3Mock = mockClient(S3Client);
+const iamMock = mockClient(iam.IAMClient);
 
 const templateName = 'test_template_name';
 
@@ -44,7 +47,15 @@ const expected = {
   },
   provisioningClaimCertificatePem: 'provisioning_claim_certificate_pem',
   provisioningClaimCertificateId: 'provisioning_claim_certificate_id',
-  greengrassTokenExchangeRoleArn: 'arn:greengrass-v2-token-exachange-arn',
+  greengrassTokenExchangeRoleArn: 'arn:greengrass-v2-token-exachange-role-arn',
+  greengrassTokenExchangeRole: {
+    Arn: 'arn:greengrass-v2-token-exachange-role-arn',
+    Path: '/',
+    RoleName: 'greengrass-v2-token-exachange-role-name',
+    RoleId: 'greengrass-v2-token-exachange-role-id',
+    CreateDate: new Date(),
+  },
+  greengrassTokenExchangePolicyArn: 'arn:greengrass-v2-token-exachange-policy-arn',
   roleAlias: 'greengrass-v2-token-exachange-role-alias',
   roleAliasArn: 'arn:greengrass-v2-token-exachange-role-alias-arn',
 };
@@ -84,6 +95,14 @@ beforeEach(() => {
     target: expected.provisioningClaimCertificateArn,
   }).resolves({});
   s3Mock.on(PutObjectCommand).resolves({});
+  iamMock.on(iam.CreatePolicyCommand).resolves({
+    Policy: {
+      Arn: expected.greengrassTokenExchangePolicyArn,
+    },
+  });
+  iamMock.on(iam.CreateRoleCommand).resolves({
+    Role: expected.greengrassTokenExchangeRole,
+  });
 });
 
 describe('Sucessfully execute the handler', () => {
@@ -101,6 +120,7 @@ describe('Sucessfully execute the handler', () => {
 
   test('On Greengrass V2 mode', async () => {
     process.env.GREENGRASS_V2_TOKEN_EXCHANGE_ROLE_ARN = expected.greengrassTokenExchangeRoleArn;
+    process.env.ENABLE_GREENGRASS_V2_MODE = 'true';
     var response = await handler(event);
     expect(response.statusCode).toBe(200);
   });
@@ -115,6 +135,18 @@ describe('Sucessfully execute the handler', () => {
       },
     };
     var response = await handler(customTemplateBodyEvent);
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('With custom token exchange policy document', async () => {
+    const customTokenExchangePolicyDocument = defaultTokenExchangePolicyDocument;
+    const customTokenExchangePolicyDocumentEvent = {
+      body: {
+        templateName,
+        tokenExchangePolicyDocument: customTokenExchangePolicyDocument,
+      },
+    };
+    var response = await handler(customTokenExchangePolicyDocumentEvent);
     expect(response.statusCode).toBe(200);
   });
 
