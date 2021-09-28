@@ -47,9 +47,25 @@ import {
  *
  *  "body": {
  *
- *    "caCertificateId": "\<AWS IoT CA Certificate ID\>"
+ *    "caCertificateId": "\<AWS IoT CA Certificate ID\>",
  *
- *    "deviceInfo": "\<The JSON object containing the information of the device\>"
+ *    "deviceInfo": "\<The JSON object containing the information of the device\>",
+ * 
+ *    "csrSubjects": {
+ * 
+ *      "commonName": "\<The thing name of this AWS IoT thing\>"
+ * 
+ *    },
+ * 
+ *    "encryption": {
+ * 
+ *      "algorithm": "\<The specified encryption algorthim\>",
+ * 
+ *      "iv": "\<The initial vector\>",
+ * 
+ *      "key": "\<The key for encrypting\>"
+ * 
+ *    }
  *
  *  }
  *
@@ -97,20 +113,14 @@ export const handler = async (event: any = {}) : Promise <any> => {
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
 
-    if (outputBucketName) {
-      await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, thingName);
-      return response.json({
-        success: true,
-        thingName,
-      });
-    } else {
-
+    const encyption = request.input('encryption', null);
+    if (encyption != null) {
       const {
         algorithm,
         iv,
         key,
-      } = request.input('encryption');
-      
+      } = encyption;
+
       const secrets = aesEncrypt(
         JSON.stringify(deviceCertificates),
         key,
@@ -118,6 +128,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
         algorithm,
       );
       return response.json({ secrets });
+    } else {
+      await uploadDeviceCertificate(deviceCertificates, outputBucketName!, outputBucketPrefix, thingName);
+      return response.json({
+        success: true,
+        thingName,
+      });
     }
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
