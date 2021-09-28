@@ -50,21 +50,21 @@ import {
  *    "caCertificateId": "\<AWS IoT CA Certificate ID\>",
  *
  *    "deviceInfo": "\<The JSON object containing the information of the device\>",
- * 
+ *
  *    "csrSubjects": {
- * 
+ *
  *      "commonName": "\<The thing name of this AWS IoT thing\>"
- * 
+ *
  *    },
- * 
+ *
  *    "encryption": {
- * 
+ *
  *      "algorithm": "\<The specified encryption algorthim\>",
- * 
+ *
  *      "iv": "\<The initial vector\>",
- * 
+ *
  *      "key": "\<The key for encrypting\>"
- * 
+ *
  *    }
  *
  *  }
@@ -106,7 +106,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
 
     const thingName: string = csrSubjects.commonName!;
 
-    await deletePreviousResources(thingName);
+    try {
+      await deletePreviousResources(thingName);
+    } catch (error) {}
 
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
