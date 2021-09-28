@@ -34,6 +34,7 @@ import {
 } from '../errors';
 import {
   csrSubjectsSchema,
+  encryptionSchema,
 } from '../schemas';
 
 /**
@@ -46,9 +47,25 @@ import {
  *
  *  "body": {
  *
- *    "caCertificateId": "\<AWS IoT CA Certificate ID\>"
+ *    "caCertificateId": "\<AWS IoT CA Certificate ID\>",
  *
- *    "deviceInfo": "\<The JSON object containing the information of the device\>"
+ *    "deviceInfo": "\<The JSON object containing the information of the device\>",
+ *
+ *    "csrSubjects": {
+ *
+ *      "commonName": "\<The thing name of this AWS IoT thing\>"
+ *
+ *    },
+ *
+ *    "encryption": {
+ *
+ *      "algorithm": "\<The specified encryption algorthim\>",
+ *
+ *      "iv": "\<The initial vector\>",
+ *
+ *      "key": "\<The key for encrypting\>"
+ *
+ *    }
  *
  *  }
  *
@@ -64,13 +81,13 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
   const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
   const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
-  const iv: string | undefined = process.env.IV;
   try {
     const validated = request.validate(joi => {
       return {
         csrSubjects: csrSubjectsSchema,
         caCertificateId: joi.string().required(),
         deviceInfo: joi.object().default({}),
+        encryption: outputBucketName? encryptionSchema.allow(null) : encryptionSchema,
       };
     });
     if (validated.error) {
@@ -87,30 +104,38 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationUnitName: '',
     });
 
+    const thingName: string = csrSubjects.commonName!;
+
     try {
-      const thingName: string = csrSubjects.commonName!;
       await deletePreviousResources(thingName);
-    } catch (e) {}
+    } catch (error) {}
 
     await verify(caCertificateId, deviceInfo);
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
 
-    if (outputBucketName) {
-      await uploadDeviceCertificate(deviceCertificates, outputBucketName, outputBucketPrefix, csrSubjects.commonName!);
-      return response.json({ success: true });
-    } else {
-      const aesKey = request.input('aesKey', null);
-      if (!aesKey) {
-        throw new InputError('Missing AES Key');
-      }
+    const encyption = request.input('encryption', null);
+    if (encyption != null) {
+      const {
+        algorithm,
+        iv,
+        key,
+      } = encyption;
+
       const secrets = aesEncrypt(
         JSON.stringify(deviceCertificates),
-        aesKey,
+        key,
         iv,
+        algorithm,
       );
       return response.json({ secrets });
+    } else {
+      await uploadDeviceCertificate(deviceCertificates, outputBucketName!, outputBucketPrefix, thingName);
+      return response.json({
+        success: true,
+        thingName,
+      });
     }
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
@@ -239,28 +264,35 @@ async function uploadDeviceCertificate(
   outputBucketPrefix: string,
   thingName: string,
 ) {
+  const s3Client = new S3Client({});
 
-  await new S3Client({}).send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: outputBucketName,
       Key: path.join(outputBucketPrefix, thingName, 'device.cert.pem'),
       Body: Buffer.from(deviceCertificates.certificate),
+      BucketKeyEnabled: true,
+      ServerSideEncryption: 'aws:kms',
     }),
   );
 
-  await new S3Client({}).send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: outputBucketName,
       Key: path.join(outputBucketPrefix, thingName, 'device.private_key.pem'),
       Body: Buffer.from(deviceCertificates.privateKey),
+      BucketKeyEnabled: true,
+      ServerSideEncryption: 'aws:kms',
     }),
   );
 
-  await new S3Client({}).send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: outputBucketName,
       Key: path.join(outputBucketPrefix, thingName, 'device.public_key.pem'),
       Body: Buffer.from(deviceCertificates.publicKey),
+      BucketKeyEnabled: true,
+      ServerSideEncryption: 'aws:kms',
     }),
   );
 
@@ -301,13 +333,11 @@ async function deletePreviousResources(thingName: string) {
  * @param iv The initialization vector for AES encryption.
  * @returns The AES-encrypted data.
  */
-function aesEncrypt(data: string, key: string, iv: string='1234567890123456') {
-  let algorithm = 'aes-128-cbc'; // change to allow custom algorithm in the future
+export function aesEncrypt(data: string, key: string, iv: string, algorithm: string) {
   let keyBuffer = Buffer.from(key);
   let ivBuffer = Buffer.from(iv);
-
   let cipher = crypto.createCipheriv(algorithm, keyBuffer, ivBuffer);
-  cipher.update(data, 'utf8');
-
-  return cipher.final('base64');
+  let encrypted = cipher.update(data, 'utf8', 'base64');
+  encrypted += cipher.final('base64');
+  return encrypted;
 }
