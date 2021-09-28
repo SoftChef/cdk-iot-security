@@ -290,6 +290,9 @@ Object {
           "Statement": Array [
             Object {
               "Action": Array [
+                "iot:DescribeThing",
+                "iot:DeleteCertificate",
+                "iot:DeleteThing",
                 "iot:DescribeCACertificate",
                 "iot:ListTagsForResource",
                 "lambda:InvokeFunction",

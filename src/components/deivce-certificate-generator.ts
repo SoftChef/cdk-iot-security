@@ -55,6 +55,9 @@ export class DeviceCertificateGenerator extends NodejsFunction {
           new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
+              'iot:DescribeThing',
+              'iot:DeleteCertificate',
+              'iot:DeleteThing',
               'iot:DescribeCACertificate',
               'iot:ListTagsForResource',
               'lambda:InvokeFunction',
