@@ -8,3 +8,11 @@ export const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
   organizationName: Joi.string().allow(''),
   organizationUnitName: Joi.string().allow(''),
 }).unknown(true).allow({}, null);
+
+export const encryptionSchema: Joi.ObjectSchema = Joi.object({
+  algorithm: Joi.string().valid(
+    'aes-128-cbc',
+  ),
+  iv: Joi.string().length(16).default('1234567890123456'),
+  key: Joi.string().length(16).required(),
+});

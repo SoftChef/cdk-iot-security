@@ -6,9 +6,13 @@ import { JustInTimeProvision } from '../..';
 const app = new cdk.App();
 const id = 'JitpDemo';
 const stack = new cdk.Stack(app, id);
+const bucket = new Bucket(stack, 'myVault');
 const justInTimeProvision = new JustInTimeProvision(stack, id, {
   vault: {
-    bucket: new Bucket(stack, 'myVault'),
+    bucket,
+  },
+  deviceVault: {
+    bucket,
   },
 });
 const restApi = new apigateway.RestApi(stack, 'testRestApi');

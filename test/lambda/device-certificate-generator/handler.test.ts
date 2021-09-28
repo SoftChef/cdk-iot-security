@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import * as path from 'path';
 import { Readable } from 'stream';
 import {
@@ -19,7 +20,10 @@ import {
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
-import { handler } from '../../../lambda-assets/device-certificate-generator/app';
+import {
+  handler,
+  aesEncrypt,
+} from '../../../lambda-assets/device-certificate-generator/app';
 import {
   InputError,
   InformationNotFoundError,
@@ -189,15 +193,19 @@ describe('Sucessfully execute the handler', () => {
   test('On provide AES key', async () => {
     delete process.env.OUTPUT_BUCKET_NAME;
     delete process.env.OUTPUT_BUCKET_PREFIX;
-    const bodyWithAesKey = Object.assign(
+    const bodySpecifiedEncryption = Object.assign(
       {},
       event.body,
       {
-        aesKey: '1234567890123456',
+        encryption: {
+          algorithm: 'aes-128-cbc',
+          iv: '1234567890123456',
+          key: '1234567890123456',
+        },
       },
     );
     var response = await handler({
-      body: bodyWithAesKey,
+      body: bodySpecifiedEncryption,
     });
     expect(response.statusCode).toBe(200);
   });
@@ -275,5 +283,108 @@ describe('Fail on the provided wrong input data', () => {
     expect(response.statusCode).toBe(InputError.code);
   });
 
+  test('On algorithm not allowed', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
+    const bodySpecifiedEncryption = Object.assign(
+      {},
+      event.body,
+      {
+        encryption: {
+          algorithm: 'algorithm-not-allowed',
+          iv: '1234567890123456',
+          key: '1234567890123456',
+        },
+      },
+    );
+    var response = await handler({
+      body: bodySpecifiedEncryption,
+    });
+    expect(response.statusCode).toBe(InputError.code);
+  });
+
+  test('On iv length not 16', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
+    const bodySpecifiedEncryption = Object.assign(
+      {},
+      event.body,
+      {
+        encryption: {
+          algorithm: 'aes-128-cbc',
+          iv: '12345678901234561',
+          key: '1234567890123456',
+        },
+      },
+    );
+    var response = await handler({
+      body: bodySpecifiedEncryption,
+    });
+    expect(response.statusCode).toBe(InputError.code);
+  });
+
+  test('On key length not 16', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
+    const bodySpecifiedEncryption = Object.assign(
+      {},
+      event.body,
+      {
+        encryption: {
+          algorithm: 'aes-128-cbc',
+          iv: '12345678901234560',
+          key: '12345678901234561',
+        },
+      },
+    );
+    var response = await handler({
+      body: bodySpecifiedEncryption,
+    });
+    expect(response.statusCode).toBe(InputError.code);
+  });
+
 });
 
+describe('Test device certificate encryption methods', () => {
+
+  test('AES encryption is correct', () => {
+    const {
+      ca: {
+        privateKey: caPrivateKey,
+        publicKey: caPublicKey,
+        certificate: caCertificate,
+      },
+    } = CertificateGenerator.getCaRegistrationCertificates();
+    const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates({
+      privateKey: caPrivateKey,
+      publicKey: caPublicKey,
+      certificate: caCertificate,
+    });
+    deviceCertificates.certificate += caCertificate;
+
+    const aesKey = '1234567890123456';
+    const iv = '1234567890123456';
+    const algorithm = 'aes-128-cbc';
+
+    const data = JSON.stringify(deviceCertificates);
+
+    const encrypted = aesEncrypt(
+      data,
+      aesKey,
+      iv,
+      algorithm,
+    );
+
+    let cipher = crypto.createDecipheriv(
+      algorithm,
+      Buffer.from(aesKey),
+      Buffer.from(iv),
+    );
+    let decrypted = cipher.update(encrypted, 'base64', 'utf8');
+    decrypted += cipher.final('utf8');
+
+    expect(decrypted).toBe(data);
+
+  });
+
+});
