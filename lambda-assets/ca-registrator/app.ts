@@ -3,6 +3,7 @@ import {
   IoTClient,
   GetRegistrationCodeCommand,
   RegisterCACertificateCommand,
+  RegisterCACertificateCommandInput,
 } from '@aws-sdk/client-iot';
 import {
   S3Client,
@@ -18,13 +19,16 @@ import {
   AwsError,
   VerifierError,
   InputError,
-  InformationNotFoundError,
+  ServerError,
 } from '../errors';
 import {
   csrSubjectsSchema,
+  encryptionSchema,
 } from '../schemas';
 import defaultIotPolicy from './default-iot-policy.json';
 import defaultTemplateBody from './default-template.json';
+
+let onJITP: boolean;
 
 /**
  * The lambda function handler for register CA.
@@ -54,7 +58,17 @@ import defaultTemplateBody from './default-template.json';
  *
  *    "verifierName": "\<verifier name\>",
  *
- *    "templateBody": "\<the stringified JSON object of the provision template\>"
+ *    "templateBody": "\<the stringified JSON object of the provision template\>",
+ *
+ *    "encryption": {
+ *
+ *      "algorithm": "\<the algorithm applied for the encryption of device certificate Generator\>",
+ *
+ *      "key": "\<the secret key for the encryption\>",
+ *
+ *      "iv": "\<the initial verctor for the encryption\>"
+ *
+ *    }
  *
  *  }
  *
@@ -72,19 +86,17 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const region: string | undefined = process.env.AWS_REGION;
   const registrationRoleArn: string | undefined = process.env.REGISTRATION_CONFIG_ROLE_ARN;
   defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
-  const registrationConfig: {[key:string]: any} = registrationRoleArn? {
-    templateBody: request.input('templateBody', JSON.stringify(defaultTemplateBody)),
-    roleArn: registrationRoleArn,
-  } : {};
+  onJITP = registrationRoleArn ? true : false;
 
   const iotClient: IoTClient = new IoTClient({ region: region });
-  const s3Client: S3Client = new S3Client({ region: region });
 
   try {
     const validated = request.validate(joi => {
       return {
         csrSubjects: csrSubjectsSchema,
         verifierName: joi.string().allow('', null),
+        encryption: encryptionSchema.allow(null),
+        templateBody: joi.string().allow(null),
       };
     });
     if (validated.error) {
@@ -99,30 +111,32 @@ export const handler = async (event: any = {}) : Promise <any> => {
       organizationName: '',
       organizationUnitName: '',
     };
+    const encryption: {[key: string]: string} = request.input('encryption', null);
+    const inputVerifierName: string = request.input('verifierName', null);
+    const inputTemplateBody: string = request.input('templateBody', null);
 
-    const verifiers: {[key: string]: string} = [...JSON.parse(process.env.VERIFIERS!)]
-      .reduce((accumulator: {[key:string]: string}, current: string) => (accumulator[current]=current, accumulator), {});
-    let verifierName: string | undefined = '';
-    if (request.input('verifierName') && !(verifierName = verifiers[request.input('verifierName')])) {
-      throw new VerifierError();
-    }
+    const verifierName: string | undefined = specifyVerifier(inputVerifierName);
 
-    const { registrationCode } = await iotClient.send(
-      new GetRegistrationCodeCommand({}),
-    );
-    csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
+    const tags: any[] = addTags(verifierName, encryption);
 
-    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+    const registrationConfig: {[key:string]: any} = onJITP? {
+      templateBody: inputTemplateBody ?? JSON.stringify(defaultTemplateBody),
+      roleArn: registrationRoleArn,
+    } : {};
+
+    const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = await createCertificates(csrSubjects);
+
+    let registerCACertificateCommandInput: RegisterCACertificateCommandInput = {
+      caCertificate: certificates.ca.certificate,
+      verificationCertificate: certificates.verification.certificate,
+      allowAutoRegistration: true,
+      registrationConfig: registrationConfig,
+      setAsActive: true,
+      tags: tags,
+    };
 
     const CaRegistration = await iotClient.send(
-      new RegisterCACertificateCommand({
-        caCertificate: certificates.ca.certificate,
-        verificationCertificate: certificates.verification.certificate,
-        allowAutoRegistration: true,
-        registrationConfig: registrationConfig,
-        setAsActive: true,
-        tags: verifierName? [{ Key: 'verifierName', Value: verifierName }] : [],
-      }),
+      new RegisterCACertificateCommand(registerCACertificateCommandInput),
     );
 
     const { certificateId, certificateArn } = await Joi.object({
@@ -130,71 +144,148 @@ export const handler = async (event: any = {}) : Promise <any> => {
       certificateArn: Joi.string().required(),
     }).unknown(true)
       .validateAsync(CaRegistration).catch((error: Error) => {
-        throw new InformationNotFoundError(error.message);
+        throw new ServerError(error.message);
       });
 
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'ca.public_key.pem'),
-        Body: Buffer.from(certificates.ca.publicKey),
-      }),
-    );
+    await uploadCaCertificates(bucketName, bucketPrefix, certificateId, certificateArn, certificates);
 
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'ca.private_key.pem'),
-        Body: Buffer.from(certificates.ca.privateKey),
-      }),
-    );
-
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'ca.cert.pem'),
-        Body: Buffer.from(certificates.ca.certificate),
-      }),
-    );
-
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'verification.public_key.pem'),
-        Body: Buffer.from(certificates.verification.publicKey),
-      }),
-    );
-
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'verification.private_key.pem'),
-        Body: Buffer.from(certificates.verification.privateKey),
-      }),
-    );
-
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'verification.cert.pem'),
-        Body: Buffer.from(certificates.verification.certificate),
-      }),
-    );
-
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: path.join(bucketPrefix, certificateId!, 'ca-certificate.json'),
-        Body: Buffer.from(
-          JSON.stringify({
-            certificateId,
-            certificateArn,
-          }),
-        ),
-      }),
-    );
     return response.json({ certificateId: certificateId });
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
   }
 };
+
+/**
+ * Sepcify the verifier name from the environment variable.
+ * @param inputVerifierName The verifier name specified from the HTTP request.
+ * @returns The verifier name.
+ */
+function specifyVerifier(inputVerifierName: string) {
+  const verifiers: {[key: string]: string} = [...JSON.parse(process.env.VERIFIERS!)]
+    .reduce((accumulator: {[key:string]: string}, current: string) => (accumulator[current]=current, accumulator), {});
+
+  let verifierName: string | undefined = undefined;
+
+  if (inputVerifierName && !(verifierName = verifiers[inputVerifierName])) {
+    throw new VerifierError();
+  }
+
+  return verifierName;
+}
+
+/**
+ * Construct the tag array for the CA certificate.
+ * @param verifierName The verifier name.
+ * @param encryption The encryption information.
+ * @returns An array of CA certificate tags.
+ */
+function addTags(verifierName: string | undefined, encryption: {[key: string]: string}) {
+  let createTag = (Key: string, Value: string) => {
+    return { Key, Value };
+  };
+
+  let tags: any[] = [];
+
+  if (verifierName) {
+    tags.push(createTag('verifierName', verifierName));
+  }
+
+  if (onJITP) {
+    tags.push(createTag('encryption', JSON.stringify(encryption)));
+  }
+
+  return tags;
+}
+
+/**
+ * Generate the certificates for registering a CA on AWS IoT.
+ * @param csrSubjects The CSR Subjects adding to the CA certificate information fields.
+ * @returns A set of certificates including CA certificates and verification certificates.
+ */
+async function createCertificates(csrSubjects: CertificateGenerator.CsrSubjects) {
+  const { registrationCode } = await new IoTClient({}).send(
+    new GetRegistrationCodeCommand({}),
+  );
+  csrSubjects = Object.assign(csrSubjects, { commonName: registrationCode });
+
+  const certificates: CertificateGenerator.CaRegistrationRequiredCertificates = CertificateGenerator.getCaRegistrationCertificates(csrSubjects);
+
+  return certificates;
+}
+
+/**
+ * Upload the certificate set to the sepcefied S3 bucket.
+ * @param bucketName The S3 bucket name.
+ * @param bucketPrefix The path prefix to upload the files.
+ * @param certificateId The CA certificate Id.
+ * @param certificateArn The CA certificate Arn.
+ * @param certificates The Certificate Set.
+ */
+async function uploadCaCertificates(
+  bucketName: string, bucketPrefix: string,
+  certificateId: string, certificateArn: string,
+  certificates: CertificateGenerator.CaRegistrationRequiredCertificates,
+) {
+  const s3Client = new S3Client({});
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'ca.public_key.pem'),
+      Body: Buffer.from(certificates.ca.publicKey),
+    }),
+  );
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'ca.private_key.pem'),
+      Body: Buffer.from(certificates.ca.privateKey),
+    }),
+  );
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'ca.cert.pem'),
+      Body: Buffer.from(certificates.ca.certificate),
+    }),
+  );
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'verification.public_key.pem'),
+      Body: Buffer.from(certificates.verification.publicKey),
+    }),
+  );
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'verification.private_key.pem'),
+      Body: Buffer.from(certificates.verification.privateKey),
+    }),
+  );
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'verification.cert.pem'),
+      Body: Buffer.from(certificates.verification.certificate),
+    }),
+  );
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: path.join(bucketPrefix, certificateId!, 'ca-certificate.json'),
+      Body: Buffer.from(
+        JSON.stringify({
+          certificateId,
+          certificateArn,
+        }),
+      ),
+    }),
+  );
+}

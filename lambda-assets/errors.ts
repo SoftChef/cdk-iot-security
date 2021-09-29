@@ -22,8 +22,10 @@ export class ServerError extends CodedError {
   static code: number = 500;
 }
 
-export class VerifierError extends InputError {}
+export class VerifierError extends InformationNotFoundError {}
 
 export class VerificationError extends ServerError {}
 
 export class TemplateBodyPolicyDocumentMalformed extends InputError {}
+
+export class EncryptionError extends ServerError {}

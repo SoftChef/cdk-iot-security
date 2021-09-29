@@ -1,12 +1,12 @@
 import * as Joi from 'joi';
 
 export const csrSubjectsSchema: Joi.ObjectSchema = Joi.object({
-  commonName: Joi.string().allow(''),
-  countryName: Joi.string().allow(''),
-  stateName: Joi.string().allow(''),
-  localityName: Joi.string().allow(''),
-  organizationName: Joi.string().allow(''),
-  organizationUnitName: Joi.string().allow(''),
+  commonName: Joi.string().allow('', null),
+  countryName: Joi.string().allow('', null),
+  stateName: Joi.string().allow('', null),
+  localityName: Joi.string().allow('', null),
+  organizationName: Joi.string().allow('', null),
+  organizationUnitName: Joi.string().allow('', null),
 }).unknown(true).allow({}, null);
 
 export const encryptionSchema: Joi.ObjectSchema = Joi.object({

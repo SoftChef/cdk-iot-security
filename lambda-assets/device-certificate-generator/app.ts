@@ -15,7 +15,7 @@ import {
 import {
   S3Client,
   GetObjectCommand,
-  PutObjectCommand,
+  // PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import {
   Request,
@@ -31,10 +31,11 @@ import {
   InputError,
   InformationNotFoundError,
   VerificationError,
+  EncryptionError,
 } from '../errors';
 import {
   csrSubjectsSchema,
-  encryptionSchema,
+  // encryptionSchema,
 } from '../schemas';
 
 /**
@@ -79,15 +80,15 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const response = new Response();
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
-  const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
-  const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
+  // const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
+  // const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
   try {
     const validated = request.validate(joi => {
       return {
         csrSubjects: csrSubjectsSchema,
         caCertificateId: joi.string().required(),
         deviceInfo: joi.object().default({}),
-        encryption: outputBucketName? encryptionSchema.allow(null) : encryptionSchema,
+        // encryption: outputBucketName? encryptionSchema.allow(null) : encryptionSchema,
       };
     });
     if (validated.error) {
@@ -110,32 +111,40 @@ export const handler = async (event: any = {}) : Promise <any> => {
       await deletePreviousResources(thingName);
     } catch (error) {}
 
-    await verify(caCertificateId, deviceInfo);
+    const tags = await getCACertificateTags(caCertificateId);
+
+    const {
+      verifierName,
+      encryption,
+    } = tags;
+
+    if (verifierName) {
+      await verify(verifierName, deviceInfo);
+    }
+
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
 
-    const encyption = request.input('encryption', null);
-    if (encyption != null) {
-      const {
-        algorithm,
-        iv,
-        key,
-      } = encyption;
-
-      const secrets = aesEncrypt(
-        JSON.stringify(deviceCertificates),
-        key,
-        iv,
-        algorithm,
-      );
-      return response.json({ secrets });
+    if (encryption) {
+      try {
+        const {
+          algorithm,
+          iv,
+          key,
+        } = JSON.parse(encryption);
+        const secrets = aesEncrypt(
+          JSON.stringify(deviceCertificates),
+          key,
+          iv,
+          algorithm,
+        );
+        return response.json({ secrets });
+      } catch (error) {
+        throw new EncryptionError();
+      }
     } else {
-      await uploadDeviceCertificate(deviceCertificates, outputBucketName!, outputBucketPrefix, thingName);
-      return response.json({
-        success: true,
-        thingName,
-      });
+      return response.json({ deviceCertificates });
     }
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
@@ -147,63 +156,32 @@ export const handler = async (event: any = {}) : Promise <any> => {
  * @param caCertificateId The specified CA ID.
  * @param deviceInfo The device information provided to the CA-specified verifier to verify the device.
  */
-async function verify(caCertificateId: string, deviceInfo: {[key: string]: any}) {
-  const iotClient = new IoTClient({});
-  const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
-    new DescribeCACertificateCommand({
-      certificateId: caCertificateId,
-    }),
-  );
-  const { certificateArn: caCertificateArn } = await Joi.object({
-    certificateArn: Joi.string().regex(/^arn/).required(),
-  }).unknown(true)
-    .validateAsync(caCertificateDescription).catch((error: Error) => {
-      throw new InformationNotFoundError(error.message);
-    });
-
-  let { tags } = await iotClient.send(
-    new ListTagsForResourceCommand({
-      resourceArn: caCertificateArn,
-    }),
-  );
-  tags = await Joi.array().items(
-    Joi.object({
-      Key: Joi.string().required(),
-      Value: Joi.string(),
-    }).optional(),
-  ).required()
-    .validateAsync(tags).catch((error: Error) => {
-      throw new InformationNotFoundError(error.message);
-    });
-  const { Value: verifierName } = tags!.find(tag => tag.Key === 'verifierName') || { Value: '' };
-
-  if (verifierName) {
-    let {
-      Payload: payload = new Uint8Array(
-        Buffer.from(
-          JSON.stringify({
-            verified: false,
-          }),
-        ),
+async function verify(verifierName: string, deviceInfo: {[key: string]: any}) {
+  let {
+    Payload: payload = new Uint8Array(
+      Buffer.from(
+        JSON.stringify({
+          verified: false,
+        }),
       ),
-    } = await new LambdaClient({}).send(
-      new InvokeCommand({
-        FunctionName: decodeURIComponent(verifierName),
-        Payload: Buffer.from(
-          JSON.stringify(deviceInfo),
-        ),
-      }),
-    );
-    const { body } = JSON.parse(
-      String.fromCharCode.apply(null, [...payload]),
-    );
-    await Joi.object({
-      verified: Joi.boolean().allow(true).only().required(),
-    }).required().unknown(true)
-      .validateAsync(body).catch((error: Error) => {
-        throw new VerificationError(error.message);
-      });
-  }
+    ),
+  } = await new LambdaClient({}).send(
+    new InvokeCommand({
+      FunctionName: decodeURIComponent(verifierName),
+      Payload: Buffer.from(
+        JSON.stringify(deviceInfo),
+      ),
+    }),
+  );
+  const { body } = JSON.parse(
+    String.fromCharCode.apply(null, [...payload]),
+  );
+  await Joi.object({
+    verified: Joi.boolean().allow(true).only().required(),
+  }).required().unknown(true)
+    .validateAsync(body).catch((error: Error) => {
+      throw new VerificationError(error.message);
+    });
 }
 
 /**
@@ -258,46 +236,6 @@ async function getCaCertificate(caCertificateId: string, bucketName: string, buc
   return caCertificates;
 }
 
-async function uploadDeviceCertificate(
-  deviceCertificates: CertificateGenerator.CertificateSet,
-  outputBucketName: string,
-  outputBucketPrefix: string,
-  thingName: string,
-) {
-  const s3Client = new S3Client({});
-
-  await s3Client.send(
-    new PutObjectCommand({
-      Bucket: outputBucketName,
-      Key: path.join(outputBucketPrefix, thingName, 'device.cert.pem'),
-      Body: Buffer.from(deviceCertificates.certificate),
-      BucketKeyEnabled: true,
-      ServerSideEncryption: 'aws:kms',
-    }),
-  );
-
-  await s3Client.send(
-    new PutObjectCommand({
-      Bucket: outputBucketName,
-      Key: path.join(outputBucketPrefix, thingName, 'device.private_key.pem'),
-      Body: Buffer.from(deviceCertificates.privateKey),
-      BucketKeyEnabled: true,
-      ServerSideEncryption: 'aws:kms',
-    }),
-  );
-
-  await s3Client.send(
-    new PutObjectCommand({
-      Bucket: outputBucketName,
-      Key: path.join(outputBucketPrefix, thingName, 'device.public_key.pem'),
-      Body: Buffer.from(deviceCertificates.publicKey),
-      BucketKeyEnabled: true,
-      ServerSideEncryption: 'aws:kms',
-    }),
-  );
-
-}
-
 /**
  * Delete the AWS IoT resources created before for the specified thing name.
  * @param thingName The name of the thing with is according to the common name of the CSR subjects.
@@ -324,6 +262,40 @@ async function deletePreviousResources(thingName: string) {
       thingName,
     }),
   );
+}
+
+/**
+ * Get the tags of the CA certificate.
+ * @param caCertificateId the CA certificate ID.
+ * @returns An object using tag key as its index and mapping to the tag value.
+ */
+async function getCACertificateTags(caCertificateId: string) {
+  const iotClient = new IoTClient({});
+  const { certificateDescription: caCertificateDescription = {} } = await iotClient.send(
+    new DescribeCACertificateCommand({
+      certificateId: caCertificateId,
+    }),
+  );
+  const { certificateArn: caCertificateArn } = await Joi.object({
+    certificateArn: Joi.string().regex(/^arn/).required(),
+  }).unknown(true)
+    .validateAsync(caCertificateDescription).catch((error: Error) => {
+      throw new InformationNotFoundError(error.message);
+    });
+
+  let { tags = [] } = await iotClient.send(
+    new ListTagsForResourceCommand({
+      resourceArn: caCertificateArn,
+    }),
+  );
+
+  let tagObject: {[key: string]: string} = {};
+
+  tags.map((tag) => {
+    tagObject[tag.Key!] = tag.Value ?? '';
+  });
+
+  return tagObject;
 }
 
 /*
