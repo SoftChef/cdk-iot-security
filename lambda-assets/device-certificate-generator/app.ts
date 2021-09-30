@@ -7,6 +7,7 @@ import {
   DescribeThingCommand,
   DeleteCertificateCommand,
   DeleteThingCommand,
+  DescribeEndpointCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -15,7 +16,6 @@ import {
 import {
   S3Client,
   GetObjectCommand,
-  // PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import {
   Request,
@@ -35,7 +35,6 @@ import {
 } from '../errors';
 import {
   csrSubjectsSchema,
-  // encryptionSchema,
 } from '../schemas';
 
 /**
@@ -80,15 +79,12 @@ export const handler = async (event: any = {}) : Promise <any> => {
   const response = new Response();
   const bucketName: string = process.env.BUCKET_NAME!;
   const bucketPrefix: string = process.env.BUCKET_PREFIX!;
-  // const outputBucketName: string | undefined = process.env.OUTPUT_BUCKET_NAME;
-  // const outputBucketPrefix: string = process.env.OUTPUT_BUCKET_PREFIX ?? '';
   try {
     const validated = request.validate(joi => {
       return {
         csrSubjects: csrSubjectsSchema,
         caCertificateId: joi.string().required(),
         deviceInfo: joi.object().default({}),
-        // encryption: outputBucketName? encryptionSchema.allow(null) : encryptionSchema,
       };
     });
     if (validated.error) {
@@ -118,13 +114,22 @@ export const handler = async (event: any = {}) : Promise <any> => {
       encryption,
     } = tags;
 
+    let device: {[key: string]: any} = {};
     if (verifierName) {
-      await verify(verifierName, deviceInfo);
+      device = await verify(verifierName, deviceInfo);
     }
 
     const caCertificates = await getCaCertificate(caCertificateId, bucketName, bucketPrefix);
     const deviceCertificates = CertificateGenerator.getDeviceRegistrationCertificates(caCertificates, csrSubjects);
     deviceCertificates.certificate += caCertificates.certificate;
+
+    const endpoints = await getIoTEndpoints();
+
+    const results = {
+      endpoints,
+      device,
+      deviceCertificates,
+    };
 
     if (encryption) {
       try {
@@ -133,8 +138,9 @@ export const handler = async (event: any = {}) : Promise <any> => {
           iv,
           key,
         } = JSON.parse(encryption);
+
         const secrets = aesEncrypt(
-          JSON.stringify(deviceCertificates),
+          JSON.stringify(results),
           key,
           iv,
           algorithm,
@@ -144,7 +150,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
         throw new EncryptionError();
       }
     } else {
-      return response.json({ deviceCertificates });
+      return response.json({ results });
     }
   } catch (error) {
     return response.error((error as AwsError).stack, (error as AwsError).code);
@@ -182,6 +188,12 @@ async function verify(verifierName: string, deviceInfo: {[key: string]: any}) {
     .validateAsync(body).catch((error: Error) => {
       throw new VerificationError(error.message);
     });
+
+  const {
+    device = {},
+  } = body;
+
+  return device;
 }
 
 /**
@@ -252,14 +264,14 @@ async function deletePreviousResources(thingName: string) {
   );
 
   await client.send(
-    new DeleteCertificateCommand({
-      certificateId: attributes!.certificateId!,
+    new DeleteThingCommand({
+      thingName,
     }),
   );
 
   await client.send(
-    new DeleteThingCommand({
-      thingName,
+    new DeleteCertificateCommand({
+      certificateId: attributes!.certificateId!,
     }),
   );
 }
@@ -296,6 +308,31 @@ async function getCACertificateTags(caCertificateId: string) {
   });
 
   return tagObject;
+}
+
+/**
+ * Get the IoT Endpoints.
+ * @returns IoT Data-ATS and Credential Provider Endpoints
+ */
+async function getIoTEndpoints() {
+  const iotClient = new IoTClient({});
+
+  const dataEndpoint = await iotClient.send(
+    new DescribeEndpointCommand({
+      endpointType: 'iot:Data-ATS',
+    }),
+  );
+
+  const credentialEndpoint = await iotClient.send(
+    new DescribeEndpointCommand({
+      endpointType: 'iot:CredentialProvider',
+    }),
+  );
+
+  return {
+    dataEndpoint,
+    credentialEndpoint,
+  };
 }
 
 /*

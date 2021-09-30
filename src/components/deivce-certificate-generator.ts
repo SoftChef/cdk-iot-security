@@ -60,6 +60,7 @@ export class DeviceCertificateGenerator extends NodejsFunction {
               'iot:DeleteThing',
               'iot:DescribeCACertificate',
               'iot:ListTagsForResource',
+              'iot:DescribeEndpoint',
               'lambda:InvokeFunction',
               'lambda:InvokeAsync',
             ],

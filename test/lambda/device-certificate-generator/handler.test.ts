@@ -8,6 +8,7 @@ import {
   DescribeThingCommand,
   DeleteThingCommand,
   DeleteCertificateCommand,
+  DescribeEndpointCommand,
 } from '@aws-sdk/client-iot';
 import {
   LambdaClient,
@@ -16,7 +17,6 @@ import {
 import {
   S3Client,
   GetObjectCommand,
-//   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
@@ -52,6 +52,8 @@ const expected = {
   outputBucketName: 'output_bucket_name',
   outputBucketPrefix: 'output_bucket_prefix',
   previousCertificateId: 'previous_certificate_id',
+  credentialEndpoint: 'xxxxxxxxxxxxxx.credentials.iot.regoin.amazonaws.com',
+  dataAtsEndpoint: 'xxxxxxxxxxxxxx-ats.iot.regoin.amazonaws.com',
 };
 
 const iotMock = mockClient(IoTClient);
@@ -82,6 +84,9 @@ beforeEach(async () => {
       {
         Key: 'verifierName',
         Value: expected.verifierName,
+      },
+      {
+        Key: 'other',
       },
     ],
   });
@@ -151,11 +156,23 @@ beforeEach(async () => {
     ]),
   });
 
+  iotMock.on(DescribeEndpointCommand, {
+    endpointType: 'iot:Data-ATS',
+  }).resolves({
+    endpointAddress: expected.dataAtsEndpoint,
+  });
+
+  iotMock.on(DescribeEndpointCommand, {
+    endpointType: 'iot:CredentialProvider',
+  }).resolves({
+    endpointAddress: expected.credentialEndpoint,
+  });
+
 });
 
 afterEach(() => {
   iotMock.reset();
-  // s3Mock.reset();
+  s3Mock.reset();
   lambdaMock.reset();
 });
 
@@ -163,7 +180,6 @@ describe('Sucessfully execute the handler', () => {
 
   test('On a regular event', async () => {
     var response = await handler(event);
-    console.log(response);
     expect(response.statusCode).toBe(200);
   });
 
@@ -195,6 +211,39 @@ describe('Sucessfully execute the handler', () => {
       body: bodySpecifiedEncryption,
     });
     expect(response.statusCode).toBe(200);
+  });
+
+  test('Thing not exists', async () => {
+
+    iotMock.on(DescribeThingCommand, {
+      thingName: event.body.csrSubjects.commonName,
+    }).rejects();
+
+    var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+
+  });
+
+  test('Omit deleting thing exception', async () => {
+
+    iotMock.on(DeleteThingCommand, {
+      thingName: event.body.csrSubjects.commonName,
+    }).rejects();
+
+    var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+
+  });
+
+  test('Omit deleting certificate exception', async () => {
+
+    iotMock.on(DeleteCertificateCommand, {
+      certificateId: expected.previousCertificateId,
+    }).rejects();
+
+    var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+
   });
 
 });

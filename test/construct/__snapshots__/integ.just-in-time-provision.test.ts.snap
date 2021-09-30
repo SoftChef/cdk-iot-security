@@ -3,18 +3,6 @@
 exports[`Integration test JustInTimeProvision 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cfArtifactHash8C1B836D": Object {
-      "Description": "Artifact hash for asset \\"4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cf\\"",
-      "Type": "String",
-    },
-    "AssetParameters4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cfS3BucketEB2040E1": Object {
-      "Description": "S3 bucket for asset \\"4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cf\\"",
-      "Type": "String",
-    },
-    "AssetParameters4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cfS3VersionKey31246B40": Object {
-      "Description": "S3 key for asset version \\"4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cf\\"",
-      "Type": "String",
-    },
     "AssetParameters918fc826127218ec66c47b78ca2e088a0572ee944b89197bd9ebb2f10f5e3b38ArtifactHash321EA69E": Object {
       "Description": "Artifact hash for asset \\"918fc826127218ec66c47b78ca2e088a0572ee944b89197bd9ebb2f10f5e3b38\\"",
       "Type": "String",
@@ -25,6 +13,18 @@ Object {
     },
     "AssetParameters918fc826127218ec66c47b78ca2e088a0572ee944b89197bd9ebb2f10f5e3b38S3VersionKey3E6CC13C": Object {
       "Description": "S3 key for asset version \\"918fc826127218ec66c47b78ca2e088a0572ee944b89197bd9ebb2f10f5e3b38\\"",
+      "Type": "String",
+    },
+    "AssetParametersbed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4cArtifactHashBEB4E26E": Object {
+      "Description": "Artifact hash for asset \\"bed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4c\\"",
+      "Type": "String",
+    },
+    "AssetParametersbed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4cS3BucketB0104C80": Object {
+      "Description": "S3 bucket for asset \\"bed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4c\\"",
+      "Type": "String",
+    },
+    "AssetParametersbed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4cS3VersionKey73A22079": Object {
+      "Description": "S3 key for asset version \\"bed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4c\\"",
       "Type": "String",
     },
     "AssetParametersea8979cb202780d1358d2d0c8a5ee1b28deb33a52e108516b84f8eb24df2c1cbArtifactHashC7A7EE7B": Object {
@@ -222,7 +222,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cfS3BucketEB2040E1",
+            "Ref": "AssetParametersbed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4cS3BucketB0104C80",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -235,7 +235,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cfS3VersionKey31246B40",
+                          "Ref": "AssetParametersbed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4cS3VersionKey73A22079",
                         },
                       ],
                     },
@@ -248,7 +248,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters4f13b53015859960eee6af76cd3fbbf7e7556eb2715f85dda361937a4998e7cfS3VersionKey31246B40",
+                          "Ref": "AssetParametersbed6d3855a5b0c2d4e92c16eb28428cb6b791aa3ab421f832f074b2322e11a4cS3VersionKey73A22079",
                         },
                       ],
                     },
@@ -295,6 +295,7 @@ Object {
                 "iot:DeleteThing",
                 "iot:DescribeCACertificate",
                 "iot:ListTagsForResource",
+                "iot:DescribeEndpoint",
                 "lambda:InvokeFunction",
                 "lambda:InvokeAsync",
               ],
