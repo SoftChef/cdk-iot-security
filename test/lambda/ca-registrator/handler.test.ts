@@ -12,11 +12,15 @@ import {
 } from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { handler } from '../../../lambda-assets/ca-registrator/app';
+import defaultIotPolicy from '../../../lambda-assets/ca-registrator/default-iot-policy.json';
+import defaultTemplateBody from '../../../lambda-assets/ca-registrator/default-template.json';
 import {
   VerifierError,
   InputError,
-  InformationNotFoundError,
+  ServerError,
 } from '../../../lambda-assets/errors';
+
+defaultTemplateBody.Resources.policy.Properties.PolicyDocument = JSON.stringify(defaultIotPolicy);
 
 const event = {
   body: {
@@ -112,6 +116,38 @@ describe('Sucessfully execute the handler', () => {
   });
 });
 
+describe('On JITP mode', () => {
+
+  beforeEach(async () => {
+    process.env.REGISTRATION_CONFIG_ROLE_ARN = 'arn:test_jitp_role';
+  });
+
+  test('Basic Case', async () => {
+    var response = await handler(event);
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('Provide template body', async () => {
+    let body = Object.assign({}, event.body, {
+      templateBody: JSON.stringify(defaultTemplateBody),
+    });
+    var response = await handler({ body });
+    expect(response.statusCode).toBe(200);
+  });
+
+  test('Provide encryption', async () => {
+    let body = Object.assign({}, event.body, {
+      encryption: {
+        algorithm: 'aes-128-cbc',
+        key: '1234567890123456',
+        iv: '1234567890123456',
+      },
+    });
+    var response = await handler({ body });
+    expect(response.statusCode).toBe(200);
+  });
+});
+
 describe('Fail on the AWS SDK error returns', () => {
   test('Fail to upload the results', async () => {
     s3Mock.on(PutObjectCommand).rejects(new Error());
@@ -134,7 +170,7 @@ describe('Fail on the AWS SDK error returns', () => {
   test('SDK return no certificationId and certificationArn when register CA', async () => {
     iotMock.on(RegisterCACertificateCommand).resolves({});
     var response = await handler(event);
-    expect(response.statusCode).toBe(InformationNotFoundError.code);
+    expect(response.statusCode).toBe(ServerError.code);
   });
 });
 
