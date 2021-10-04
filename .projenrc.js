@@ -1,4 +1,4 @@
-const { AwsCdkConstructLibrary, NpmAccess, DependenciesUpgradeMechanism, AUTOMATION_TOKEN } = require('projen');
+const { AwsCdkConstructLibrary, NpmAccess, AUTOMATION_TOKEN } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'SoftChef',
   authorEmail: 'yehtarnsu@softchef.com',
@@ -43,13 +43,13 @@ const project = new AwsCdkConstructLibrary({
     'aws-iot-device-sdk',
     'esbuild',
   ],
-  depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
+  depsUpgradeOptions: {
     ignoreProjen: false,
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
       secret: AUTOMATION_TOKEN,
     },
-  }),
+  },
   autoApproveOptions: {
     secret: 'GITHUB_TOKEN',
     allowedUsernames: ['MinCheTsai'],
