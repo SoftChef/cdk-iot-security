@@ -94,6 +94,9 @@ Object {
             Object {
               "Action": Array [
                 "iam:PassRole",
+                "iam:CreatePolicy",
+                "iam:CreateRole",
+                "iam:TagRole",
                 "iot:CreateProvisioningTemplate",
                 "iot:CreatePolicy",
                 "iot:CreateKeysAndCertificate",
@@ -320,6 +323,9 @@ Object {
             Object {
               "Action": Array [
                 "iam:PassRole",
+                "iam:CreatePolicy",
+                "iam:CreateRole",
+                "iam:TagRole",
                 "iot:CreateProvisioningTemplate",
                 "iot:CreatePolicy",
                 "iot:CreateKeysAndCertificate",
