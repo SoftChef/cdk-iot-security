@@ -1,0 +1,4 @@
+{
+  "thingName": "<your desired thing name>",
+  "iotDataEndpoint": "<your aws IoT data-ATS endpoint>"
+}
