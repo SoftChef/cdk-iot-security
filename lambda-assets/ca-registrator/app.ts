@@ -103,14 +103,7 @@ export const handler = async (event: any = {}) : Promise <any> => {
       throw new InputError(JSON.stringify(validated.details));
     }
 
-    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects') || {
-      commonName: '',
-      countryName: '',
-      stateName: '',
-      localityName: '',
-      organizationName: '',
-      organizationUnitName: '',
-    };
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {});
     const encryption: {[key: string]: string} = request.input('encryption', null);
     const inputVerifierName: string = request.input('verifierName', null);
     const inputTemplateBody: string = request.input('templateBody', null);

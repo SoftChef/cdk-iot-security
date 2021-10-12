@@ -75,6 +75,7 @@ export class CaRegistrator extends NodejsFunction {
               'iot:RegisterCACertificate',
               'iot:GetRegistrationCode',
               'iot:CreateTopicRule',
+              'iot:TagResource',
             ],
             resources: ['*'],
           }),

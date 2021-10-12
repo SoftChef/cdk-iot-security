@@ -193,6 +193,22 @@ describe('Sucessfully execute the handler', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test('On provide no thingName', async () => {
+    delete process.env.OUTPUT_BUCKET_NAME;
+    delete process.env.OUTPUT_BUCKET_PREFIX;
+    const bodySpecifiedEncryption = Object.assign(
+      {},
+      event.body,
+      {
+        csrSubjects: {},
+      },
+    );
+    var response = await handler({
+      body: bodySpecifiedEncryption,
+    });
+    expect(response.statusCode).toBe(200);
+  });
+
   test('On provide AES key', async () => {
     delete process.env.OUTPUT_BUCKET_NAME;
     delete process.env.OUTPUT_BUCKET_PREFIX;
