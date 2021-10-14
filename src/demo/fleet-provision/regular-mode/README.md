@@ -38,6 +38,10 @@ The AWS IoT Root Certificate is neccessary for the connection. Run this command 
 
     curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/fleet-provision/regular-mode/certs/root_ca.cert.pem
 
+Fill up the template name, thing name, and AWS IoT Data-ATS endpoint in ```settings.json```. You can check the endpoint with the following command.
+
+    aws iot describe-endpoint --endpoint-type iot:Data-ATS
+
 Finally, the script ```connect.js``` use the certificate to connect to the AWS IoT through.
 
     node src/demo/fleet-provision/regular-mode/connect.js

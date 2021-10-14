@@ -2,12 +2,15 @@ const { mqtt, io, iot, iotidentity } = require('aws-iot-device-sdk-v2');
 const fs = require('fs');
 
 /**
- * Fill in the template name, endpoint, and thing name before running this file.
+ * Fill in the template name, endpoint, and thing name in settings.json before running this file.
  */
-const templateName = 'previously generated template name';
-const endpoint = 'your aws iot data endpoint';
-const thingName = 'your unique thing name';
-const clinetId = 'testClient';
+var settings = fs.readFileSync(`${__dirname}/settings.json`);
+const {
+  thingName,
+  iotDataEndpoint,
+  templateName
+} = JSON.parse(settings);
+const clinetId = `client-${thingName}`;
 
 /**
  * Place the AWS Root CA, provision claim certificate, and provision claim private key 
@@ -28,7 +31,7 @@ const keysPath = {
   },
 };
 
-function connect() {
+function provision() {
   
   return new Promise(async (resolve, reject) => {
     console.log("Set timout after 60 seconds.");
@@ -42,7 +45,7 @@ function connect() {
     .with_certificate_authority_from_path(undefined, keysPath.awsRootCa)
     .with_clean_session(false)
     .with_client_id(clinetId)
-    .with_endpoint(endpoint)
+    .with_endpoint(iotDataEndpoint)
     .build();
     const connection = client.new_connection(config);  
     const identity = new iotidentity.IotIdentityClient(connection);
@@ -156,6 +159,10 @@ function registerThing(identity, token) {
   
 }
 
-(async () => {
-  await connect();
-})();
+async function main () {
+  await provision();
+}
+
+main().catch((error) => {
+  console.log(error);
+})

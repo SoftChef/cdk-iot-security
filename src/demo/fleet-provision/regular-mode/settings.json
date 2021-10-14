@@ -1,0 +1,5 @@
+{
+  "templateName": "<previously generated template name>",
+  "thingName": "<your desired thing name>",
+  "iotDataEndpoint": "<your aws IoT data-ATS endpoint>"
+}
