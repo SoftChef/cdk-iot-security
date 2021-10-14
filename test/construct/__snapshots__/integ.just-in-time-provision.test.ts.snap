@@ -265,10 +265,6 @@ Object {
               "Fn::ImportValue": "another-stack:ExportsOutputRefcaBucketD1A50B2B031F53FA",
             },
             "BUCKET_PREFIX": "test",
-            "OUTPUT_BUCKET_NAME": Object {
-              "Fn::ImportValue": "another-stack:ExportsOutputRefdeviceBucketAD90778AC6CF1AF4",
-            },
-            "OUTPUT_BUCKET_PREFIX": "",
           },
         },
         "Handler": "index.handler",
@@ -366,33 +362,6 @@ Object {
                     Array [
                       Object {
                         "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttcaBucketD1A50B2BArn68FC0213",
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttdeviceBucketAD90778AArn75A3CD55",
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::ImportValue": "another-stack:ExportsOutputFnGetAttdeviceBucketAD90778AArn75A3CD55",
                       },
                       "/*",
                     ],
