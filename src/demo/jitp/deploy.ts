@@ -11,9 +11,6 @@ const justInTimeProvision = new JustInTimeProvision(stack, id, {
   vault: {
     bucket,
   },
-  deviceVault: {
-    bucket,
-  },
 });
 const restApi = new apigateway.RestApi(stack, 'testRestApi');
 restApi.root
