@@ -49,7 +49,7 @@ The AWS IoT Root Certificate is neccessary for the connection. Run this command 
 
     curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/jitp/certs/root_ca.cert.pem
 
-Remember to fill up the AWS IoT Endpoint in the file ```src/demo/jitr/device.js```. You can retrieve the endpoint URL with the following command.
+Remember to fill up the thing name and the AWS IoT Endpoint in the file ```src/demo/jitr/settings.json```. You can retrieve the endpoint URL with the following command.
 
     aws iot describe-endpoint --endpoint-type iot:Data-ATS
 

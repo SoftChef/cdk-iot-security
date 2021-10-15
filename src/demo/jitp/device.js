@@ -1,11 +1,17 @@
-const fs = require('fs');
+const { readFileSync } = require('fs');
 const path = require('path');
 const awsIot = require('aws-iot-device-sdk');
 const { ThingRegistry } = require('@softchef/iot-just-in-time-registration');
 
+var settings = readFileSync(`${__dirname}/settings.json`);
+const {
+  thingName,
+  iotDataEndpoint,
+} = JSON.parse(settings);
+
 const config = {
   awsIot: {
-    endpoint: 'your aws iot data endpoint',
+    endpoint: iotDataEndpoint,
     port: '8883', // 8883 or 1883 is default supported with AWS IoT,
     debug: true,
   },
@@ -17,6 +23,10 @@ const thingRegistry = new ThingRegistry();
 thingRegistry.setCertsPath(
   path.resolve(__dirname, './certs'),
 );
+
+if (!thingRegistry.hasDeviceCertificate) {
+  thingRegistry.generateDeviceCertificate(thingName);
+}
 
 let thingShadow = awsIot.thingShadow({
   ...thingRegistry.keysPath,
