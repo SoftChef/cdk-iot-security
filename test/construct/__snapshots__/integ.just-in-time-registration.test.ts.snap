@@ -3,18 +3,6 @@
 exports[`Integration test JustInTimeRegistration 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParameters007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839ArtifactHash8A5B0FE3": Object {
-      "Description": "Artifact hash for asset \\"007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839\\"",
-      "Type": "String",
-    },
-    "AssetParameters007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839S3BucketEB231597": Object {
-      "Description": "S3 bucket for asset \\"007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839\\"",
-      "Type": "String",
-    },
-    "AssetParameters007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839S3VersionKeyD80AEEFC": Object {
-      "Description": "S3 key for asset version \\"007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839\\"",
-      "Type": "String",
-    },
     "AssetParameters20ebd74c07bc8d38211fda41340e066a0351db0608ed047d6098a374072f27cbArtifactHash5740ED1D": Object {
       "Description": "Artifact hash for asset \\"20ebd74c07bc8d38211fda41340e066a0351db0608ed047d6098a374072f27cb\\"",
       "Type": "String",
@@ -25,6 +13,18 @@ Object {
     },
     "AssetParameters20ebd74c07bc8d38211fda41340e066a0351db0608ed047d6098a374072f27cbS3VersionKeyC6A57F8F": Object {
       "Description": "S3 key for asset version \\"20ebd74c07bc8d38211fda41340e066a0351db0608ed047d6098a374072f27cb\\"",
+      "Type": "String",
+    },
+    "AssetParameters40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988ArtifactHash6B055795": Object {
+      "Description": "Artifact hash for asset \\"40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988\\"",
+      "Type": "String",
+    },
+    "AssetParameters40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988S3Bucket7FF0A885": Object {
+      "Description": "S3 bucket for asset \\"40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988\\"",
+      "Type": "String",
+    },
+    "AssetParameters40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988S3VersionKey9FFA99DE": Object {
+      "Description": "S3 key for asset version \\"40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988\\"",
       "Type": "String",
     },
     "AssetParameters61f76f14f4a7dfe296a7735dc6bd474429ab51e510b454c665da5a94704834fbArtifactHash14D096E6": Object {
@@ -49,7 +49,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839S3BucketEB231597",
+            "Ref": "AssetParameters40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988S3Bucket7FF0A885",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -62,7 +62,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839S3VersionKeyD80AEEFC",
+                          "Ref": "AssetParameters40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988S3VersionKey9FFA99DE",
                         },
                       ],
                     },
@@ -75,7 +75,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters007048722b3b1494948c14bc9cd150baa2213aa25787b2f2b7036c5c9688a839S3VersionKeyD80AEEFC",
+                          "Ref": "AssetParameters40bcfa6b1259ae67b5edc6e40698f9f34b8af66378abc9189ae80568ac23a988S3VersionKey9FFA99DE",
                         },
                       ],
                     },
@@ -129,6 +129,7 @@ Object {
                 "iot:RegisterCACertificate",
                 "iot:GetRegistrationCode",
                 "iot:CreateTopicRule",
+                "iot:TagResource",
               ],
               "Effect": "Allow",
               "Resource": "*",

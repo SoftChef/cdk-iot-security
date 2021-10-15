@@ -92,14 +92,10 @@ export const handler = async (event: any = {}) : Promise <any> => {
     }
     const caCertificateId: string = request.input('caCertificateId');
     const deviceInfo: {[key: string]: any} = request.input('deviceInfo', {});
-    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {
-      commonName: uuid.v4(),
-      countryName: '',
-      stateName: '',
-      localityName: '',
-      organizationName: '',
-      organizationUnitName: '',
-    });
+    let csrSubjects: CertificateGenerator.CsrSubjects = request.input('csrSubjects', {});
+    if (!('commonName' in csrSubjects)) {
+      csrSubjects.commonName = uuid.v4();
+    }
 
     const thingName: string = csrSubjects.commonName!;
 
