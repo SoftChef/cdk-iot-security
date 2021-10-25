@@ -416,11 +416,3 @@ Since the event is mainly a HTTP POST request, it has a body section containing 
 #### Connect the Device to the AWS IoT
 
 To trigger the Fleet-Provision, the deivce has to send a MQTT message to the AWS IoT. You can complete this step with ```aws-iot-deivce-sdk-v2```. Please read [this file](./src/demo/fleet-provision/connect.js) for detail.
-
-## Roadmap
-
-### JITP
-
-* Verify which user is calling the device certificate generator API.
-
-* Manage the thing name and user relationship.
