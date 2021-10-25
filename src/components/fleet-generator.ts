@@ -59,6 +59,7 @@ export class FleetGenerator extends NodejsFunction {
               'iam:PassRole',
               'iam:CreatePolicy',
               'iam:CreateRole',
+              'iam:AttachRolePolicy',
               'iam:TagRole',
               'iot:CreateProvisioningTemplate',
               'iot:CreatePolicy',
