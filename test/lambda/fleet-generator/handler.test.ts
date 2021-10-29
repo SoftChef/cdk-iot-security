@@ -103,10 +103,6 @@ beforeEach(() => {
   iamMock.on(iam.CreateRoleCommand).resolves({
     Role: expected.greengrassTokenExchangeRole,
   });
-  iamMock.on(iam.AttachRolePolicyCommand, {
-    PolicyArn: expected.greengrassTokenExchangePolicyArn,
-    RoleName: expected.greengrassTokenExchangeRole.RoleName,
-  }).resolves({});
 });
 
 describe('Sucessfully execute the handler', () => {

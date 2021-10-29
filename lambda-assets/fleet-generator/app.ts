@@ -198,13 +198,6 @@ async function createTokenExchangeRole(templateName: string, tokenExchangePolicy
     }),
   );
 
-  await new iam.IAMClient({}).send(
-    new iam.AttachRolePolicyCommand({
-      PolicyArn: tokenExchangePolicy!.Arn!,
-      RoleName: tokenExchangeRole!.RoleName,
-    }),
-  );
-
   return tokenExchangeRole;
 };
 
