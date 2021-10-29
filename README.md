@@ -30,7 +30,7 @@ JITR work flow is usually applied in a situation that the devices are able to ge
 
 ### Structure
 
-![](./doc/JITR-AWS.png)
+![](./doc/jitr/JITR-AWS.png)
 
 #### Endogenous Components
 
@@ -77,7 +77,7 @@ You can integrate your own API to the CA registrator and Verifiers Fetcher for u
 
 ### Flow
 
-![](./doc/JITR.png)
+![](./doc/jitr/JITR.png)
 
 ### Usage
 
