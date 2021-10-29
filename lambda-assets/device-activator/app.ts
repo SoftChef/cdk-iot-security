@@ -133,8 +133,6 @@ export const handler = async (event: any = {}) : Promise <any> => {
             Action: [
               'iot:Connect',
               'iot:Publish',
-              'iot:Receive',
-              'iot:Subscribe',
             ],
             Resource: '*',
           },
