@@ -118,7 +118,7 @@ describe('Call function getDeviceRegistrationCertificates', () => {
     const deviceCertificate = forge.pki.certificateFromPem(deviceCertificates.certificate);
     Object.entries(deviceCsrSubject).forEach(([key, value]) => {
       var subject = deviceCertificate.subject.attributes.find(x => x.name === key);
-      expect(subject.value).toEqual(value);
+      expect(subject!.value).toEqual(value);
     });
   });
 });
