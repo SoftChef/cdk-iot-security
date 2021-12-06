@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "@aws-cdk/assert",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "build"
     },
     {
@@ -15,15 +15,17 @@
     },
     {
       "name": "@types/node",
-      "version": "^12.7.0",
+      "version": "^14.17.0",
       "type": "build"
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
+      "version": "^5",
       "type": "build"
     },
     {
       "name": "@typescript-eslint/parser",
+      "version": "^5",
       "type": "build"
     },
     {
@@ -43,10 +45,6 @@
       "type": "build"
     },
     {
-      "name": "eslint",
-      "type": "build"
-    },
-    {
       "name": "eslint-import-resolver-node",
       "type": "build"
     },
@@ -59,12 +57,17 @@
       "type": "build"
     },
     {
+      "name": "eslint",
+      "version": "^8",
+      "type": "build"
+    },
+    {
       "name": "jest",
       "type": "build"
     },
     {
       "name": "jest-junit",
-      "version": "^12",
+      "version": "^13",
       "type": "build"
     },
     {
@@ -155,52 +158,52 @@
     },
     {
       "name": "@aws-cdk/aws-apigateway",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-dynamodb",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-iam",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-iot",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda-event-sources",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda-nodejs",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-lambda",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-s3",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/aws-sqs",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "peer"
     },
     {
@@ -210,52 +213,52 @@
     },
     {
       "name": "@aws-cdk/aws-apigateway",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-dynamodb",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-iam",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-iot",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-event-sources",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda-nodejs",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-lambda",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-s3",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/aws-sqs",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     },
     {
       "name": "@aws-cdk/core",
-      "version": "^1.95.2",
+      "version": "^1.73.0",
       "type": "runtime"
     }
   ],
