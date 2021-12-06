@@ -1,17 +1,14 @@
-const { AwsCdkConstructLibrary, NpmAccess, AUTOMATION_TOKEN } = require('projen');
-const project = new AwsCdkConstructLibrary({
+const { awscdk, AUTOMATION_TOKEN } = require('projen');
+const project = new awscdk.AwsCdkConstructLibrary({
   author: 'SoftChef',
   authorEmail: 'yehtarnsu@softchef.com',
   authorUrl: 'https://www.softchef.com',
   authorOrganization: true,
-  npmAccess: NpmAccess.PUBLIC,
-  cdkVersion: '1.95.2',
+  cdkVersion: '1.73.0',
   defaultReleaseBranch: 'main',
   name: '@softchef/cdk-iot-security',
   description: 'This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.',
   repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
-  minNodeVersion: '12.7.0',
-  workflowNodeVersion: '12.13.0',
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-lambda-nodejs',
