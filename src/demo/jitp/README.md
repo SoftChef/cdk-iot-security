@@ -14,14 +14,14 @@ First of all, the service provide should deploy the construct to setup the JITP 
     npx projen build
 
 Deploy the JITP construct with demo file. Two AWS lambda functions, CA Registrator and Device Certificate Generator, will be deployed for further use.
-    
+
     cdk deploy --app 'node lib/demo/jitp/deploy'
 
-After deploying the construct, an URL returned from the console as this format: ```https://<prefix>.execute-api.<region>.amazonaws.com/prod/```. In the following steps, we will use this URL to access the API.
+After deploying the construct, an URL returned from the console as this format: `https://<prefix>.execute-api.<region>.amazonaws.com/prod/`. In the following steps, we will use this URL to access the API.
 
 ### Create CA on AWS IoT
 
-After the construct deployment, the service provider creates CA on AWS IoT for authentication of device certificates later. Call the API with the following command. 
+After the construct deployment, the service provider creates CA on AWS IoT for authentication of device certificates later. Call the API with the following command.
 
     curl -X POST https://<prefix>.execute-api.<region>.amazonaws.com/prod/caRegister
 
@@ -48,11 +48,11 @@ When the service provider have done the necessary preparation, the client is abl
 
     curl -X POST -d '{caCertificateId:"<caCertificateId>"}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
 
-You can assign you custom thing name in the POST request.
+You can assign your custom thing name in the POST request.
 
     curl -X POST -d '{caCertificateId:"<caCertificateId>", "csrSubjects":{"commonName":"<thingName>"}}' https://<prefix>.execute-api.<region>.amazonaws.com/prod/deviceCertificateGenerate > device-certificate.json
 
-The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Notice that the device certificate is not registered on AWS IoT yet.
+The API will invoke the Device Certificate Registrator and return the keys and certificate signed by a specified CA. Note that the device certificate is not registered on AWS IoT yet.
 
 You can design your work flow that the user call this API to get a device certificate through a mobile App. Then, transfer the device certificate to the device for connecting to the AWS IoT.
 
@@ -60,13 +60,13 @@ You can design your work flow that the user call this API to get a device certif
 
 When the device certificates returned from the API, things are almost done. The client extract the device certificates from the returned payload and set them into the device.
 
-Create a folder ```scr/demo/jitr/certs```. Manually copy and paste the public key, private key, and certificate from the file ```device-certificate.json``` to files ```device.public_key.pem```, ```device.private_key.pem```, and ```device.cert.pem```, respectively, and place under the folder ```scr/demo/jitr/certs```. Remember to remove the format characters such as ```\r\n``` and make those files be a legal PEM format.
+Create a folder `scr/demo/jitp/certs`. **Manually** copy and paste the public key, private key, and certificate from the file `device-certificate.json` to files `device.public_key.pem`, `device.private_key.pem`, and `device.cert.pem`, respectively, and place under the folder `scr/demo/jitp/certs`. Remember to remove the format characters such as `\r\n` and make those files be a legal PEM format.
 
 The AWS IoT Root Certificate is neccessary for the connection. Run this command to download it.
 
     curl https://www.amazontrust.com/repository/AmazonRootCA1.pem > src/demo/jitp/certs/root_ca.cert.pem
 
-Remember to fill up the thing name and the AWS IoT Endpoint in the file ```src/demo/jitr/settings.json```. You can retrieve the endpoint URL with the following command.
+Remember to fill up the thing name and the AWS IoT Endpoint in the file `src/demo/jitp/settings.json`. You can retrieve the endpoint URL with the following command.
 
     aws iot describe-endpoint --endpoint-type iot:Data-ATS
 
@@ -76,7 +76,7 @@ Finally, the device use the certificate to connect to the AWS IoT through MQTT c
 
     node src/demo/jitp/device.js
 
-Alternatively, instead of the ```aws-iot-device-sdk``` library, you can trigger JITP with pure MQTT connection. We simulate this process with another demostration file. Remeber to fill up the AWS IoT endpoint in the same way mentioned previously.
+Alternatively, instead of the `aws-iot-device-sdk` library, you can trigger JITP with pure MQTT connection. We simulate this process with another demostration file. Remeber to fill up the AWS IoT endpoint in the same way mentioned previously.
 
     node src/demo/jitp/mqtt-connect.js
 

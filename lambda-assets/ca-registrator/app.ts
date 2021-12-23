@@ -183,7 +183,7 @@ function addTags(verifierName: string | undefined, encryption: {[key: string]: s
     tags.push(createTag('verifierName', verifierName));
   }
 
-  if (onJITP) {
+  if (onJITP && encryption) {
     tags.push(createTag('encryption', JSON.stringify(encryption)));
   }
 
