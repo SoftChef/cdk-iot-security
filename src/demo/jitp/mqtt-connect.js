@@ -30,7 +30,7 @@ function main() {
     cert: deviceCertificatePem,
     rejectUnauthorized: false,
     ca: amazonRootCA1,
-    protocol: "mqtts",
+    protocol: 'mqtts',
     clientId: `client-${thingName}`,
   };
   const client = connect(options);
