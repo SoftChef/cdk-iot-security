@@ -5869,7 +5869,7 @@ jsii-docgen@^1.8.110:
     jsii-reflect "^1.30.0"
     yargs "^16.2.0"
 
-jsii-pacmak@*:
+jsii-pacmak@^1.50.0:
   version "1.50.0"
   resolved "https://registry.yarnpkg.com/jsii-pacmak/-/jsii-pacmak-1.50.0.tgz#91a602c53695b9c4ad6b9b3e55aa45134a52bcc3"
   integrity sha512-EE8sZqYumlik6LbZVKntRE169F4zE/cly74LijQWUIehvOhWafk0wZsPYwOBSZl8tYeTTrF6w4TPxt1+7e3JaQ==
