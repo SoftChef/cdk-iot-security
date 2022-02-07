@@ -1,14 +1,18 @@
 const { awscdk, AUTOMATION_TOKEN } = require('projen');
+
+const PROJECT_NAME = '@softchef/cdk-iot-security';
+const PROJECT_DESCRIPTION = 'This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.';
+
 const project = new awscdk.AwsCdkConstructLibrary({
-  author: 'SoftChef',
+  authorName: 'SoftChef',
   authorEmail: 'yehtarnsu@softchef.com',
   authorUrl: 'https://www.softchef.com',
   authorOrganization: true,
+  name: PROJECT_NAME,
+  description: PROJECT_DESCRIPTION,
+  repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
   cdkVersion: '1.73.0',
   defaultReleaseBranch: 'main',
-  name: '@softchef/cdk-iot-security',
-  description: 'This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.',
-  repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-lambda-nodejs',
@@ -42,7 +46,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     'esbuild',
   ],
   depsUpgradeOptions: {
-    ignoreProjen: true,
+    ignoreProjen: false,
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
       secret: AUTOMATION_TOKEN,
@@ -75,5 +79,14 @@ const project = new awscdk.AwsCdkConstructLibrary({
 project.package.addField('resolutions', {
   'jest-environment-jsdom': '27.3.1',
 });
+
+const commonExclude = [
+  'cdk.out',
+  'cdk.context.json',
+  'yarn-error.log',
+];
+
+project.npmignore.exclude(...commonExclude);
+project.gitignore.exclude(...commonExclude);
 
 project.synth();
