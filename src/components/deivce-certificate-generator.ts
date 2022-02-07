@@ -2,9 +2,16 @@ import {
   PolicyStatement,
   Effect,
   Policy,
-} from '@aws-cdk/aws-iam';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import * as cdk from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-iam';
+import {
+  NodejsFunction,
+} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {
+  Duration,
+} from 'aws-cdk-lib/core';
+import {
+  Construct,
+} from 'constructs';
 import { VaultProps } from './vault';
 
 export module DeviceCertificateGenerator {
@@ -30,10 +37,10 @@ export class DeviceCertificateGenerator extends NodejsFunction {
    * @param id
    * @param props
    */
-  constructor(scope: cdk.Construct, id:string, props: DeviceCertificateGenerator.Props) {
+  constructor(scope: Construct, id:string, props: DeviceCertificateGenerator.Props) {
     super(scope, `DeviceCertificateGenerator-${id}`, {
       entry: `${__dirname}/../../lambda-assets/device-certificate-generator/app.ts`,
-      timeout: cdk.Duration.seconds(10),
+      timeout: Duration.seconds(10),
       memorySize: 256,
     });
     props.vault.bucket.grantRead(this);

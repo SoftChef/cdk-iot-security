@@ -18,8 +18,12 @@ import {
   S3Client,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
-import { mockClient } from 'aws-sdk-client-mock';
-import { CertificateGenerator } from '../../../lambda-assets/certificate-generator';
+import {
+  mockClient,
+} from 'aws-sdk-client-mock';
+import {
+  CertificateGenerator,
+} from '../../../lambda-assets/certificate-generator';
 import {
   handler,
   aesEncrypt,

@@ -1,15 +1,22 @@
 import * as path from 'path';
-import '@aws-cdk/assert/jest';
-import { SynthUtils } from '@aws-cdk/assert';
-import * as lambda from '@aws-cdk/aws-lambda';
+import {
+  Template,
+} from 'aws-cdk-lib/assertions';
 import {
   Function,
   InlineCode,
   Runtime,
-} from '@aws-cdk/aws-lambda';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { App, Stack } from '@aws-cdk/core';
-import { JustInTimeRegistration } from '../../src';
+} from 'aws-cdk-lib/aws-lambda';
+import {
+  Bucket,
+} from 'aws-cdk-lib/aws-s3';
+import {
+  App,
+  Stack,
+} from 'aws-cdk-lib/core';
+import {
+  JustInTimeRegistration,
+} from '../../src';
 
 const expectedResources: {
   [name: string]: string;
@@ -32,7 +39,7 @@ const expectedResources: {
 const expected: {
   [name: string]: string;
 } = {
-  lambdaFunctionRuntime: lambda.Runtime.NODEJS_14_X.toString(),
+  lambdaFunctionRuntime: Runtime.NODEJS_14_X.toString(),
   verifier: 'verifier-stack:ExportsOutputReftestcase9BC7DE4DD4B50F74',
   vault: 'another-stack:ExportsOutputRefuserProvidedBucket2349EF2D343936C6',
 };
@@ -60,12 +67,13 @@ describe('Integration test', () => {
         prefix: 'test',
       },
     });
-    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 3);
-    expect(stack).toCountResources('AWS::IAM::Role', 4);
-    expect(stack).toCountResources('AWS::SQS::Queue', 1);
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+    template.resourceCountIs('AWS::Lambda::Function', 3);
+    template.resourceCountIs('AWS::IAM::Role', 4);
+    template.resourceCountIs('AWS::SQS::Queue', 1);
 
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
         Variables: {
           BUCKET_NAME: {
@@ -97,7 +105,7 @@ describe('Integration test', () => {
       Timeout: 10,
     });
 
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Role: {
         'Fn::GetAtt': [
           expectedResources.deviceActivatorRole,
@@ -107,7 +115,7 @@ describe('Integration test', () => {
       Runtime: expected.lambdaFunctionRuntime,
     });
 
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
         Variables: {
           VERIFIERS: {
@@ -133,7 +141,7 @@ describe('Integration test', () => {
       Runtime: expected.lambdaFunctionRuntime,
     });
 
-    expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
+    template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyDocument: {
         Statement: [
           {
@@ -142,6 +150,7 @@ describe('Integration test', () => {
               'iot:RegisterCACertificate',
               'iot:GetRegistrationCode',
               'iot:CreateTopicRule',
+              'iot:TagResource',
             ],
             Effect: 'Allow',
             Resource: '*',
@@ -157,7 +166,7 @@ describe('Integration test', () => {
       ],
     });
 
-    expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
+    template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyDocument: {
         Statement: [
           {
@@ -187,7 +196,7 @@ describe('Integration test', () => {
       ],
     });
 
-    expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+    template.hasResourceProperties('AWS::IAM::Role', {
       AssumeRolePolicyDocument: {
         Statement: [
           {
@@ -226,7 +235,7 @@ describe('Integration test', () => {
       RoleName: 'ReviewAcceptionRoleName-test-case',
     });
 
-    expect(stack).toHaveResourceLike('AWS::IoT::TopicRule', {
+    template.hasResourceProperties('AWS::IoT::TopicRule', {
       TopicRulePayload: {
         Actions: [
           {

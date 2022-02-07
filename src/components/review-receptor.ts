@@ -3,17 +3,21 @@ import {
   PolicyStatement,
   ServicePrincipal,
   PolicyDocument,
-} from '@aws-cdk/aws-iam';
+} from 'aws-cdk-lib/aws-iam';
 import {
   CfnTopicRule,
-} from '@aws-cdk/aws-iot';
-import * as sqs from '@aws-cdk/aws-sqs';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-iot';
+import {
+  Queue,
+} from 'aws-cdk-lib/aws-sqs';
+import {
+  Construct,
+} from 'constructs';
 
 /**
  * The SQS queue having the main functionality of receiving message from the CA-associated Iot Rules.
  */
-export class ReviewReceptor extends sqs.Queue {
+export class ReviewReceptor extends Queue {
   /**
    * The Role allowed to push messages into this Receptor.
    */

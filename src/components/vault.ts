@@ -1,4 +1,6 @@
-import { Bucket } from '@aws-cdk/aws-s3';
+import {
+  Bucket,
+} from 'aws-cdk-lib/aws-s3';
 
 /**
  * The S3 bucket to save the CA certificate and keys.

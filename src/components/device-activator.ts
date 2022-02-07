@@ -2,9 +2,13 @@ import {
   PolicyStatement,
   Effect,
   Policy,
-} from '@aws-cdk/aws-iam';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-iam';
+import {
+  NodejsFunction,
+} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {
+  Construct,
+} from 'constructs';
 
 /**
  * The NodeJS Lambda Function having the main functionality of activating the device certificate and provision the AWS IoT resources.

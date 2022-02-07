@@ -12,8 +12,12 @@ import {
   InvokeCommand,
   LambdaClient,
 } from '@aws-sdk/client-lambda';
-import { mockClient } from 'aws-sdk-client-mock';
-import { handler } from '../../../lambda-assets/device-activator/app';
+import {
+  mockClient,
+} from 'aws-sdk-client-mock';
+import {
+  handler,
+} from '../../../lambda-assets/device-activator/app';
 import {
   VerificationError,
   InformationNotFoundError,

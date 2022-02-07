@@ -11,20 +11,15 @@ const project = new awscdk.AwsCdkConstructLibrary({
   name: PROJECT_NAME,
   description: PROJECT_DESCRIPTION,
   repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
-  cdkVersion: '1.73.0',
+  cdkVersion: '2.1.0',
+  majorVersion: 2,
   defaultReleaseBranch: 'main',
-  cdkDependencies: [
-    '@aws-cdk/core',
-    '@aws-cdk/aws-lambda-nodejs',
-    '@aws-cdk/aws-lambda',
-    '@aws-cdk/aws-iam',
-    '@aws-cdk/aws-apigateway',
-    '@aws-cdk/aws-iot',
-    '@aws-cdk/aws-dynamodb',
-    '@aws-cdk/aws-sqs',
-    '@aws-cdk/aws-lambda-event-sources',
-    '@aws-cdk/aws-s3',
-  ],
+  releaseBranches: {
+    cdkv1: {
+      npmDistTag: 'cdkv1',
+      majorVersion: 1,
+    },
+  },
   bundledDeps: [
     'joi',
     'node-forge',

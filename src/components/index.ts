@@ -1,7 +1,15 @@
-export { CaRegistrator } from './ca-registrator';
-export { DeviceActivator } from './device-activator';
-export { DeviceCertificateGenerator } from './deivce-certificate-generator';
-export { FleetGenerator } from './fleet-generator';
+export {
+  CaRegistrator,
+} from './ca-registrator';
+export {
+  DeviceActivator,
+} from './device-activator';
+export {
+  DeviceCertificateGenerator,
+} from './deivce-certificate-generator';
+export {
+  FleetGenerator,
+} from './fleet-generator';
 export {
   FleetProvisioningRole,
   RegistrationConfigRole,
@@ -16,5 +24,9 @@ export {
   Vault,
   VaultProps,
 } from './vault';
-export { VerifiersFetcher } from './verifiers-fetcher';
-export { GreenGrassV2TokenExchangeRole } from './greengrass-v2';
+export {
+  VerifiersFetcher,
+} from './verifiers-fetcher';
+export {
+  GreenGrassV2TokenExchangeRole,
+} from './greengrass-v2';

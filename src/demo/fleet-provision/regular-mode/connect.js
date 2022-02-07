@@ -1,4 +1,9 @@
-const { mqtt, io, iot, iotidentity } = require('aws-iot-device-sdk-v2');
+const {
+  mqtt,
+  io,
+  iot,
+  iotidentity,
+} = require('aws-iot-device-sdk-v2');
 const fs = require('fs');
 
 /**
