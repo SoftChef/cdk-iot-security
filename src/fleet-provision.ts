@@ -1,13 +1,23 @@
-import * as cdk from '@aws-cdk/core';
-import { FleetGenerator } from './components/fleet-generator';
-import { GreenGrassV2TokenExchangeRole } from './components/greengrass-v2';
-import { FleetProvisioningRole } from './components/provision-role';
-import { VaultProps } from './components/vault';
+import {
+  Construct,
+} from 'constructs';
+import {
+  FleetGenerator,
+} from './components/fleet-generator';
+import {
+  GreenGrassV2TokenExchangeRole,
+} from './components/greengrass-v2';
+import {
+  FleetProvisioningRole,
+} from './components/provision-role';
+import {
+  VaultProps,
+} from './components/vault';
 
 /**
  * The CDK construct providing the funtionality of Fleet-Provision.
  */
-export class FleetProvision extends cdk.Construct {
+export class FleetProvision extends Construct {
   /**
    * The IAM Role allowing the AWS IoT to complete the automatically provisioning.
    */
@@ -28,7 +38,7 @@ export class FleetProvision extends cdk.Construct {
    * @param id
    * @param props
    */
-  constructor(scope: cdk.Construct, id: string, props: FleetProvision.Props) {
+  constructor(scope: Construct, id: string, props: FleetProvision.Props) {
     super(scope, id);
     this.fleetProvisionRole = new FleetProvisioningRole(this, id);
     this.fleetGenerator = new FleetGenerator(this, id, {

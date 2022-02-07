@@ -11,12 +11,16 @@ import {
   S3Client,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
-import { mockClient } from 'aws-sdk-client-mock';
+import {
+  mockClient,
+} from 'aws-sdk-client-mock';
 import {
   InputError,
   TemplateBodyPolicyDocumentMalformed,
 } from '../../../lambda-assets/errors';
-import { handler } from '../../../lambda-assets/fleet-generator/app';
+import {
+  handler,
+} from '../../../lambda-assets/fleet-generator/app';
 import defaultIotPolicy from '../../../lambda-assets/fleet-generator/default-iot-policy.json';
 import defaultTemplateBody from '../../../lambda-assets/fleet-generator/default-template.json';
 import defaultTokenExchangePolicyDocument from '../../../lambda-assets/fleet-generator/default-token-exchange-policy.json';

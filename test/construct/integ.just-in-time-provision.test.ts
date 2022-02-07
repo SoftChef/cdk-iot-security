@@ -1,10 +1,20 @@
 import * as path from 'path';
-import '@aws-cdk/assert/jest';
-import { SynthUtils } from '@aws-cdk/assert';
-import * as lambda from '@aws-cdk/aws-lambda';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { App, Stack } from '@aws-cdk/core';
-import { JustInTimeProvision } from '../../src';
+import {
+  Template,
+} from 'aws-cdk-lib/assertions';
+import {
+  Runtime,
+} from 'aws-cdk-lib/aws-lambda';
+import {
+  Bucket,
+} from 'aws-cdk-lib/aws-s3';
+import {
+  App,
+  Stack,
+} from 'aws-cdk-lib/core';
+import {
+  JustInTimeProvision,
+} from '../../src';
 
 
 const expectedResources: {
@@ -24,7 +34,7 @@ const expectedResources: {
 const expected: {
   [name: string]: string;
 } = {
-  lambdaFunctionRuntime: lambda.Runtime.NODEJS_14_X.toString(),
+  lambdaFunctionRuntime: Runtime.NODEJS_14_X.toString(),
   vault: 'another-stack:ExportsOutputRefcaBucketD1A50B2B031F53FA',
 };
 
@@ -43,12 +53,13 @@ describe('Integration test', () => {
         prefix: 'test',
       },
     });
-    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 3);
-    expect(stack).toCountResources('AWS::IAM::Role', 4);
-    expect(stack).toCountResources('AWS::IAM::Policy', 4);
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+    template.resourceCountIs('AWS::Lambda::Function', 3);
+    template.resourceCountIs('AWS::IAM::Role', 4);
+    template.resourceCountIs('AWS::IAM::Policy', 4);
 
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
         Variables: {
           BUCKET_NAME: {
@@ -75,7 +86,7 @@ describe('Integration test', () => {
       Timeout: 10,
     });
 
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
         Variables: {
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
@@ -97,7 +108,7 @@ describe('Integration test', () => {
       Timeout: 10,
     });
 
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
         Variables: {
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
@@ -114,7 +125,7 @@ describe('Integration test', () => {
       Runtime: expected.lambdaFunctionRuntime,
     });
 
-    expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
+    template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyDocument: {
         Statement: [
           {
@@ -123,6 +134,7 @@ describe('Integration test', () => {
               'iot:RegisterCACertificate',
               'iot:GetRegistrationCode',
               'iot:CreateTopicRule',
+              'iot:TagResource',
             ],
             Effect: 'Allow',
             Resource: '*',
@@ -138,7 +150,7 @@ describe('Integration test', () => {
       ],
     });
 
-    expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
+    template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyDocument: {
         Statement: [
           {
@@ -166,7 +178,7 @@ describe('Integration test', () => {
       ],
     });
 
-    expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+    template.hasResourceProperties('AWS::IAM::Role', {
       AssumeRolePolicyDocument: {
         Statement: [
           {

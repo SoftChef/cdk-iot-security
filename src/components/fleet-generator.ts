@@ -2,11 +2,19 @@ import {
   PolicyStatement,
   Effect,
   Policy,
-} from '@aws-cdk/aws-iam';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import * as cdk from '@aws-cdk/core';
-import { FleetProvisioningRole } from './provision-role';
-import { VaultProps } from './vault';
+} from 'aws-cdk-lib/aws-iam';
+import {
+  NodejsFunction,
+} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {
+  Construct,
+} from 'constructs';
+import {
+  FleetProvisioningRole,
+} from './provision-role';
+import {
+  VaultProps,
+} from './vault';
 
 export module FleetGenerator {
   /**
@@ -39,7 +47,7 @@ export class FleetGenerator extends NodejsFunction {
    * @param id
    * @param props
    */
-  constructor(scope: cdk.Construct, id: string, props: FleetGenerator.Props) {
+  constructor(scope: Construct, id: string, props: FleetGenerator.Props) {
     super(scope, `FleetGenerator-${id}`, {
       entry: `${__dirname}/../../lambda-assets/fleet-generator/app.ts`,
     });

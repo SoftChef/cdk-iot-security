@@ -1,24 +1,34 @@
-import * as apigateway from '@aws-cdk/aws-apigateway';
-import { Bucket } from '@aws-cdk/aws-s3';
-import * as cdk from '@aws-cdk/core';
-import { JustInTimeProvision } from '../..';
+import {
+  RestApi,
+  LambdaIntegration,
+} from 'aws-cdk-lib/aws-apigateway';
+import {
+  Bucket,
+} from 'aws-cdk-lib/aws-s3';
+import {
+  App,
+  Stack,
+} from 'aws-cdk-lib/core';
+import {
+  JustInTimeProvision,
+} from '../..';
 
-const app = new cdk.App();
+const app = new App();
 const id = 'JitpDemo';
-const stack = new cdk.Stack(app, id);
+const stack = new Stack(app, id);
 const bucket = new Bucket(stack, 'myVault');
 const justInTimeProvision = new JustInTimeProvision(stack, id, {
   vault: {
     bucket,
   },
 });
-const restApi = new apigateway.RestApi(stack, 'testRestApi');
+const restApi = new RestApi(stack, 'testRestApi');
 restApi.root
   .addResource('caRegister')
-  .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.caRegistrator));
+  .addMethod('POST', new LambdaIntegration(justInTimeProvision.caRegistrator));
 restApi.root
   .addResource('verifiersFetch')
-  .addMethod('GET', new apigateway.LambdaIntegration(justInTimeProvision.verifiersFetcher));
+  .addMethod('GET', new LambdaIntegration(justInTimeProvision.verifiersFetcher));
 restApi.root
   .addResource('deviceCertificateGenerate')
-  .addMethod('POST', new apigateway.LambdaIntegration(justInTimeProvision.deviceCertificateGenerator));
+  .addMethod('POST', new LambdaIntegration(justInTimeProvision.deviceCertificateGenerator));

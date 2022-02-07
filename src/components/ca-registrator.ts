@@ -2,12 +2,16 @@ import {
   PolicyStatement,
   Effect,
   Policy,
-} from '@aws-cdk/aws-iam';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
+} from 'aws-cdk-lib/aws-iam';
+import {
+  NodejsFunction,
+} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {
+  Duration,
+} from 'aws-cdk-lib/core';
 import {
   Construct,
-  Duration,
-} from '@aws-cdk/core';
+} from 'constructs';
 import {
   RegistrationConfigRole,
 } from './provision-role';

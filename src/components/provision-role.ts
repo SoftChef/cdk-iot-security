@@ -2,8 +2,10 @@ import {
   Role,
   ServicePrincipal,
   ManagedPolicy,
-} from '@aws-cdk/aws-iam';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-iam';
+import {
+  Construct,
+} from 'constructs';
 
 /**
  * The IAM Role allowing the AWS IoT to provision the AWS IoT resources automatically.
