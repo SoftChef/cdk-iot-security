@@ -40,8 +40,8 @@ Name|Description
 
 The NodeJS Lambda Function having the main functionality of registering a CA on AWS IoT.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_lambda.IFunction](#aws-cdk-lib-aws-lambda-ifunction), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_ec2.IConnectable](#aws-cdk-lib-aws-ec2-iconnectable), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_ec2.IClientVpnConnectionHandler](#aws-cdk-lib-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [aws_lambda_nodejs.NodejsFunction](#aws-cdk-lib-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -52,12 +52,12 @@ Initialize the CA Registrator.
 new CaRegistrator(scope: Construct, id: string, props: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[CaRegistrator.Props](#softchef-cdk-iot-security-caregistrator-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
   * **registrationConfigRole** (<code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code>)  The Role for JITP. __*Optional*__
-  * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
+  * **verifiers** (<code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
 
@@ -66,8 +66,8 @@ new CaRegistrator(scope: Construct, id: string, props: Props)
 
 The NodeJS Lambda Function having the main functionality of activating the device certificate and provision the AWS IoT resources.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_lambda.IFunction](#aws-cdk-lib-aws-lambda-ifunction), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_ec2.IConnectable](#aws-cdk-lib-aws-ec2-iconnectable), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_ec2.IClientVpnConnectionHandler](#aws-cdk-lib-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [aws_lambda_nodejs.NodejsFunction](#aws-cdk-lib-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -78,7 +78,7 @@ Inistialize the Device Activator.
 new DeviceActivator(scope: Construct, id: string)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -88,8 +88,8 @@ new DeviceActivator(scope: Construct, id: string)
 
 The NodeJS Lambda Function having the main functionality of generating a device certificate set authenticated by a registered CA.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_lambda.IFunction](#aws-cdk-lib-aws-lambda-ifunction), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_ec2.IConnectable](#aws-cdk-lib-aws-ec2-iconnectable), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_ec2.IClientVpnConnectionHandler](#aws-cdk-lib-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [aws_lambda_nodejs.NodejsFunction](#aws-cdk-lib-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -100,7 +100,7 @@ Initialize the Device Certificate Generator.
 new DeviceCertificateGenerator(scope: Construct, id: string, props: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[DeviceCertificateGenerator.Props](#softchef-cdk-iot-security-devicecertificategenerator-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
@@ -112,8 +112,8 @@ new DeviceCertificateGenerator(scope: Construct, id: string, props: Props)
 
 The NodeJS Lambda Function having the main functionality of generating a fleet-provisioning template and a provision-claim certificate on AWS IoT.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_lambda.IFunction](#aws-cdk-lib-aws-lambda-ifunction), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_ec2.IConnectable](#aws-cdk-lib-aws-ec2-iconnectable), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_ec2.IClientVpnConnectionHandler](#aws-cdk-lib-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [aws_lambda_nodejs.NodejsFunction](#aws-cdk-lib-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -124,7 +124,7 @@ __Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
 new FleetGenerator(scope: Construct, id: string, props: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[FleetGenerator.Props](#softchef-cdk-iot-security-fleetgenerator-props)</code>)  *No description*
   * **fleetProvisionRole** (<code>[FleetProvisioningRole](#softchef-cdk-iot-security-fleetprovisioningrole)</code>)  The Role for Fleet Provision. 
@@ -138,8 +138,8 @@ new FleetGenerator(scope: Construct, id: string, props: Props)
 
 The CDK construct providing the funtionality of Fleet-Provision.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable)
-__Extends__: [Construct](#aws-cdk-core-construct)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Construct](#constructs-construct)
 
 ### Initializer
 
@@ -150,7 +150,7 @@ Initialize a Fleet-Provision Construct.
 new FleetProvision(scope: Construct, id: string, props: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[FleetProvision.Props](#softchef-cdk-iot-security-fleetprovision-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
@@ -173,7 +173,7 @@ Name | Type | Description
 
 The IAM Role allowing the AWS IoT to provision the AWS IoT resources automatically according to the specified AWS IoT Fleet-Provisioning Template.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_iam.IRole](#aws-cdk-lib-aws-iam-irole), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_iam.IPrincipal](#aws-cdk-lib-aws-iam-iprincipal), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_iam.IIdentity](#aws-cdk-lib-aws-iam-iidentity)
 __Extends__: [ProvisionRole](#softchef-cdk-iot-security-provisionrole)
 
 ### Initializer
@@ -187,7 +187,7 @@ This construct is for Fleet-Provision construct.
 new FleetProvisioningRole(scope: Construct, id: string)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -197,8 +197,8 @@ new FleetProvisioningRole(scope: Construct, id: string)
 
 The IAM Role defining the permissions for Greengrass V2 Core Device to access the sevices other than the AWS IoT through token exchanging machanism.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
-__Extends__: [Role](#aws-cdk-aws-iam-role)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_iam.IRole](#aws-cdk-lib-aws-iam-irole), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_iam.IPrincipal](#aws-cdk-lib-aws-iam-iprincipal), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_iam.IIdentity](#aws-cdk-lib-aws-iam-iidentity)
+__Extends__: [aws_iam.Role](#aws-cdk-lib-aws-iam-role)
 
 ### Initializer
 
@@ -209,7 +209,7 @@ Initialize the Greengrass V2 Token Exchange Role.
 new GreenGrassV2TokenExchangeRole(scope: Construct, id: string)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -219,8 +219,8 @@ new GreenGrassV2TokenExchangeRole(scope: Construct, id: string)
 
 The AWS IoT topic role listening the MQTT message originating from a deivce triggered JITR event.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IInspectable](#aws-cdk-core-iinspectable)
-__Extends__: [CfnTopicRule](#aws-cdk-aws-iot-cfntopicrule)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IInspectable](#aws-cdk-lib-iinspectable)
+__Extends__: [aws_iot.CfnTopicRule](#aws-cdk-lib-aws-iot-cfntopicrule)
 
 ### Initializer
 
@@ -241,8 +241,8 @@ new JitrTopicRule(queue: ReviewReceptor, id: string)
 
 The CDK construct providing the funtionality of JITP.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable)
-__Extends__: [Construct](#aws-cdk-core-construct)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Construct](#constructs-construct)
 
 ### Initializer
 
@@ -253,11 +253,11 @@ Initialize a Just-In-Time Provision Construct.
 new JustInTimeProvision(scope: Construct, id: string, props: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JustInTimeProvision.Props](#softchef-cdk-iot-security-justintimeprovision-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
+  * **verifiers** (<code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
 
@@ -277,8 +277,8 @@ Name | Type | Description
 
 The CDK construct providing the funtionality of JITR.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable)
-__Extends__: [Construct](#aws-cdk-core-construct)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable)
+__Extends__: [Construct](#constructs-construct)
 
 ### Initializer
 
@@ -289,11 +289,11 @@ Initialize a Just-In-Time Registration API.
 new JustInTimeRegistration(scope: Construct, id: string, props: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[JustInTimeRegistration.Props](#softchef-cdk-iot-security-justintimeregistration-props)</code>)  *No description*
   * **vault** (<code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code>)  The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function. 
-  * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
+  * **verifiers** (<code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code>)  The verifiers to verify the client certificates. __*Optional*__
 
 
 
@@ -313,8 +313,8 @@ Name | Type | Description
 
 The IAM Role allowing the AWS IoT to provision the AWS IoT resources automatically.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
-__Extends__: [Role](#aws-cdk-aws-iam-role)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_iam.IRole](#aws-cdk-lib-aws-iam-irole), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_iam.IPrincipal](#aws-cdk-lib-aws-iam-iprincipal), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_iam.IIdentity](#aws-cdk-lib-aws-iam-iidentity)
+__Extends__: [aws_iam.Role](#aws-cdk-lib-aws-iam-role)
 
 ### Initializer
 
@@ -325,7 +325,7 @@ Initialize a provision role.
 new ProvisionRole(scope: Construct, id: string)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -335,7 +335,7 @@ new ProvisionRole(scope: Construct, id: string)
 
 The IAM Role allowing the AWS IoT to provision the AWS IoT resources automatically according to the provision template associated with a specified AWS IoT CA.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_iam.IRole](#aws-cdk-lib-aws-iam-irole), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_iam.IPrincipal](#aws-cdk-lib-aws-iam-iprincipal), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_iam.IIdentity](#aws-cdk-lib-aws-iam-iidentity)
 __Extends__: [ProvisionRole](#softchef-cdk-iot-security-provisionrole)
 
 ### Initializer
@@ -349,7 +349,7 @@ This construct is for JITP construct.
 new RegistrationConfigRole(scope: Construct, id: string)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -359,8 +359,8 @@ new RegistrationConfigRole(scope: Construct, id: string)
 
 The role allowing other services to push messages into the receptor specified in the argument.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IRole](#aws-cdk-aws-iam-irole), [IGrantable](#aws-cdk-aws-iam-igrantable), [IPrincipal](#aws-cdk-aws-iam-iprincipal), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IIdentity](#aws-cdk-aws-iam-iidentity)
-__Extends__: [Role](#aws-cdk-aws-iam-role)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_iam.IRole](#aws-cdk-lib-aws-iam-irole), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_iam.IPrincipal](#aws-cdk-lib-aws-iam-iprincipal), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_iam.IIdentity](#aws-cdk-lib-aws-iam-iidentity)
+__Extends__: [aws_iam.Role](#aws-cdk-lib-aws-iam-role)
 
 ### Initializer
 
@@ -382,8 +382,8 @@ new ReviewAcceptionRole(reviewReceptor: ReviewReceptor, id: string, principalNam
 
 The SQS queue having the main functionality of receiving message from the CA-associated Iot Rules.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IQueue](#aws-cdk-aws-sqs-iqueue), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource)
-__Extends__: [Queue](#aws-cdk-aws-sqs-queue)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_sqs.IQueue](#aws-cdk-lib-aws-sqs-iqueue), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource)
+__Extends__: [aws_sqs.Queue](#aws-cdk-lib-aws-sqs-queue)
 
 ### Initializer
 
@@ -394,7 +394,7 @@ Initialize the SQS Queue receiving message from the CA-associated Iot Rules.
 new ReviewReceptor(scope: Construct, id: string)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 
 
@@ -413,8 +413,8 @@ Name | Type | Description
 
 The NodeJS Lambda Function having the main functionality of getting all the names of the verifiers.
 
-__Implements__: [IConstruct](#constructs-iconstruct), [IConstruct](#aws-cdk-core-iconstruct), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IResource](#aws-cdk-core-iresource), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IFunction](#aws-cdk-aws-lambda-ifunction), [IConstruct](#constructs-iconstruct), [IDependable](#aws-cdk-core-idependable), [IConstruct](#aws-cdk-core-iconstruct), [IResource](#aws-cdk-core-iresource), [IConnectable](#aws-cdk-aws-ec2-iconnectable), [IGrantable](#aws-cdk-aws-iam-igrantable), [IClientVpnConnectionHandler](#aws-cdk-aws-ec2-iclientvpnconnectionhandler)
-__Extends__: [NodejsFunction](#aws-cdk-aws-lambda-nodejs-nodejsfunction)
+__Implements__: [IConstruct](#constructs-iconstruct), [IDependable](#constructs-idependable), [IResource](#aws-cdk-lib-iresource), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [aws_lambda.IFunction](#aws-cdk-lib-aws-lambda-ifunction), [IDependable](#constructs-idependable), [IConstruct](#constructs-iconstruct), [IResource](#aws-cdk-lib-iresource), [aws_ec2.IConnectable](#aws-cdk-lib-aws-ec2-iconnectable), [aws_iam.IGrantable](#aws-cdk-lib-aws-iam-igrantable), [aws_ec2.IClientVpnConnectionHandler](#aws-cdk-lib-aws-ec2-iclientvpnconnectionhandler)
+__Extends__: [aws_lambda_nodejs.NodejsFunction](#aws-cdk-lib-aws-lambda-nodejs-nodejsfunction)
 
 ### Initializer
 
@@ -425,10 +425,10 @@ The Lambda Function returning all the verifier name and ARNs.
 new VerifiersFetcher(scope: Construct, id: string, props?: Props)
 ```
 
-* **scope** (<code>[Construct](#aws-cdk-core-construct)</code>)  *No description*
+* **scope** (<code>[Construct](#constructs-construct)</code>)  *No description*
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[VerifiersFetcher.Props](#softchef-cdk-iot-security-verifiersfetcher-props)</code>)  *No description*
-  * **verifiers** (<code>Array<[Function](#aws-cdk-aws-lambda-function)></code>)  *No description* __*Optional*__
+  * **verifiers** (<code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code>)  *No description* __*Optional*__
 
 
 
@@ -444,7 +444,7 @@ Name | Type | Description
 -----|------|-------------
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
 **registrationConfigRole**? | <code>[RegistrationConfigRole](#softchef-cdk-iot-security-registrationconfigrole)</code> | The Role for JITP.<br/>__*Optional*__
-**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
+**verifiers**? | <code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
 
@@ -500,7 +500,7 @@ The properties to initialize the Just-in-Time Provision Construct.
 Name | Type | Description 
 -----|------|-------------
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
+**verifiers**? | <code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
 
@@ -514,7 +514,7 @@ The properties to initialize the Just-in-Time Registration Construct.
 Name | Type | Description 
 -----|------|-------------
 **vault** | <code>[VaultProps](#softchef-cdk-iot-security-vaultprops)</code> | The secure AWS S3 Bucket recepting the CA registration information returned from the CA Registration Function.
-**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
+**verifiers**? | <code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code> | The verifiers to verify the client certificates.<br/>__*Optional*__
 
 
 
@@ -527,7 +527,7 @@ The data set consist of a S3 bucket construct and the sepcified path prefix.
 
 Name | Type | Description 
 -----|------|-------------
-**bucket** | <code>[Bucket](#aws-cdk-aws-s3-bucket)</code> | The S3 bucket.
+**bucket** | <code>[aws_s3.Bucket](#aws-cdk-lib-aws-s3-bucket)</code> | The S3 bucket.
 **prefix**? | <code>string</code> | The specified prefix to save the file.<br/>__*Optional*__
 
 
@@ -541,7 +541,7 @@ The properties to initialize the Verifiers Fetcher.
 
 Name | Type | Description 
 -----|------|-------------
-**verifiers**? | <code>Array<[Function](#aws-cdk-aws-lambda-function)></code> | __*Optional*__
+**verifiers**? | <code>Array<[aws_lambda.Function](#aws-cdk-lib-aws-lambda-function)></code> | __*Optional*__
 
 
 

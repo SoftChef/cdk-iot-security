@@ -1,5 +1,9 @@
-import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
-import { Construct } from '@aws-cdk/core';
+import {
+  SqsEventSource,
+} from 'aws-cdk-lib/aws-lambda-event-sources';
+import {
+  Construct,
+} from 'constructs';
 import {
   CaRegistrator,
   DeviceActivator,

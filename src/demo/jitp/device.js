@@ -1,7 +1,11 @@
-const { readFileSync } = require('fs');
+const {
+  readFileSync,
+} = require('fs');
 const path = require('path');
 const awsIot = require('aws-iot-device-sdk');
-const { ThingRegistry } = require('@softchef/iot-just-in-time-registration');
+const {
+  ThingRegistry,
+} = require('@softchef/iot-just-in-time-registration');
 
 var settings = readFileSync(`${__dirname}/settings.json`);
 const {

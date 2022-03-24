@@ -3,17 +3,10 @@
 exports[`Integration test FleetProvision 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437ArtifactHashCD6F308E": Object {
-      "Description": "Artifact hash for asset \\"ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437\\"",
-      "Type": "String",
-    },
-    "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3Bucket7036FD20": Object {
-      "Description": "S3 bucket for asset \\"ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437\\"",
-      "Type": "String",
-    },
-    "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3VersionKey9B3091A3": Object {
-      "Description": "S3 key for asset version \\"ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437\\"",
-      "Type": "String",
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": Object {
@@ -25,41 +18,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3Bucket7036FD20",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3VersionKey9B3091A3",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3VersionKey9B3091A3",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -128,7 +89,7 @@ Object {
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
-                "s3:PutObject*",
+                "s3:PutObject",
                 "s3:Abort*",
               ],
               "Effect": "Allow",
@@ -225,23 +186,43 @@ Object {
       "Type": "AWS::IAM::Role",
     },
   },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
 }
 `;
 
 exports[`Integration test FleetProvision in Greengrass V2 mode 1`] = `
 Object {
   "Parameters": Object {
-    "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437ArtifactHashCD6F308E": Object {
-      "Description": "Artifact hash for asset \\"ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437\\"",
-      "Type": "String",
-    },
-    "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3Bucket7036FD20": Object {
-      "Description": "S3 bucket for asset \\"ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437\\"",
-      "Type": "String",
-    },
-    "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3VersionKey9B3091A3": Object {
-      "Description": "S3 key for asset version \\"ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437\\"",
-      "Type": "String",
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": Object {
@@ -253,41 +234,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3Bucket7036FD20",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3VersionKey9B3091A3",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParametersccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437S3VersionKey9B3091A3",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "ccc4b335044c735f9edf37fdfaab69b8afcf3e2b70baae59315d4f9aee1c9437.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -357,7 +306,7 @@ Object {
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
-                "s3:PutObject*",
+                "s3:PutObject",
                 "s3:Abort*",
               ],
               "Effect": "Allow",
@@ -452,6 +401,33 @@ Object {
         "RoleName": "ProvisionRoleName-FleetProvisioningRole-test-case",
       },
       "Type": "AWS::IAM::Role",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
     },
   },
 }

@@ -2,8 +2,13 @@ const {
   readFileSync,
   writeFileSync,
 } = require('fs');
-const { connect } = require('mqtt');
-const { pki, md } = require('node-forge');
+const {
+  connect,
+} = require('mqtt');
+const {
+  pki,
+  md,
+} = require('node-forge');
 
 /**
  * Generate the device certificate with CA private key and certificate.

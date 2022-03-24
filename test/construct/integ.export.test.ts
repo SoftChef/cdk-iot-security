@@ -1,7 +1,11 @@
 import * as path from 'path';
-import '@aws-cdk/assert/jest';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { App, Stack } from '@aws-cdk/core';
+import {
+  Bucket,
+} from 'aws-cdk-lib/aws-s3';
+import {
+  App,
+  Stack,
+} from 'aws-cdk-lib/core';
 import {
   CaRegistrator,
   DeviceActivator,

@@ -1,10 +1,20 @@
 import * as path from 'path';
-import '@aws-cdk/assert/jest';
-import { SynthUtils } from '@aws-cdk/assert';
-import * as lambda from '@aws-cdk/aws-lambda';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { App, Stack } from '@aws-cdk/core';
-import { FleetProvision } from '../../src';
+import {
+  Template,
+} from 'aws-cdk-lib/assertions';
+import {
+  Runtime,
+} from 'aws-cdk-lib/aws-lambda';
+import {
+  Bucket,
+} from 'aws-cdk-lib/aws-s3';
+import {
+  App,
+  Stack,
+} from 'aws-cdk-lib/core';
+import {
+  FleetProvision,
+} from '../../src';
 
 const expectedResources: {
   [name: string]: string;
@@ -18,7 +28,7 @@ const expectedResources: {
 const expected: {
   [name: string]: string;
 } = {
-  lambdaFunctionRuntime: lambda.Runtime.NODEJS_14_X.toString(),
+  lambdaFunctionRuntime: Runtime.NODEJS_14_X.toString(),
 };
 
 describe('Integration test', () => {
@@ -37,11 +47,12 @@ describe('Integration test', () => {
         prefix: 'test',
       },
     });
-    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 1);
-    expect(stack).toCountResources('AWS::IAM::Policy', 2);
-    expect(stack).toCountResources('AWS::IAM::Role', 2);
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+    template.resourceCountIs('AWS::Lambda::Function', 1);
+    template.resourceCountIs('AWS::IAM::Policy', 2);
+    template.resourceCountIs('AWS::IAM::Role', 2);
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Role: {
         'Fn::GetAtt': [
           expectedResources.fleetGeneratorRole,
@@ -60,7 +71,7 @@ describe('Integration test', () => {
       },
       Runtime: expected.lambdaFunctionRuntime,
     });
-    expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
+    template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyName: expectedResources.fleetGeneratorPolicy,
       PolicyDocument: {
         Statement: [
@@ -76,8 +87,11 @@ describe('Integration test', () => {
               'iot:AttachPolicy',
               'iot:CreateRoleAlias',
             ],
+            Effect: 'Allow',
+            Resource: '*',
           },
         ],
+        Version: '2012-10-17',
       },
       Roles: [
         {
@@ -85,7 +99,7 @@ describe('Integration test', () => {
         },
       ],
     });
-    expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+    template.hasResourceProperties('AWS::IAM::Role', {
       RoleName: 'ProvisionRoleName-FleetProvisioningRole-test-case',
       AssumeRolePolicyDocument: {
         Statement: [
@@ -131,11 +145,12 @@ describe('Integration test', () => {
       },
       enableGreengrassV2Mode: true,
     });
-    expect(SynthUtils.synthesize(stack).template).toMatchSnapshot();
-    expect(stack).toCountResources('AWS::Lambda::Function', 1);
-    expect(stack).toCountResources('AWS::IAM::Policy', 2);
-    expect(stack).toCountResources('AWS::IAM::Role', 2);
-    expect(stack).toHaveResourceLike('AWS::Lambda::Function', {
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+    template.resourceCountIs('AWS::Lambda::Function', 1);
+    template.resourceCountIs('AWS::IAM::Policy', 2);
+    template.resourceCountIs('AWS::IAM::Role', 2);
+    template.hasResourceProperties('AWS::Lambda::Function', {
       Role: {
         'Fn::GetAtt': [
           expectedResources.fleetGeneratorRole,
@@ -153,7 +168,7 @@ describe('Integration test', () => {
         },
       },
     });
-    expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
+    template.hasResourceProperties('AWS::IAM::Policy', {
       PolicyName: expectedResources.fleetGeneratorPolicy,
       PolicyDocument: {
         Statement: [
@@ -169,8 +184,11 @@ describe('Integration test', () => {
               'iot:AttachPolicy',
               'iot:CreateRoleAlias',
             ],
+            Effect: 'Allow',
+            Resource: '*',
           },
         ],
+        Version: '2012-10-17',
       },
       Roles: [
         {
@@ -178,7 +196,7 @@ describe('Integration test', () => {
         },
       ],
     });
-    expect(stack).toHaveResourceLike('AWS::IAM::Role', {
+    template.hasResourceProperties('AWS::IAM::Role', {
       RoleName: 'ProvisionRoleName-FleetProvisioningRole-test-case',
       AssumeRolePolicyDocument: {
         Statement: [

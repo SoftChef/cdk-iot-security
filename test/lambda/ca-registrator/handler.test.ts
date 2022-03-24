@@ -10,8 +10,12 @@ import {
   S3Client,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
-import { mockClient } from 'aws-sdk-client-mock';
-import { handler } from '../../../lambda-assets/ca-registrator/app';
+import {
+  mockClient,
+} from 'aws-sdk-client-mock';
+import {
+  handler,
+} from '../../../lambda-assets/ca-registrator/app';
 import defaultIotPolicy from '../../../lambda-assets/ca-registrator/default-iot-policy.json';
 import defaultTemplateBody from '../../../lambda-assets/ca-registrator/default-template.json';
 import {

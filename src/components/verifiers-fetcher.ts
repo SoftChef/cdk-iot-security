@@ -1,12 +1,18 @@
-import * as lambda from '@aws-cdk/aws-lambda';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import { Construct } from '@aws-cdk/core';
+import {
+  Function,
+} from 'aws-cdk-lib/aws-lambda';
+import {
+  NodejsFunction,
+} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {
+  Construct,
+} from 'constructs';
 
 export module VerifiersFetcher {
   /**
    * The verifier to verify the client certificates.
    */
-  export type Verifier = lambda.Function;
+  export type Verifier = Function;
   /**
    * The properties to initialize the Verifiers Fetcher.
    */

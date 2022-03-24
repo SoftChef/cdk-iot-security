@@ -1,4 +1,6 @@
-import { Construct } from '@aws-cdk/core';
+import {
+  Construct,
+} from 'constructs';
 import {
   CaRegistrator,
   DeviceCertificateGenerator,
