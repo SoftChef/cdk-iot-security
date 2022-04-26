@@ -5,7 +5,7 @@ const PROJECT_DESCRIPTION = 'This is a AWS CDK construct package surrounding the
 
 const project = new awscdk.AwsCdkConstructLibrary({
   authorName: 'SoftChef',
-  authorEmail: 'yehtarnsu@softchef.com',
+  authorEmail: 'poke@softchef.com',
   authorUrl: 'https://www.softchef.com',
   authorOrganization: true,
   name: PROJECT_NAME,
