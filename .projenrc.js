@@ -10,7 +10,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   authorOrganization: true,
   name: PROJECT_NAME,
   description: PROJECT_DESCRIPTION,
-  repositoryUrl: 'https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git',
+  repositoryUrl: 'https://github.com/SoftChef/cdk-iot-security.git',
   cdkVersion: '2.1.0',
   majorVersion: 2,
   defaultReleaseBranch: 'main',
