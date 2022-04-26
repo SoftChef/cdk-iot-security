@@ -3,7 +3,7 @@
   "description": "This is a AWS CDK construct package surrounding the topic of the AWS IoT Device registration, mainly implementing the functionalities of JITP, JITR, and Fleet-Provisioning.",
   "repository": {
     "type": "git",
-    "url": "https://yehtarnsu@github.com/SoftChef/cdk-iot-security.git"
+    "url": "https://github.com/SoftChef/cdk-iot-security.git"
   },
   "scripts": {
     "build": "npx projen build",
@@ -33,7 +33,7 @@
   },
   "author": {
     "name": "SoftChef",
-    "email": "yehtarnsu@softchef.com",
+    "email": "poke@softchef.com",
     "url": "https://www.softchef.com",
     "organization": true
   },
@@ -48,7 +48,7 @@
     "aws-iot-device-sdk-v2": "^1.8.1",
     "aws-sdk-client-mock": "^0.6.2",
     "constructs": "10.0.5",
-    "esbuild": "^0.14.36",
+    "esbuild": "^0.14.38",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-import-resolver-typescript": "^2.7.1",
@@ -61,7 +61,7 @@
     "jsii-pacmak": "^1.57.0",
     "json-schema": "^0.4.0",
     "npm-check-updates": "^12",
-    "projen": "^0.54.36",
+    "projen": "^0.54.46",
     "standard-version": "^9",
     "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
@@ -71,10 +71,10 @@
     "constructs": "^10.0.5"
   },
   "dependencies": {
-    "@aws-sdk/client-iam": "^3.74.0",
-    "@aws-sdk/client-iot": "^3.74.0",
-    "@aws-sdk/client-lambda": "^3.74.0",
-    "@aws-sdk/client-s3": "^3.74.0",
+    "@aws-sdk/client-iam": "^3.76.0",
+    "@aws-sdk/client-iot": "^3.76.0",
+    "@aws-sdk/client-lambda": "^3.76.0",
+    "@aws-sdk/client-s3": "^3.76.0",
     "@softchef/lambda-events": "^0.0.8",
     "@types/node-forge": "^0.10.10",
     "@types/uuid": "^8.3.4",
