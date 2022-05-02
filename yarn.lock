@@ -1903,9 +1903,9 @@
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
 "@hapi/hoek@^9.0.0":
-  version "9.2.1"
-  resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.1.tgz#9551142a1980503752536b5050fd99f4a7f13b17"
-  integrity sha512-gfta+H8aziZsm8pZa0vj04KO6biEiisppNgA1kbJvFrrWu9Vm7eaUEy76DIxsuTaWvti5fkJVhllWc6ZTE+Mdw==
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
+  integrity sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==
 
 "@hapi/topo@^5.0.0":
   version "5.1.0"
@@ -2499,9 +2499,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "17.0.30"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.30.tgz#2c6e8512acac70815e8176aa30c38025067880ef"
-  integrity sha512-oNBIZjIqyHYP8VCNAV9uEytXVeXG2oR0w9lgAXro20eugRQfY002qr3CUl6BAe+Yf/z3CRjPdz27Pu6WWtuSRw==
+  version "17.0.31"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.31.tgz#a5bb84ecfa27eec5e1c802c6bbf8139bdb163a5d"
+  integrity sha512-AR0x5HbXGqkEx9CadRH3EBYx/VkiUgZIhP4wvPn/+5KIsgpNoyFaRlVe0Zlx9gRtg8fA06a9tskE2MSN7TcG4Q==
 
 "@types/node@15.12.2":
   version "15.12.2"
@@ -3526,9 +3526,9 @@ console-control-strings@^1.1.0:
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
 constructs@^3.3.69:
-  version "3.3.281"
-  resolved "https://registry.yarnpkg.com/constructs/-/constructs-3.3.281.tgz#596325537a62b4467a1959c3904a40343b7577e3"
-  integrity sha512-xIN8AYKCG81zPvowN0+0D23bK7GEch+BcOH4Rpd+zcfR1h06b5GvkDvYfgfw08AYq9bvfSXnASlosEsH3/Mc4w==
+  version "3.3.282"
+  resolved "https://registry.yarnpkg.com/constructs/-/constructs-3.3.282.tgz#6db2cf026362a40827fd60eb87387e78ee602f74"
+  integrity sha512-wwAfFhTMvqYoKVT2+0p/8/BSoevOZMalElPZAxnOEwCdW/oAD66ZrObtXeUA1Wl54Y6EG4sxLDAJ0QZIsrHGWw==
 
 conventional-changelog-angular@^5.0.12:
   version "5.0.13"
@@ -6834,9 +6834,9 @@ npm-bundled@^1.1.1, npm-bundled@^1.1.2:
     npm-normalize-package-bin "^1.0.1"
 
 npm-check-updates@^12:
-  version "12.5.10"
-  resolved "https://registry.yarnpkg.com/npm-check-updates/-/npm-check-updates-12.5.10.tgz#779d201c17c4c0e690cc4fb7eceeed1d00f3f878"
-  integrity sha512-GKBmgC6ZDZwshsOSuse+JYDFVQcaKj9NWNWXW9oWX0TdrKJx26/iR6d4t6LG+iNm5jX+voBoGcEIaGF8CRzWpw==
+  version "12.5.11"
+  resolved "https://registry.yarnpkg.com/npm-check-updates/-/npm-check-updates-12.5.11.tgz#c594902b21af8c251a5ebf12686143b0d2f06356"
+  integrity sha512-uS3yYYK/F1VvZlJRymuCkq+MY2R7v/WlORo5WPUTYx+1OwkqeDMC/CEEGfCN7ATwT2M+JxVVKk9Gq/TGiZjJOw==
   dependencies:
     chalk "^4.1.2"
     cint "^8.2.1"
@@ -7331,10 +7331,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@0.54.56:
-  version "0.54.56"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.54.56.tgz#631f62e6548b4ccf6374c48f81757f0fda75531b"
-  integrity sha512-hptTZXzW+qkOvcC0u8F9LXl3Ip1Mzw8MVuGE0h2Zh4bn3bPOCH4xjKgmA1bRkDJ6rsH9eOGex7hfwnx/Ovo1xQ==
+projen@0.54.57:
+  version "0.54.57"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.54.57.tgz#dea5dcf2a0899377f6d78918b702af86350fb7fc"
+  integrity sha512-NXHbzQGslzrRlxq5jHkmbnyFMs90JcddRanFC4s+JmjMY8mwiHwGLh3J00V7Q3884G2INIX6sVUhzz1LiDxJ+A==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
@@ -8692,9 +8692,9 @@ write-file-atomic@^3.0.0:
     typedarray-to-buffer "^3.1.5"
 
 ws@*:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.5.0.tgz#bfb4be96600757fe5382de12c670dab984a1ed4f"
-  integrity sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.6.0.tgz#e5e9f1d9e7ff88083d0c0dd8281ea662a42c9c23"
+  integrity sha512-AzmM3aH3gk0aX7/rZLYvjdvZooofDu3fFOzGqcSnQ1tOcTWwhM/o+q++E8mAyVVIyUdajrkzWUGftaVSDLn1bw==
 
 ws@^3.2.0:
   version "3.3.3"
