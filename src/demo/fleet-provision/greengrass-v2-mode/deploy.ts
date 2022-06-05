@@ -1,14 +1,14 @@
 import {
+  App,
+  Stack,
+} from 'aws-cdk-lib';
+import {
   LambdaIntegration,
   RestApi,
 } from 'aws-cdk-lib/aws-apigateway';
 import {
   Bucket,
 } from 'aws-cdk-lib/aws-s3';
-import {
-  App,
-  Stack,
-} from 'aws-cdk-lib/core';
 import {
   FleetProvision,
 } from '../../..';

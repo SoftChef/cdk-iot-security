@@ -1,4 +1,7 @@
 import {
+  Duration,
+} from 'aws-cdk-lib';
+import {
   PolicyStatement,
   Effect,
   Policy,
@@ -6,9 +9,6 @@ import {
 import {
   NodejsFunction,
 } from 'aws-cdk-lib/aws-lambda-nodejs';
-import {
-  Duration,
-} from 'aws-cdk-lib/core';
 import {
   Construct,
 } from 'constructs';
