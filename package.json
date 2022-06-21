@@ -47,7 +47,7 @@
     "aws-iot-device-sdk": "^2.2.12",
     "aws-iot-device-sdk-v2": "^1.8.2",
     "aws-sdk-client-mock": "^0.6.2",
-    "esbuild": "^0.14.46",
+    "esbuild": "^0.14.47",
     "eslint": "^8",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-import-resolver-typescript": "^2.7.1",
