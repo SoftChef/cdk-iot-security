@@ -837,10 +837,10 @@
     "@aws-sdk/util-waiter" "3.118.1"
     tslib "^2.3.1"
 
-"@aws-sdk/client-s3@^3.118.1":
-  version "3.118.1"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.118.1.tgz#0e921e150afb337026400bd598c101cee69f3444"
-  integrity sha512-uRGZ9XrE0OQzHddZKN8RWqCR+wNMpvkmIVLfbh0B2KL2eGMWaF2mZsaLiqBQVjT2aWlO7mEggoMimFVl8wkmBg==
+"@aws-sdk/client-s3@^3.120.0":
+  version "3.120.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.120.0.tgz#237fcd07290aa8695f846be90d885b4b7cc611c2"
+  integrity sha512-9BHQCDG8xWWFI01KsdY1vJPbBzbzgpGkNmFQLZwZclOXc4TaI7s1eVRcqxgJdtEe2hU3NWSrpicvSb6ZblM5tg==
   dependencies:
     "@aws-crypto/sha1-browser" "2.0.0"
     "@aws-crypto/sha256-browser" "2.0.0"
@@ -848,9 +848,9 @@
     "@aws-sdk/client-sts" "3.118.1"
     "@aws-sdk/config-resolver" "3.110.0"
     "@aws-sdk/credential-provider-node" "3.118.1"
-    "@aws-sdk/eventstream-serde-browser" "3.118.1"
+    "@aws-sdk/eventstream-serde-browser" "3.120.0"
     "@aws-sdk/eventstream-serde-config-resolver" "3.110.0"
-    "@aws-sdk/eventstream-serde-node" "3.118.1"
+    "@aws-sdk/eventstream-serde-node" "3.120.0"
     "@aws-sdk/fetch-http-handler" "3.110.0"
     "@aws-sdk/hash-blob-browser" "3.110.0"
     "@aws-sdk/hash-node" "3.110.0"
@@ -1067,22 +1067,22 @@
     "@aws-sdk/types" "3.110.0"
     tslib "^2.3.1"
 
-"@aws-sdk/eventstream-marshaller@3.118.1":
-  version "3.118.1"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-marshaller/-/eventstream-marshaller-3.118.1.tgz#62f696a78cc77576747cb7a6f6c67cfc1b4930bd"
-  integrity sha512-YYmEpocX3UEFtFi0joSXNB1BWkmK7W5hIfNk2Q4bnnnTFIc8fo2tnwQhsX9pF9RrwBR2S/xIzvWYSyu6rAqrPQ==
+"@aws-sdk/eventstream-codec@3.119.0":
+  version "3.119.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-codec/-/eventstream-codec-3.119.0.tgz#6eb5a645a38e0175fa054257addb54757bcf8d62"
+  integrity sha512-HMHVfsYU2yaJ2NMHe1HUhQnWD3hCabC3xTVcAx5SSAE+afc74xoQTCA6oDI6OoCLL47ISLjcrkpvfYCAZ7wHTw==
   dependencies:
     "@aws-crypto/crc32" "2.0.0"
     "@aws-sdk/types" "3.110.0"
     "@aws-sdk/util-hex-encoding" "3.109.0"
     tslib "^2.3.1"
 
-"@aws-sdk/eventstream-serde-browser@3.118.1":
-  version "3.118.1"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-serde-browser/-/eventstream-serde-browser-3.118.1.tgz#29238b44f3ed92c0e766ffdc993851894e0f56d4"
-  integrity sha512-kBS7XlsH/eVq58ocxwZni5li2xFyIz9r0NbhmJOIu8ERxv2YU4mgpZmKdLY/sc296BHpqAAd5IBZ6E6O1OYRnQ==
+"@aws-sdk/eventstream-serde-browser@3.120.0":
+  version "3.120.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-serde-browser/-/eventstream-serde-browser-3.120.0.tgz#99b898ce852a3ef8633baca4cca42e1303d65fbd"
+  integrity sha512-+UUq5vey2mJx1NYhq4Gg/jzs5EJE6gW2g91NPcO842891YxZAOmHciFI5kzLKn8PgSKKhbmCL6pq8UqX4N8lRw==
   dependencies:
-    "@aws-sdk/eventstream-serde-universal" "3.118.1"
+    "@aws-sdk/eventstream-serde-universal" "3.120.0"
     "@aws-sdk/types" "3.110.0"
     tslib "^2.3.1"
 
@@ -1094,21 +1094,21 @@
     "@aws-sdk/types" "3.110.0"
     tslib "^2.3.1"
 
-"@aws-sdk/eventstream-serde-node@3.118.1":
-  version "3.118.1"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-serde-node/-/eventstream-serde-node-3.118.1.tgz#7efa21647b5609e0c9e2f57332a95872e139edb9"
-  integrity sha512-bWJvZX1aXVj9RUNe8C0AVl4LJFyvi1/bOCCpwnzlOFZsZ5v0f/67BG7CNyjrYPXET1APWd1lnqCWYAHaa+KUQA==
+"@aws-sdk/eventstream-serde-node@3.120.0":
+  version "3.120.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-serde-node/-/eventstream-serde-node-3.120.0.tgz#ff5cd01233e84813dce9cb5eda0dcb8efc9b034b"
+  integrity sha512-+RoUQKzB+MBH6nThLmc/VnmwNMzWxiCD8Z8KbGUG+1ybYqshSwGKObCqDfAIwe+W97xNZpsx4Br7/bcPEY322g==
   dependencies:
-    "@aws-sdk/eventstream-serde-universal" "3.118.1"
+    "@aws-sdk/eventstream-serde-universal" "3.120.0"
     "@aws-sdk/types" "3.110.0"
     tslib "^2.3.1"
 
-"@aws-sdk/eventstream-serde-universal@3.118.1":
-  version "3.118.1"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-serde-universal/-/eventstream-serde-universal-3.118.1.tgz#0e0a56c1a0893f3af661ca9399c1450ab9aef353"
-  integrity sha512-z9c8Svh1/jUDF/8AoGw3EWqP2pl23sICaKBhdoJGXtq/HuEXrGUnYw3ZiKKROyqeeCs5bfXuiCyhX8KjZzfjoQ==
+"@aws-sdk/eventstream-serde-universal@3.120.0":
+  version "3.120.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/eventstream-serde-universal/-/eventstream-serde-universal-3.120.0.tgz#9bc7b7a01f4ed94e2d89622917eb652fe97b94f2"
+  integrity sha512-2tZ5+3YlQRfsd0xibgVueWegengOMZIZF3ksq+IygWrRwukI9+QfC7oYe29/yttKoz2AipNKNY+JL9MgjHEdmg==
   dependencies:
-    "@aws-sdk/eventstream-marshaller" "3.118.1"
+    "@aws-sdk/eventstream-codec" "3.119.0"
     "@aws-sdk/types" "3.110.0"
     tslib "^2.3.1"
 
@@ -3263,9 +3263,9 @@ camelcase@^6.2.0, camelcase@^6.3.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001359:
-  version "1.0.30001359"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001359.tgz#a1c1cbe1c2da9e689638813618b4219acbd4925e"
-  integrity sha512-Xln/BAsPzEuiVLgJ2/45IaqD9jShtk3Y33anKb4+yLwQzws3+v6odKfpgES/cDEaZMLzSChpIGdbOYtH9MyuHw==
+  version "1.0.30001361"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001361.tgz#ba2adb2527566fb96f3ac7c67698ae7fc495a28d"
+  integrity sha512-ybhCrjNtkFji1/Wto6SSJKkWk6kZgVQsDq5QI83SafsF6FXv2JB4df9eEdH6g8sdGgqTXrFLjAxqBGgYoU3azQ==
 
 case@^1.6.3:
   version "1.6.3"
@@ -3992,9 +3992,9 @@ duplexify@^4.1.1:
     stream-shift "^1.0.0"
 
 electron-to-chromium@^1.4.172:
-  version "1.4.172"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.172.tgz#87335795a3dc19e7b6dd5af291038477d81dc6b1"
-  integrity sha512-yDoFfTJnqBAB6hSiPvzmsBJSrjOXJtHSJoqJdI/zSIh7DYupYnIOHt/bbPw/WE31BJjNTybDdNAs21gCMnTh0Q==
+  version "1.4.174"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.174.tgz#ffdf57f26dd4558c5aabdb4b190c47af1c4e443b"
+  integrity sha512-JER+w+9MV2MBVFOXxP036bLlNOnzbYAWrWU8sNUwoOO69T3w4564WhM5H5atd8VVS8U4vpi0i0kdoYzm1NPQgQ==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -6310,9 +6310,9 @@ lru-cache@^6.0.0:
     yallist "^4.0.0"
 
 lru-cache@^7.4.4, lru-cache@^7.5.1, lru-cache@^7.7.1:
-  version "7.10.2"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.10.2.tgz#aab494e0768ce94f199ef553ffe0a362f2a58bb9"
-  integrity sha512-9zDbhgmXAUvUMPV81A705K3tVzcPiZL3Bf5/5JC/FjYJlLZ5AJCeqIRFHJqyBppiLosqF+uKB7p8/RDXylqBIw==
+  version "7.12.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.12.0.tgz#be2649a992c8a9116efda5c487538dcf715f3476"
+  integrity sha512-OIP3DwzRZDfLg9B9VP/huWBlpvbkmbfiBy8xmsXp4RPmE4A3MhwNozc5ZJ3fWnSg8fDcdlE/neRTPG2ycEKliw==
 
 make-dir@^3.0.0:
   version "3.1.0"
@@ -6806,9 +6806,9 @@ npm-package-arg@^9.0.0, npm-package-arg@^9.0.1:
     validate-npm-package-name "^4.0.0"
 
 npm-packlist@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/npm-packlist/-/npm-packlist-5.1.0.tgz#f3fd52903a021009913a133732022132eb355ce7"
-  integrity sha512-a04sqF6FbkyOAFA19AA0e94gS7Et5T2/IMj3VOT9nOF2RaRdVPQ1Q17Fb/HaDRFs+gbC7HOmhVZ29adpWgmDZg==
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/npm-packlist/-/npm-packlist-5.1.1.tgz#79bcaf22a26b6c30aa4dd66b976d69cc286800e0"
+  integrity sha512-UfpSvQ5YKwctmodvPPkK6Fwk603aoVsf8AEbmVKAEECrfvL8SSe1A2YIwrJ6xmTHAITKPwwZsWo7WwEbNk0kxw==
   dependencies:
     glob "^8.0.1"
     ignore-walk "^5.0.1"
@@ -7234,10 +7234,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@0.58.17:
-  version "0.58.17"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.58.17.tgz#0e5f0b723db94d275b4fd3c038b276a622502d61"
-  integrity sha512-dwVCHFB9cMDDn8ctJM/AXVHHabh+G+AbZ84kSOPo2uvpVdzTMkuJV/T/oXu+CDhkHCJQIfSh5zJ+7Ebpo5MGyg==
+projen@0.58.21:
+  version "0.58.21"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.58.21.tgz#7549dd6ac38c70cca6e780129d3786cbfb3dfd85"
+  integrity sha512-Oai5QjuM4j3qfaOhErlllCJ8mSVKzyNft9aORhIwClfJCSJxdaJY0EeePjtt9wRocipCTzjL+IAEazwlP7iuGg==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
